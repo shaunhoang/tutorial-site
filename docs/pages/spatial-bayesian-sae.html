@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Estimation and Diagnostics</title>
+<title>Small Area Estimation for Urban Analytics - Bayesian Area and Spatial Smoothing</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,8 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/sae-toolkit.html" rel="next">
-<link href="../pages/tutorial-dataprep.html" rel="prev">
+<link href="../pages/unit-level-sae.html" rel="next">
+<link href="../pages/area-level-sae.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -147,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/tutorial-dataprep.html">Tutorial</a></li><li class="breadcrumb-item"><a href="../pages/tutorial-sae.html">Estimation and Diagnostics</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/spatial-bayesian-sae.html">Bayesian Area and Spatial Smoothing</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -212,13 +246,13 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
  <span class="menu-text">Part 2: Estimation</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link">
@@ -227,13 +261,13 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/area-level-sea.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Area-Level SAE Models</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Bayesian Area and Spatial Smoothing</span></a>
   </div>
 </li>
@@ -281,7 +315,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/tutorial-sae.html" class="sidebar-item-text sidebar-link active">
+  <a href="../pages/tutorial-sae.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Estimation and Diagnostics</span></a>
   </div>
 </li>
@@ -316,14 +350,24 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#when-spatial-structure-helps" id="toc-when-spatial-structure-helps" class="nav-link active" data-scroll-target="#when-spatial-structure-helps"><span class="header-section-number">1</span> When spatial structure helps</a></li>
+  <li><a href="#when-to-be-cautious" id="toc-when-to-be-cautious" class="nav-link" data-scroll-target="#when-to-be-cautious"><span class="header-section-number">2</span> When to be cautious</a></li>
+  <li><a href="#adjacency-checks" id="toc-adjacency-checks" class="nav-link" data-scroll-target="#adjacency-checks"><span class="header-section-number">3</span> Adjacency checks</a></li>
+  <li><a href="#bayesian-fh-with-spatial-effects" id="toc-bayesian-fh-with-spatial-effects" class="nav-link" data-scroll-target="#bayesian-fh-with-spatial-effects"><span class="header-section-number">4</span> Bayesian FH with spatial effects</a></li>
+  <li><a href="#outputs-to-communicate" id="toc-outputs-to-communicate" class="nav-link" data-scroll-target="#outputs-to-communicate"><span class="header-section-number">5</span> Outputs to communicate</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Estimation and Diagnostics</h1>
+<h1 class="title">Bayesian Area and Spatial Smoothing</h1>
 </div>
 
 
@@ -338,17 +382,68 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>The estimation workflow starts from the prepared SAE inputs from the National Survey for Wales example. It will cover:</p>
+<p>Spatial SAE adds structure when neighbouring domains are expected to have similar values after accounting for covariates. Bayesian SAE extends this by representing uncertainty through posterior distributions.</p>
+<section id="when-spatial-structure-helps" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="when-spatial-structure-helps"><span class="header-section-number">1</span> When spatial structure helps</h2>
+<p>Spatial modelling is most defensible when:</p>
 <ul>
-<li>calculating direct estimates and sampling variances,</li>
-<li>checking sample sizes and unstable domains,</li>
-<li>fitting area-level SAE models,</li>
-<li>comparing direct and modelled estimates,</li>
-<li>diagnosing uncertainty and residual patterns,</li>
-<li>preparing outputs for reporting.</li>
+<li>The indicator has a plausible spatial process.</li>
+<li>Domains are geographically meaningful for the process.</li>
+<li>Residuals from a non-spatial model show spatial patterning.</li>
+<li>The adjacency structure is reliable and aligned with the modelling table.</li>
+</ul>
+</section>
+<section id="when-to-be-cautious" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="when-to-be-cautious"><span class="header-section-number">2</span> When to be cautious</h2>
+<p>Spatial smoothing can hide real local differences. It can also create overconfident maps if adjacency is treated as a substitute for missing survey signal.</p>
+</section>
+<section id="adjacency-checks" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="adjacency-checks"><span class="header-section-number">3</span> Adjacency checks</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spdep)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>domains_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"../data/boundaries/boundaries-ltla.geojson"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>neighbors <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(domains_sf, <span class="at">queen =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>adjacency <span class="ot">&lt;-</span> <span class="fu">nb2mat</span>(neighbors, <span class="at">style =</span> <span class="st">"B"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">nrow</span>(adjacency) <span class="sc">==</span> <span class="fu">nrow</span>(domains_sf))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="bayesian-fh-with-spatial-effects" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="bayesian-fh-with-spatial-effects"><span class="header-section-number">4</span> Bayesian FH with spatial effects</h2>
+<p>This section should introduce the practical pattern for <code>SUMMER</code> and <code>INLA</code>:</p>
+<ol type="1">
+<li>Prepare direct estimates and variances.</li>
+<li>Prepare domain covariates.</li>
+<li>Prepare an adjacency graph.</li>
+<li>Fit a non-spatial Bayesian FH model.</li>
+<li>Fit a spatial FH model.</li>
+<li>Compare posterior summaries, residuals, and mapped uncertainty.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Placeholder pattern only. Final code will depend on the selected package API.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fit &lt;- SUMMER::smoothSurvey(</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   data = direct_estimates,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   Amat = adjacency,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   responseType = "gaussian",</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   formula = direct ~ covariate_1 + covariate_2</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="outputs-to-communicate" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="outputs-to-communicate"><span class="header-section-number">5</span> Outputs to communicate</h2>
+<ul>
+<li>Posterior mean or median.</li>
+<li>Credible intervals.</li>
+<li>Exceedance probabilities for policy thresholds.</li>
+<li>Maps of uncertainty, not only maps of point estimates.</li>
 </ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -600,13 +695,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/tutorial-dataprep.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Data Preparation</span>
+      <a href="../pages/area-level-sae.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Area-Level SAE Models</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/sae-toolkit.html" class="pagination-link">
-        <span class="nav-page-text">SAE Toolkit Lite</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/unit-level-sae.html" class="pagination-link">
+        <span class="nav-page-text">Unit-Level SAE Models</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

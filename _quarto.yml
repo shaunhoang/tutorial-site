@@ -1,6 +1,6 @@
 project:
   type: website
-  output-dir: _html
+  output-dir: docs
   resources:
     - "scripts/"
     - "data/"

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analysis - SAE Toolkit Lite</title>
+<title>Small Area Estimation for Urban Analytics - Direct Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/troubleshooting.html" rel="next">
-<link href="../pages/tutorial-sae.html" rel="prev">
+<link href="../pages/area-level-sae.html" rel="next">
+<link href="../pages/prepare-inputs.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -62,6 +62,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -74,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Small Area Estimation for Urban Analysis</span>
+    <span class="navbar-title">Small Area Estimation for Urban Analytics</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -147,7 +149,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/sae-toolkit.html">Resources</a></li><li class="breadcrumb-item"><a href="../pages/sae-toolkit.html">SAE Toolkit Lite</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Direct Estimation</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -179,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Urban Researcher’s Guide to Small Area Estimation</span></a>
+ <span class="menu-text">An Urban Researcher’s Guide to Small Area Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -212,22 +214,22 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
  <span class="menu-text">Part 2: Estimation</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Direct Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/area-level-sea.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Area-Level SAE Models</span></a>
   </div>
 </li>
@@ -298,7 +300,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link active">
+  <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SAE Toolkit Lite</span></a>
   </div>
 </li>
@@ -320,14 +322,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#minimum-inputs-and-recommended-schema" id="toc-minimum-inputs-and-recommended-schema" class="nav-link active" data-scroll-target="#minimum-inputs-and-recommended-schema"><span class="header-section-number">1</span> Minimum inputs and recommended schema</a>
+  <li><a href="#inputs" id="toc-inputs" class="nav-link active" data-scroll-target="#inputs"><span class="header-section-number">1</span> Inputs</a></li>
+  <li><a href="#choosing-the-direct-estimator" id="toc-choosing-the-direct-estimator" class="nav-link" data-scroll-target="#choosing-the-direct-estimator"><span class="header-section-number">2</span> Choosing the Direct Estimator</a>
   <ul class="collapse">
-  <li><a href="#survey-indicator-file" id="toc-survey-indicator-file" class="nav-link" data-scroll-target="#survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file</a></li>
-  <li><a href="#domain-size-file" id="toc-domain-size-file" class="nav-link" data-scroll-target="#domain-size-file"><span class="header-section-number">1.2</span> Domain-size file</a></li>
-  <li><a href="#geometry-file" id="toc-geometry-file" class="nav-link" data-scroll-target="#geometry-file"><span class="header-section-number">1.3</span> Geometry file</a></li>
-  <li><a href="#covariate-file-for-area-level-estimation" id="toc-covariate-file-for-area-level-estimation" class="nav-link" data-scroll-target="#covariate-file-for-area-level-estimation"><span class="header-section-number">1.4</span> Covariate file for area-level estimation</a></li>
+  <li><a href="#horvitz-thompson-estimator-with-known-domain-size" id="toc-horvitz-thompson-estimator-with-known-domain-size" class="nav-link" data-scroll-target="#horvitz-thompson-estimator-with-known-domain-size"><span class="header-section-number">2.1</span> Horvitz-Thompson Estimator With Known Domain Size</a></li>
+  <li><a href="#hájek-estimator-with-unknown-domain-size" id="toc-hájek-estimator-with-unknown-domain-size" class="nav-link" data-scroll-target="#hájek-estimator-with-unknown-domain-size"><span class="header-section-number">2.2</span> Hájek Estimator With Unknown Domain Size</a></li>
   </ul></li>
-  <li><a href="#downloadable-scripts" id="toc-downloadable-scripts" class="nav-link" data-scroll-target="#downloadable-scripts"><span class="header-section-number">2</span> Downloadable scripts</a></li>
+  <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step"><span class="header-section-number">3</span> Next Step</a></li>
   </ul>
 </nav>
     </div>
@@ -336,7 +337,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">SAE Toolkit Lite</h1>
+<h1 class="title">Direct Estimation</h1>
 </div>
 
 
@@ -351,171 +352,159 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>SAE Toolkit Lite is for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach.</p>
-<section id="minimum-inputs-and-recommended-schema" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="minimum-inputs-and-recommended-schema"><span class="header-section-number">1</span> Minimum inputs and recommended schema</h2>
-<p>At minimum, an SAE workflow for Urban Analytics needs:</p>
+<p>Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say before borrowing strength from covariates or spatial structure.</p>
+<p>In R, this step can be implemented with the <code>sae</code> package, using <code>sae::direct()</code> to compute direct estimates and their sampling variances under common survey-design settings.</p>
+<section id="inputs" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="inputs"><span class="header-section-number">1</span> Inputs</h2>
+<p>The direct-estimation step uses the standard files prepared earlier:</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Required fields</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Survey indicator file</td>
+<td><code>unit_id</code>, <code>domain_id</code>, <code>indicator</code>, <code>weight</code></td>
+</tr>
+<tr class="even">
+<td>Domain-size file</td>
+<td><code>domain_id</code>, <code>domain_size</code></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>indicator</code> column can be binary, such as <code>1</code> for adults who walk weekly and <code>0</code> otherwise, or numeric for a continuous outcome.</p>
+</section>
+<section id="choosing-the-direct-estimator" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="choosing-the-direct-estimator"><span class="header-section-number">2</span> Choosing the Direct Estimator</h2>
+<p>The estimator should match the information available in the survey file and the estimand definition.</p>
+<table class="table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Estimator</th>
+<th>Strengths</th>
+<th>Main caution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Domain size is known and grossing weight available</td>
+<td>Horvitz-Thompson estimator</td>
+<td>Direct link between weighted survey totals and population denominator</td>
+<td>Weight scale must match the domain-size definition</td>
+</tr>
+<tr class="even">
+<td>Domain size is unknown and/or only analysis weight available</td>
+<td>Hájek estimator</td>
+<td>Robust for means and proportions when weight scale is uncertain</td>
+<td>Does not estimate totals</td>
+</tr>
+</tbody>
+</table>
+<section id="horvitz-thompson-estimator-with-known-domain-size" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="horvitz-thompson-estimator-with-known-domain-size"><span class="header-section-number">2.1</span> Horvitz-Thompson Estimator With Known Domain Size</h3>
+<p>For means and proportions in domain (<span class="math inline">\(d\)</span>), the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> is calculated as:</p>
+<p><span class="math display">\[
+\hat{\theta}_d =
+\frac{\sum_{i \in s_d} w_{di} y_{di}}{N_d}
+\]</span></p>
+<p>where <span class="math inline">\(N_d\)</span> is <code>domain_size</code>, <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>. The variance approximation for this direct estimates is: <span class="math display">\[
+\widehat{V}(\hat{\theta}_d)
+\approx
+\frac{\sum_{i \in s_d} w_{di}^{2}(y_{di} - \hat{\theta}_d)^2}{N_d^2}.
+\]</span></p>
+</section>
+<section id="hájek-estimator-with-unknown-domain-size" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="hájek-estimator-with-unknown-domain-size"><span class="header-section-number">2.2</span> Hájek Estimator With Unknown Domain Size</h3>
+<p>For means and proportions in domain (<span class="math inline">\(d\)</span>), the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> is calculated as:</p>
+<p><span class="math display">\[
+\hat{\theta}_d =
+\frac{\sum_{i \in s_d} w_{di} y_{di}}
+{\sum_{i \in s_d} w_{di}}.
+\]</span></p>
+<p>where <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>. The variance approximation for this direct estimates is:</p>
+<p><span class="math display">\[
+\widehat{V}(\hat{\theta}_d)
+\approx
+\frac{\sum_{i \in s_d} w_{di}^{2}(y_{di} - \hat{\theta}_d)^2}
+{\left(\sum_{i \in s_d} w_{di}\right)^2}.
+\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>So far in our variance estimation, we assume the survey has no stratification information and is conducted <em>without replacement</em> (i.e., no duplicate respondents). The good news is that the R package <code>sae</code> handles the choice of estimator HT vs.&nbsp;Hájek and survey design features (e.g., stratification and with/without replacement) automatically when performing direct estimation with <code>sae::direct()</code>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="next-step" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="next-step"><span class="header-section-number">3</span> Next Step</h2>
+<p>The output needed for <strong>Area-level Modelling</strong> is:</p>
 <ul>
-<li>a survey indicator file, with one row per sampled unit used in the estimate</li>
-<li>a domain-size file, with one row per target domain</li>
-<li>a covariate file, when fitting an area-level model</li>
-<li>boundary geometry to map results or drive spatial structure for spatially-informed models</li>
+<li><code>domain_id</code></li>
+<li><code>Direct</code>, the survey-only estimate</li>
+<li><code>Variance</code>, the estimated sampling variance of <code>Direct</code></li>
 </ul>
-<section id="survey-indicator-file" class="level3" data-number="1.1">
-<h3 data-number="1.1" class="anchored" data-anchor-id="survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file</h3>
-<p>A survey indicator file links each sampled unit to the chosen outcome, target domain, and survey weight. Survey documentation should be kept alongside the file so that routing, missingness, design variables, and weight choice can be checked.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>sae::direct()</code> returns core direct-estimation outputs by domain, including sample size (<code>N</code>), direct estimate (<code>Direct</code>), and standard deviation (<code>SD</code>), which can be squared to obtain <code>Variance</code>.</p>
+</div>
+</div>
+<p>However, before proceeding, check whether the direct estimates are ready for area-level modelling:</p>
+<ul>
+<li>domains with no sampled units</li>
+<li>domains with very few valid units, or dominated by very few large weights</li>
+<li>zero or extremely small variances</li>
+<li>estimates outside the valid range for the indicator</li>
+</ul>
+<p>The table below links common direct-estimate patterns to practical next steps.</p>
 <table class="table">
 <thead>
 <tr class="header">
-<th>Column</th>
-<th>Meaning</th>
+<th>Scenario</th>
+<th>Next step</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>unit_id</code></td>
-<td>Survey respondent, household, or sampled unit ID.</td>
+<td>Most domains have usable sample sizes and uncertainty is acceptable</td>
+<td>Direct estimates may be enough for reporting.</td>
 </tr>
 <tr class="even">
-<td><code>domain_id</code></td>
-<td>Reporting domain code.</td>
+<td>Too many domains have no sample or unusable variances</td>
+<td>Revisit the domain choice or redefine estimand.</td>
 </tr>
 <tr class="odd">
-<td><code>indicator</code></td>
-<td>Numeric outcome, or binary 0/1.</td>
-</tr>
-<tr class="even">
-<td><code>weight</code></td>
-<td>Survey weight selected for the estimand.</td>
-</tr>
-<tr class="odd">
-<td><code>stratum</code></td>
-<td>(optional) survey stratum.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="domain-size-file" class="level3" data-number="1.2">
-<h3 data-number="1.2" class="anchored" data-anchor-id="domain-size-file"><span class="header-section-number">1.2</span> Domain-size file</h3>
-<p>A domain-size file gives the denominator for each target domain. The denominator must match the estimand’s target population rather than the full resident population by default.</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th>Column</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>domain_id</code></td>
-<td>Reporting domain code.</td>
-</tr>
-<tr class="even">
-<td><code>domain_size</code></td>
-<td>Denominator matching the target population.</td>
-</tr>
-<tr class="odd">
-<td><code>domain_name</code></td>
-<td>Human-readable area name.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="geometry-file" class="level3" data-number="1.3">
-<h3 data-number="1.3" class="anchored" data-anchor-id="geometry-file"><span class="header-section-number">1.3</span> Geometry file</h3>
-<p>Boundary geometry is useful for visualising estimates and for deriving adjacency structures for spatial models. It is not required for direct estimates or non-spatial area-level models.</p>
-<table class="table">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 80%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Column</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>domain_id</code></td>
-<td>Reporting domain code, matching the domain-size file.</td>
-</tr>
-<tr class="even">
-<td><code>domain_name</code></td>
-<td>Human-readable area name.</td>
-</tr>
-<tr class="odd">
-<td><code>geometry</code></td>
-<td>Polygon or multipolygon geometry for the reporting domain.</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="covariate-file-for-area-level-estimation" class="level3" data-number="1.4">
-<h3 data-number="1.4" class="anchored" data-anchor-id="covariate-file-for-area-level-estimation"><span class="header-section-number">1.4</span> Covariate file for area-level estimation</h3>
-<p>Covariates are area-level predictors available for every target domain. They should be measured on the same geography as the direct estimates, or aggregated to that geography before modelling.</p>
-<table class="table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 79%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Column</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>domain_id</code></td>
-<td>Reporting domain code.</td>
-</tr>
-<tr class="even">
-<td><code>covariate_*</code></td>
-<td>Area-level predictor available for every target domain.</td>
-</tr>
-<tr class="odd">
-<td><code>median_age</code></td>
-<td>Example demographic covariate.</td>
-</tr>
-<tr class="even">
-<td><code>prop_urban</code></td>
-<td>Example settlement or land-use covariate.</td>
-</tr>
-<tr class="odd">
-<td><code>employment_rate</code></td>
-<td>Example socioeconomic covariate.</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="downloadable-scripts" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="downloadable-scripts"><span class="header-section-number">2</span> Downloadable scripts</h2>
-<p>Reusable scripts can be adapted for another survey once the input files follow the schema above.</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th>Script</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><a href="../scripts/direct_estimates.R">direct_estimates.R</a></td>
-<td>Calculate direct estimates by domain, sampling variances, and confidence intervals.</td>
-</tr>
-<tr class="even">
-<td><a href="../scripts/covariate_sae.R">covariate_sae.R</a></td>
-<td>Fit Bayesian area-level models using direct estimates, sampling variances, and area-level covariates.</td>
-</tr>
-<tr class="odd">
-<td><a href="../scripts/spatial_sae.R">spatial_sae.R</a></td>
-<td>Build adjacency or spatial weight matrices from domain boundaries and fit Bayesian spatial SAE models.</td>
-</tr>
-<tr class="even">
-<td><a href="../scripts/diagnostics.R">diagnostics.R</a></td>
-<td>Create comparison tables and plots for checking estimates, uncertainty, and model outputs.</td>
+<td>Estimates are noisy but variances are usable</td>
+<td>Fit a covariate-based <a href="../pages/area-level-sae.html">area-level SAE model</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -773,13 +762,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/tutorial-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Estimation and Diagnostics</span>
+      <a href="../pages/prepare-inputs.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">From Estimands to SAE Inputs</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/troubleshooting.html" class="pagination-link">
-        <span class="nav-page-text">Troubleshooting</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/area-level-sae.html" class="pagination-link">
+        <span class="nav-page-text">Area-Level SAE Models</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

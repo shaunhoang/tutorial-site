@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation Tutorial - Communicating Uncertainty</title>
+<title>Small Area Estimation for Urban Analytics - SAE Toolkit Lite</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -31,7 +31,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../pages/troubleshooting.html" rel="next">
-<link href="../pages/diagnostics.html" rel="prev">
+<link href="../pages/tutorial-sae.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Small Area Estimation Tutorial</span>
+    <span class="navbar-title">Small Area Estimation for Urban Analytics</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -88,13 +88,13 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
- <span class="menu-text">Tutorial</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-methods" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Methods</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-methods">    
         <li>
-    <a class="dropdown-item" href="../pages/prepare-sae-inputs.qmd" rel="" target="">
- <span class="dropdown-text">Survey Inputs</span></a>
+    <a class="dropdown-item" href="../pages/prepare-inputs.html" rel="" target="">
+ <span class="dropdown-text">Preparation</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../pages/direct-estimation.html" rel="" target="">
@@ -107,17 +107,32 @@ ul.task-list li input[type="checkbox"] {
     </ul>
   </li>
   <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="../pages/tutorial-dataprep.html" rel="" target="">
+ <span class="dropdown-text">Input Preparation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../pages/tutorial-sae.html" rel="" target="">
+ <span class="dropdown-text">Estimation &amp; Reporting</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-resources" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">Resources</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-resources">    
         <li>
-    <a class="dropdown-item" href="../pages/troubleshooting.html" rel="" target="">
- <span class="dropdown-text">Troubleshooting</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="../pages/sae-toolkit.html" rel="" target="">
  <span class="dropdown-text">SAE Toolkit</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../pages/troubleshooting.html" rel="" target="">
+ <span class="dropdown-text">Troubleshooting</span></a>
   </li>  
     </ul>
   </li>
@@ -132,7 +147,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/diagnostics.html">Part 3: Reporting</a></li><li class="breadcrumb-item"><a href="../pages/uncertainty.html">Communicating Uncertainty</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/sae-toolkit.html">Resources</a></li><li class="breadcrumb-item"><a href="../pages/sae-toolkit.html">SAE Toolkit Lite</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -155,7 +170,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Home</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -164,7 +179,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Small Area Estimation for Transport and Energy Indicators</span></a>
+ <span class="menu-text">An Urban Researcher’s Guide to Small Area Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -172,7 +187,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
- <span class="menu-text">Tutorial</span></a>
+ <span class="menu-text">Methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -181,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
- <span class="menu-text">Part 1: Preparing Inputs</span></a>
+ <span class="menu-text">Part 1: Preparation</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -191,12 +206,6 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">From Estimands to SAE Inputs</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/nsw-data-prep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Practical Example</span></a>
   </div>
 </li>
       </ul>
@@ -218,7 +227,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/fay-herriot.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Area-Level SAE Models</span></a>
   </div>
 </li>
@@ -238,23 +247,17 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
  <span class="menu-text">Part 3: Reporting</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Diagnostics and Validation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/uncertainty.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Communicating Uncertainty</span></a>
+ <span class="menu-text">Diagnostics, Validation, and Uncertainty</span></a>
   </div>
 </li>
       </ul>
@@ -264,7 +267,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
- <span class="menu-text">Resources</span></a>
+ <span class="menu-text">Tutorial</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -272,14 +275,37 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Troubleshooting</span></a>
+  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Preparation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SAE Toolkit</span></a>
+  <a href="../pages/tutorial-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Estimation and Diagnostics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Resources</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">SAE Toolkit Lite</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Troubleshooting</span></a>
   </div>
 </li>
       </ul>
@@ -290,14 +316,27 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#minimum-inputs-and-recommended-schema" id="toc-minimum-inputs-and-recommended-schema" class="nav-link active" data-scroll-target="#minimum-inputs-and-recommended-schema"><span class="header-section-number">1</span> Minimum inputs and recommended schema</a>
+  <ul class="collapse">
+  <li><a href="#survey-indicator-file" id="toc-survey-indicator-file" class="nav-link" data-scroll-target="#survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file</a></li>
+  <li><a href="#domain-size-file" id="toc-domain-size-file" class="nav-link" data-scroll-target="#domain-size-file"><span class="header-section-number">1.2</span> Domain-size file</a></li>
+  <li><a href="#geometry-file" id="toc-geometry-file" class="nav-link" data-scroll-target="#geometry-file"><span class="header-section-number">1.3</span> Geometry file</a></li>
+  <li><a href="#covariate-file-for-area-level-estimation" id="toc-covariate-file-for-area-level-estimation" class="nav-link" data-scroll-target="#covariate-file-for-area-level-estimation"><span class="header-section-number">1.4</span> Covariate file for area-level estimation</a></li>
+  </ul></li>
+  <li><a href="#downloadable-scripts" id="toc-downloadable-scripts" class="nav-link" data-scroll-target="#downloadable-scripts"><span class="header-section-number">2</span> Downloadable scripts</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Communicating Uncertainty</h1>
+<h1 class="title">SAE Toolkit Lite</h1>
 </div>
 
 
@@ -312,14 +351,177 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Placeholder</p>
+<p>SAE Toolkit Lite is for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach.</p>
+<section id="minimum-inputs-and-recommended-schema" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="minimum-inputs-and-recommended-schema"><span class="header-section-number">1</span> Minimum inputs and recommended schema</h2>
+<p>At minimum, an SAE workflow for Urban Analytics needs:</p>
 <ul>
-<li>What uncertainty measures to report.</li>
-<li>How to present confidence intervals, credible intervals, or MSE.</li>
-<li>How to map uncertainty.</li>
+<li>a survey indicator file, with one row per sampled unit used in the estimate</li>
+<li>a domain-size file, with one row per target domain</li>
+<li>a covariate file, when fitting an area-level model</li>
+<li>boundary geometry to map results or drive spatial structure for spatially-informed models</li>
 </ul>
+<section id="survey-indicator-file" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file</h3>
+<p>A survey indicator file links each sampled unit to the chosen outcome, target domain, and survey weight. Survey documentation should be kept alongside the file so that routing, missingness, design variables, and weight choice can be checked.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>unit_id</code></td>
+<td>Survey respondent, household, or sampled unit ID.</td>
+</tr>
+<tr class="even">
+<td><code>domain_id</code></td>
+<td>Reporting domain code.</td>
+</tr>
+<tr class="odd">
+<td><code>indicator</code></td>
+<td>Numeric outcome, or binary 0/1.</td>
+</tr>
+<tr class="even">
+<td><code>weight</code></td>
+<td>Survey weight selected for the estimand.</td>
+</tr>
+<tr class="odd">
+<td><code>stratum</code></td>
+<td>(optional) survey stratum.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="domain-size-file" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="domain-size-file"><span class="header-section-number">1.2</span> Domain-size file</h3>
+<p>A domain-size file gives the denominator for each target domain. The denominator must match the estimand’s target population rather than the full resident population by default.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>domain_id</code></td>
+<td>Reporting domain code.</td>
+</tr>
+<tr class="even">
+<td><code>domain_size</code></td>
+<td>Denominator matching the target population.</td>
+</tr>
+<tr class="odd">
+<td><code>domain_name</code></td>
+<td>Human-readable area name.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="geometry-file" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="geometry-file"><span class="header-section-number">1.3</span> Geometry file</h3>
+<p>Boundary geometry is useful for visualising estimates and for deriving adjacency structures for spatial models. It is not required for direct estimates or non-spatial area-level models.</p>
+<table class="table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>domain_id</code></td>
+<td>Reporting domain code, matching the domain-size file.</td>
+</tr>
+<tr class="even">
+<td><code>domain_name</code></td>
+<td>Human-readable area name.</td>
+</tr>
+<tr class="odd">
+<td><code>geometry</code></td>
+<td>Polygon or multipolygon geometry for the reporting domain.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="covariate-file-for-area-level-estimation" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="covariate-file-for-area-level-estimation"><span class="header-section-number">1.4</span> Covariate file for area-level estimation</h3>
+<p>Covariates are area-level predictors available for every target domain. They should be measured on the same geography as the direct estimates, or aggregated to that geography before modelling.</p>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 79%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>domain_id</code></td>
+<td>Reporting domain code.</td>
+</tr>
+<tr class="even">
+<td><code>covariate_*</code></td>
+<td>Area-level predictor available for every target domain.</td>
+</tr>
+<tr class="odd">
+<td><code>median_age</code></td>
+<td>Example demographic covariate.</td>
+</tr>
+<tr class="even">
+<td><code>prop_urban</code></td>
+<td>Example settlement or land-use covariate.</td>
+</tr>
+<tr class="odd">
+<td><code>employment_rate</code></td>
+<td>Example socioeconomic covariate.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="downloadable-scripts" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="downloadable-scripts"><span class="header-section-number">2</span> Downloadable scripts</h2>
+<p>Reusable scripts can be adapted for another survey once the input files follow the schema above.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Script</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="../scripts/direct_estimates.R">direct_estimates.R</a></td>
+<td>Calculate direct estimates by domain, sampling variances, and confidence intervals.</td>
+</tr>
+<tr class="even">
+<td><a href="../scripts/covariate_sae.R">covariate_sae.R</a></td>
+<td>Fit Bayesian area-level models using direct estimates, sampling variances, and area-level covariates.</td>
+</tr>
+<tr class="odd">
+<td><a href="../scripts/spatial_sae.R">spatial_sae.R</a></td>
+<td>Build adjacency or spatial weight matrices from domain boundaries and fit Bayesian spatial SAE models.</td>
+</tr>
+<tr class="even">
+<td><a href="../scripts/diagnostics.R">diagnostics.R</a></td>
+<td>Create comparison tables and plots for checking estimates, uncertainty, and model outputs.</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -571,8 +773,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/diagnostics.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Diagnostics and Validation</span>
+      <a href="../pages/tutorial-sae.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Estimation and Diagnostics</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

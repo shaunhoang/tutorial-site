@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation Tutorial - Practical Example</title>
+<title>Small Area Estimation for Urban Analytics - Estimation and Diagnostics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/direct-estimation.html" rel="next">
-<link href="../pages/prepare-inputs.html" rel="prev">
+<link href="../pages/sae-toolkit.html" rel="next">
+<link href="../pages/tutorial-dataprep.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Small Area Estimation Tutorial</span>
+    <span class="navbar-title">Small Area Estimation for Urban Analytics</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -88,10 +88,10 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
- <span class="menu-text">Tutorial</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-methods" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Methods</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-methods">    
         <li>
     <a class="dropdown-item" href="../pages/prepare-inputs.html" rel="" target="">
  <span class="dropdown-text">Preparation</span></a>
@@ -107,17 +107,32 @@ ul.task-list li input[type="checkbox"] {
     </ul>
   </li>
   <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Tutorial</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li>
+    <a class="dropdown-item" href="../pages/tutorial-dataprep.html" rel="" target="">
+ <span class="dropdown-text">Input Preparation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../pages/tutorial-sae.html" rel="" target="">
+ <span class="dropdown-text">Estimation &amp; Reporting</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-resources" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">Resources</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-resources">    
         <li>
-    <a class="dropdown-item" href="../pages/troubleshooting.html" rel="" target="">
- <span class="dropdown-text">Troubleshooting</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="../pages/sae-toolkit.html" rel="" target="">
  <span class="dropdown-text">SAE Toolkit</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../pages/troubleshooting.html" rel="" target="">
+ <span class="dropdown-text">Troubleshooting</span></a>
   </li>  
     </ul>
   </li>
@@ -132,7 +147,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/prepare-inputs.html">Part 1: Preparation</a></li><li class="breadcrumb-item"><a href="../pages/nsw-data-prep.html">Practical Example</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../pages/tutorial-dataprep.html">Tutorial</a></li><li class="breadcrumb-item"><a href="../pages/tutorial-sae.html">Estimation and Diagnostics</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -155,7 +170,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Introduction</span></a>
+ <span class="menu-text">Home</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -164,7 +179,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Small Area Estimation for Transport and Energy Indicators</span></a>
+ <span class="menu-text">An Urban Researcher’s Guide to Small Area Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -172,7 +187,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
- <span class="menu-text">Tutorial</span></a>
+ <span class="menu-text">Methods</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -180,23 +195,17 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
  <span class="menu-text">Part 1: Preparation</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">From Estimands to SAE Inputs</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/nsw-data-prep.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Practical Example</span></a>
   </div>
 </li>
       </ul>
@@ -218,7 +227,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/fay-herriot.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Area-Level SAE Models</span></a>
   </div>
 </li>
@@ -248,13 +257,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Diagnostics and Validation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/uncertainty.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Communicating Uncertainty</span></a>
+ <span class="menu-text">Diagnostics, Validation, and Uncertainty</span></a>
   </div>
 </li>
       </ul>
@@ -264,7 +267,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
- <span class="menu-text">Resources</span></a>
+ <span class="menu-text">Tutorial</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -272,14 +275,37 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Troubleshooting</span></a>
+  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Preparation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../pages/tutorial-sae.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Estimation and Diagnostics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Resources</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SAE Toolkit</span></a>
+ <span class="menu-text">SAE Toolkit Lite</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Troubleshooting</span></a>
   </div>
 </li>
       </ul>
@@ -290,24 +316,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#indicator-families" id="toc-indicator-families" class="nav-link active" data-scroll-target="#indicator-families"><span class="header-section-number">1</span> Indicator Families</a></li>
-  <li><a href="#example-1-households-without-car-access" id="toc-example-1-households-without-car-access" class="nav-link" data-scroll-target="#example-1-households-without-car-access"><span class="header-section-number">2</span> Example 1: Households Without Car Access</a></li>
-  <li><a href="#example-2-car-commuting" id="toc-example-2-car-commuting" class="nav-link" data-scroll-target="#example-2-car-commuting"><span class="header-section-number">3</span> Example 2: Car Commuting</a></li>
-  <li><a href="#example-3-regular-bus-use" id="toc-example-3-regular-bus-use" class="nav-link" data-scroll-target="#example-3-regular-bus-use"><span class="header-section-number">4</span> Example 3: Regular Bus Use</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">5</span> Summary</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Practical Example</h1>
+<h1 class="title">Estimation and Diagnostics</h1>
 </div>
 
 
@@ -322,240 +338,17 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>This page uses the National Survey for Wales (NSW) data preparation workflow to show how estimands, domain sizes, and weights are defined before direct estimation.</p>
-<p>The NSW data preparation notebook creates binary indicators from the survey and attaches a Local Authority code, <code>la_code</code>, to each respondent. In this worked example, the target domain is therefore <strong>Local Authority</strong>.</p>
-<p>The choice of domain is partly driven by what spatial information is available. Here, the survey data and the external population tables are available at Local Authority level. In practice, if survey respondents have more granular spatial identifiers, such as LSOA, MSOA, or postcode-derived zones, the choice of domain can be more flexible, provided matching domain sizes and covariates are also available.</p>
-<section id="indicator-families" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="indicator-families"><span class="header-section-number">1</span> Indicator Families</h2>
-<p>The NSW preparation workflow includes indicators from several families:</p>
+<p>The estimation workflow starts from the prepared SAE inputs from the National Survey for Wales example. It will cover:</p>
 <ul>
-<li>household car access,</li>
-<li>commuting mode and commuting distance,</li>
-<li>hybrid and remote working,</li>
-<li>bus and train use,</li>
-<li>bus and train satisfaction,</li>
-<li>walking and cycling frequency.</li>
+<li>calculating direct estimates and sampling variances,</li>
+<li>checking sample sizes and unstable domains,</li>
+<li>fitting area-level SAE models,</li>
+<li>comparing direct and modelled estimates,</li>
+<li>diagnosing uncertainty and residual patterns,</li>
+<li>preparing outputs for reporting.</li>
 </ul>
-<p>The examples below focus on three indicators that illustrate common estimand choices.</p>
-</section>
-<section id="example-1-households-without-car-access" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="example-1-households-without-car-access"><span class="header-section-number">2</span> Example 1: Households Without Car Access</h2>
-<p>Notebook indicator:</p>
-<blockquote class="blockquote">
-<p><code>no_car = 1</code> when <code>CarUse</code> indicates no access to a car.</p>
-</blockquote>
-<p>Estimand:</p>
-<blockquote class="blockquote">
-<p>Estimate the share of households without access to a car in each Local Authority.</p>
-</blockquote>
-<table class="table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Component</th>
-<th>NSW example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Outcome</td>
-<td>Household has no access to a car</td>
-</tr>
-<tr class="even">
-<td>Target population</td>
-<td>All households</td>
-</tr>
-<tr class="odd">
-<td>Target domain</td>
-<td>Local Authority</td>
-</tr>
-<tr class="even">
-<td>Domain size</td>
-<td>Number of households in each Local Authority, <code>household_total</code></td>
-</tr>
-<tr class="odd">
-<td>Weight</td>
-<td>Household grossing weight, scaled from <code>SampleHhWeight</code></td>
-</tr>
-<tr class="even">
-<td>Interpretation</td>
-<td>“x% of households in this Local Authority do not have access to a car.”</td>
-</tr>
-</tbody>
-</table>
-<p>This is a household estimand, so the denominator should be households, not adults. The downstream direct estimate should therefore use a household weight and a household domain size.</p>
-<p>Examples:</p>
-<table class="table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Estimand</th>
-<th>Indicator construction</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Share of households without access to a car</td>
-<td><code>no_car = 1</code> if <code>CarUse</code> indicates no access to a car</td>
-</tr>
-<tr class="even">
-<td>Share of adults who use the bus weekly</td>
-<td><code>pt_bus_use = 1</code> if <code>BusFreq12M = 1</code></td>
-</tr>
-<tr class="odd">
-<td>Share of adults who commute by car</td>
-<td><code>commute_car = 1</code> if commute mode is car; non-commuting adults may be coded as <code>0</code> if the estimand is adult prevalence</td>
-</tr>
-<tr class="even">
-<td>Share of commuters who commute by car</td>
-<td><code>commute_car = 1</code> if commute mode is car, but only commuters are in scope</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="example-2-car-commuting" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="example-2-car-commuting"><span class="header-section-number">3</span> Example 2: Car Commuting</h2>
-<p>Notebook indicator:</p>
-<blockquote class="blockquote">
-<p><code>commute_car = 1</code> when <code>TravWkModeAll4 = 1</code> or <code>TravWkModeLong = 4</code>.</p>
-</blockquote>
-<p>This survey question is routed through work and commuting questions, so the target population must be chosen carefully.</p>
-<table class="table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Possible estimand</th>
-<th>Target population</th>
-<th>Domain size</th>
-<th>Interpretation</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Share of adults who commute by car</td>
-<td>All adults aged 16+</td>
-<td>Adult population, <code>pop_16plus</code></td>
-<td>“x% of adults in this Local Authority are car commuters.”</td>
-</tr>
-<tr class="even">
-<td>Share of commuters who commute by car</td>
-<td>Commuters</td>
-<td>Number of commuters</td>
-<td>“x% of commuters in this Local Authority commute by car.”</td>
-</tr>
-</tbody>
-</table>
-<p>The NSW notebook uses the first version for the current workflow: all adults aged 16+ as the target population, <code>pop_16plus</code> as the domain size, and <code>WalesAdultWeight</code> as the weight. That makes the indicator an adult-population prevalence measure, not a proportion among commuters only.</p>
-<p>If the aim changes to estimating the share of commuters who use a car, the domain size would need to change to the number of commuters in each Local Authority. If that denominator is not available, the direct estimation method or spatial resolution may need to change.</p>
-</section>
-<section id="example-3-regular-bus-use" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="example-3-regular-bus-use"><span class="header-section-number">4</span> Example 3: Regular Bus Use</h2>
-<p>Notebook indicator:</p>
-<blockquote class="blockquote">
-<p><code>pt_bus_use = 1</code> when <code>BusFreq12M = 1</code>, meaning bus use at least once a week.</p>
-</blockquote>
-<p>Estimand:</p>
-<blockquote class="blockquote">
-<p>Estimate the share of adults who use the bus at least weekly in each Local Authority.</p>
-</blockquote>
-<table class="table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Component</th>
-<th>NSW example</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Outcome</td>
-<td>Uses the bus at least weekly</td>
-</tr>
-<tr class="even">
-<td>Target population</td>
-<td>All adults aged 16+</td>
-</tr>
-<tr class="odd">
-<td>Target domain</td>
-<td>Local Authority</td>
-</tr>
-<tr class="even">
-<td>Domain size</td>
-<td>Adult population in each Local Authority, <code>pop_16plus</code></td>
-</tr>
-<tr class="odd">
-<td>Weight</td>
-<td><code>WalesAdultWeight</code></td>
-</tr>
-<tr class="even">
-<td>Interpretation</td>
-<td>“x% of adults in this Local Authority use the bus at least weekly.”</td>
-</tr>
-</tbody>
-</table>
-<p>This is different from estimating the share of bus users who use the bus weekly. In the current definition, non-users are part of the adult target population. If the estimand were restricted to public transport users, the denominator and possibly the weight would need to change.</p>
-</section>
-<section id="summary" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="summary"><span class="header-section-number">5</span> Summary</h2>
-<table class="table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>NSW indicator</th>
-<th>Estimand</th>
-<th>Target population</th>
-<th>Domain size</th>
-<th>Weight</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>no_car</code></td>
-<td>Share without car access</td>
-<td>Households</td>
-<td><code>household_total</code></td>
-<td>Household weight scaled from <code>SampleHhWeight</code></td>
-</tr>
-<tr class="even">
-<td><code>commute_car</code></td>
-<td>Share who are car commuters</td>
-<td>Adults aged 16+</td>
-<td><code>pop_16plus</code></td>
-<td><code>WalesAdultWeight</code></td>
-</tr>
-<tr class="odd">
-<td><code>pt_bus_use</code></td>
-<td>Share who use the bus at least weekly</td>
-<td>Adults aged 16+</td>
-<td><code>pop_16plus</code></td>
-<td><code>WalesAdultWeight</code></td>
-</tr>
-</tbody>
-</table>
-<p>The same process should be repeated for every indicator before calculating direct estimates: define the outcome, target population, domain, domain size, weight, and interpretation.</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -807,13 +600,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/prepare-inputs.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">From Estimands to SAE Inputs</span>
+      <a href="../pages/tutorial-dataprep.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Data Preparation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/direct-estimation.html" class="pagination-link">
-        <span class="nav-page-text">Direct Estimation</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/sae-toolkit.html" class="pagination-link">
+        <span class="nav-page-text">SAE Toolkit Lite</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
