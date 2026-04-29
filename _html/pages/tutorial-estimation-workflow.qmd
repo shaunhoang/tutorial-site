@@ -1,0 +1,16 @@
+---
+title: "Estimation and Diagnostics Workflow"
+---
+
+This page will apply the estimation workflow to the prepared SAE inputs from the National Survey for Wales example.
+
+The applied workflow will cover:
+
+-   calculating direct estimates and sampling variances,
+-   checking sample sizes and unstable domains,
+-   fitting area-level SAE models,
+-   comparing direct and modelled estimates,
+-   diagnosing uncertainty and residual patterns,
+-   preparing outputs for reporting.
+
+The data preparation step should produce the respondent-level indicator table and domain-size table needed here.
