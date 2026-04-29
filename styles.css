@@ -1,0 +1,80 @@
+/* TRACK-UK SAE tutorial site */
+
+:root {
+  --track-ink: #14252d;
+  --track-blue: #1f4e5f;
+  --track-teal: #2d8f8a;
+  --track-gold: #d9a441;
+  --track-mist: #f3f7f6;
+}
+
+body {
+  color: var(--track-ink);
+}
+
+.navbar,
+.sidebar-title {
+  letter-spacing: 0;
+}
+
+.quarto-title-banner {
+  background: var(--track-mist);
+  color: var(--track-ink);
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: 0;
+}
+
+a {
+  color: var(--track-blue);
+}
+
+.callout-note {
+  border-left-color: var(--track-teal);
+}
+
+.callout-warning {
+  border-left-color: var(--track-gold);
+}
+
+.decision-box {
+  border-left: 4px solid var(--track-teal);
+  background: var(--track-mist);
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.placeholder {
+  color: #5b6b73;
+  font-style: italic;
+}
+
+.wide-desc-table table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.wide-desc-table th:first-child,
+.wide-desc-table td:first-child {
+  width: 25%;
+}
+
+.sae-inputs-table table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.sae-inputs-table th:first-child,
+.sae-inputs-table td:first-child {
+  width: 22%;
+}
+
+.sae-inputs-table th:nth-child(3),
+.sae-inputs-table td:nth-child(3) {
+  width: 5%;
+  text-align: center;
+  white-space: nowrap;
+}

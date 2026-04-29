@@ -1,0 +1,91 @@
+project:
+  type: website
+  output-dir: _html
+  resources:
+    - "scripts/"
+    - "data/"
+  render:
+    - "index.qmd"
+    - "pages/*.qmd"
+
+website:
+  title: "Small Area Estimation for Urban Analytics"
+  page-navigation: true
+  navbar:
+    background: "#1f4e5f"
+    foreground: "#ffffff"
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Methods"
+        menu:
+          - text: "Preparation"
+            href: pages/prepare-inputs.qmd
+          - text: "Estimation"
+            href: pages/direct-estimation.qmd
+          - text: "Reporting"
+            href: pages/diagnostics.qmd
+      - text: "Tutorial"
+        menu:
+          - text: "Input Preparation"
+            href: pages/tutorial-dataprep.qmd
+          - text: "Estimation & Reporting"
+            href: pages/tutorial-sae.qmd
+      - text: "Resources"
+        menu:
+          - text: "SAE Toolkit"
+            href: pages/sae-toolkit.qmd
+          - text: "Troubleshooting"
+            href: pages/troubleshooting.qmd
+
+
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "Home"
+        contents:
+          - index.qmd
+      - section: "Methods"
+        contents:
+          - section: "Part 1: Preparation"
+            contents:
+              - pages/prepare-inputs.qmd
+          - section: "Part 2: Estimation"
+            contents:
+              - pages/direct-estimation.qmd
+              - pages/area-level-sae.qmd
+              - pages/spatial-bayesian-sae.qmd
+              - pages/unit-level-sae.qmd
+          - section: "Part 3: Reporting"
+            contents:
+              - pages/diagnostics.qmd
+      - section: "Tutorial"
+        contents:
+          - pages/tutorial-dataprep.qmd
+          - pages/tutorial-sae.qmd
+      - section: "Resources"
+        contents:
+          - pages/sae-toolkit.qmd
+          - pages/troubleshooting.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-copy: true
+    code-overflow: wrap
+    link-external-newwindow: true
+    fig-cap-location: bottom
+
+execute:
+  eval: false
+  warning: false
+  message: false
+  freeze: false
+
+editor:
+  render-on-save: false

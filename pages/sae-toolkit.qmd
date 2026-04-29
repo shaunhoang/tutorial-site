@@ -1,0 +1,70 @@
+---
+title: "SAE Toolkit Lite"
+---
+
+SAE Toolkit Lite is for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach.
+
+## Minimum inputs and recommended schema
+
+At minimum, an SAE workflow for Urban Analytics needs:
+
+- a survey indicator file, with one row per sampled unit used in the estimate
+- a domain-size file, with one row per target domain
+- a covariate file, when fitting an area-level model
+- boundary geometry to map results or drive spatial structure for spatially-informed models
+
+### Survey indicator file
+
+A survey indicator file links each sampled unit to the chosen outcome, target domain, and survey weight. Survey documentation should be kept alongside the file so that routing, missingness, design variables, and weight choice can be checked.
+
+| Column      | Meaning                                           |
+|-------------|---------------------------------------------------|
+| `unit_id`   | Survey respondent, household, or sampled unit ID. |
+| `domain_id` | Reporting domain code.                            |
+| `indicator` | Numeric outcome, or binary 0/1.                |
+| `weight`    | Survey weight selected for the estimand.          |
+| `stratum`   | (optional) survey stratum.                        |
+
+### Domain-size file
+
+A domain-size file gives the denominator for each target domain. The denominator must match the estimand's target population rather than the full resident population by default.
+
+| Column        | Meaning                                     |
+|---------------|---------------------------------------------|
+| `domain_id`   | Reporting domain code.                      |
+| `domain_size` | Denominator matching the target population. |
+| `domain_name` | Human-readable area name.                   |
+
+### Geometry file
+
+Boundary geometry is useful for visualising estimates and for deriving adjacency structures for spatial models. It is not required for direct estimates or non-spatial area-level models.
+
+| Column        | Meaning                                                     |
+|---------------|-------------------------------------------------------------|
+| `domain_id`   | Reporting domain code, matching the domain-size file.        |
+| `domain_name` | Human-readable area name.                                   |
+| `geometry`    | Polygon or multipolygon geometry for the reporting domain.   |
+
+### Covariate file for area-level estimation
+
+Covariates are area-level predictors available for every target domain. They should be measured on the same geography as the direct estimates, or aggregated to that geography before modelling.
+
+| Column        | Meaning                                                 |
+|---------------|---------------------------------------------------------|
+| `domain_id`   | Reporting domain code.                                  |
+| `covariate_*` | Area-level predictor available for every target domain. |
+| `median_age`  | Example demographic covariate.                          |
+| `prop_urban`  | Example settlement or land-use covariate.               |
+| `employment_rate` | Example socioeconomic covariate.                   |
+
+
+## Downloadable scripts
+
+Reusable scripts can be adapted for another survey once the input files follow the schema above.
+
+| Script | Purpose |
+|---|---|
+| [direct_estimates.R](../scripts/direct_estimates.R) | Calculate direct estimates by domain, sampling variances, and confidence intervals. |
+| [covariate_sae.R](../scripts/covariate_sae.R) | Fit Bayesian area-level models using direct estimates, sampling variances, and area-level covariates. |
+| [spatial_sae.R](../scripts/spatial_sae.R) | Build adjacency or spatial weight matrices from domain boundaries and fit Bayesian spatial SAE models. |
+| [diagnostics.R](../scripts/diagnostics.R) | Create comparison tables and plots for checking estimates, uncertainty, and model outputs. |

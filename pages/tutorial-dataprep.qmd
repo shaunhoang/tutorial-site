@@ -1,0 +1,317 @@
+---
+title: "Data Preparation"
+execute:
+  eval: true
+---
+
+The National Survey for Wales (NSW) 2022-23 respondent file provides a concrete example of the input-preparation workflow from [From Estimands to SAE Inputs](prepare-inputs.qmd).
+
+```{r}
+#| include: false
+get_nsw_data <- function(
+  dataset_url,
+  dest_dir = NULL,
+  file_name = "nsw_2022-23_respondent_file_for_ukds.tab"
+) {
+  if (is.null(dest_dir)) {
+    project_root <- if (dir.exists("pages")) "." else ".."
+    dest_dir <- file.path(project_root, "data", "raw")
+  }
+
+  dir.create(dest_dir, recursive = TRUE, showWarnings = FALSE)
+  dest_file <- file.path(dest_dir, file_name)
+
+  if (!file.exists(dest_file)) {
+    download.file(dataset_url, dest_file, mode = "wb")
+  }
+
+  dest_file
+}
+```
+
+## Setup
+
+```{r}
+library(dplyr)
+library(readr)
+library(stringr)
+library(tidyr)
+
+# Allows chunks to work when run from the project root or from pages/.
+project_root <- if (dir.exists("pages")) "." else ".."
+
+data_root <- file.path(project_root, "data")
+raw_dir <- file.path(data_root, "raw")
+census_root <- file.path(raw_dir, "census")
+clean_dir <- file.path(data_root, "clean")
+dir.create(clean_dir, recursive = TRUE, showWarnings = FALSE)
+
+respondent_file <- file.path(
+  raw_dir,
+  "nsw_2022-23_respondent_file_for_ukds.tab"
+)
+```
+
+The NSW materials used here are:
+
+-   the main respondent file in `data/raw`;
+-   the data user guide and variable catalogue for survey design and weight choices, as well as variable choices
+-   Census 2021 Local Authority tables in `data/raw/census`
+
+The respondent file is tab-separated. The catalogue and questionnaire use negative values such as `-99`, `-98`, `-9`, `-8`, and sometimes `-7` for refused, don't know, routed, or other non-substantive responses. Keep those visible at import, then treat them explicitly during indicator construction.
+
+```{r}
+nsw_raw <- read_tsv(respondent_file, show_col_types = FALSE)
+
+missing_codes <- c(-99, -98, -9, -8, -7)
+
+is_missing_code <- function(x) {
+  is.na(x) | x %in% missing_codes
+}
+
+make_binary <- function(x, yes_values) {
+  case_when(
+    is_missing_code(x) ~ NA_integer_,
+    x %in% yes_values ~ 1L,
+    TRUE ~ 0L
+  )
+}
+```
+
+## Estimand
+
+Start with a small set of estimands that illustrate different preparation decisions:
+
+-   a routed travel-to-work measure,
+-   a public transport satisfaction measure,
+-   an active travel module measure.
+
+Each estimand keeps the same target population and target domain: adults aged 16+ across Local Authorities.
+
+| Estimand | Indicator to be created | Target population | Target domain |
+|---|---|---|---|
+| Share of adults who usually use two or more modes to travel to work | `commute_multimodal` | Adults aged 16+ | Local Authority |
+| Share of adults dissatisfied with bus services | `poor_bus_satisfaction` | Adults aged 16+ | Local Authority |
+| Share of adults who walk for transport at least weekly | `walk_weekly` | Adults aged 16+ | Local Authority |
+
+## Indicator Construction
+
+The indicator is the coded survey variable that measures the outcome in the estimand. The questionnaire and variable catalogue determine the source variables, routing, and response codes.
+
+| Indicator | Source variables | Construction rule |
+|---|---|---|
+| `commute_multimodal` | `TravWkModeAll1` to `TravWkModeAll8` |  `1` when two or more commute modes are selected |
+| `poor_bus_satisfaction` | `BusOverSat` | `1` when `BusOverSat` is `4` or `5`, meaning fairly or very dissatisfied |
+| `walk_weekly` | `AtFrqWlk10` |  `1` when `AtFrqWlk10` is `1`, `2`, or `3`, meaning at least weekly |
+
+Missing and routed values are set to `NA`, not `0`.
+
+```{r}
+mode_cols <- paste0("TravWkModeAll", 1:8)
+
+nsw_with_modes <- nsw_raw |>
+  mutate(
+    commute_mode_count = rowSums(
+      across(all_of(mode_cols), \(x) x == 1),
+      na.rm = TRUE
+    ),
+    commute_mode_all_missing = if_all(all_of(mode_cols), is_missing_code)
+  )
+
+indicators <- nsw_with_modes |>
+  transmute(
+    unit_id = CaseNo,
+    commute_multimodal = case_when(
+      commute_mode_all_missing ~ NA_integer_,
+      commute_mode_count >= 2 ~ 1L,
+      TRUE ~ 0L
+    ),
+    poor_bus_satisfaction = make_binary(BusOverSat, yes_values = c(4, 5)),
+    walk_weekly = make_binary(AtFrqWlk10, yes_values = c(1, 2, 3))
+  )
+
+indicators |> 
+  slice_head(n = 10)
+```
+
+Check the amount of usable survey information for each indicator.
+
+```{r}
+indicator_missingness <- indicators |>
+  summarise(across(-unit_id, list(
+    non_missing = \(x) sum(!is.na(x)),
+    missing = \(x) sum(is.na(x)),
+    positive = \(x) sum(x == 1, na.rm = TRUE)
+  ))) |>
+  pivot_longer(
+    everything(),
+    names_to = c("indicator", ".value"),
+    names_pattern = "(.+)_(non_missing|missing|positive)$"
+  )
+
+indicator_missingness
+```
+
+## Target Domain
+
+The target domain is the geography for which estimates will be produced. The NSW user guide describes results at Local Authority level, and the public respondent file contains `DvLA` but not a finer public geography.
+
+Use **Local Authority** as the target domain.
+
+```{r}
+survey_domains <- nsw_raw |>
+  transmute(
+    unit_id = CaseNo,
+    domain_id = str_c("W0", as.integer(DvLA) + 6000000L),
+    domain_id = recode(
+      domain_id,
+      "W06000007" = "W06000023", # Powys
+      "W06000017" = "W06000024"  # Merthyr Tydfil
+    )
+  )
+
+survey_domains |>
+  count(domain_id, name = "sample_n") |>
+  arrange(domain_id)
+```
+
+::: {.callout-note}
+The domain choice is driven by the data. Ward, MSOA, or LSOA estimates would require finer respondent geography, or a documented linkage from respondents to those geographies, plus matching domain sizes and covariates.
+:::
+
+## Domain Size
+
+The domain size must match the target population in the estimand. All three selected estimands use adults aged 16+ as the target population, so the required `domain_size` is the adult population by Local Authority.
+
+The Census 2021 `TS007` age table provides the adult population denominator.
+
+```{r}
+domain_sizes <- read_csv(
+  file.path(census_root, "census2021-ts007-ltla.csv"),
+  show_col_types = FALSE
+) |>
+  filter(str_starts(`geography code`, "W")) |>
+  transmute(
+    domain_id = `geography code`,
+    domain_name = geography,
+    domain_size =
+      `Age: Total; measures: Value` -
+      `Age: Aged 4 years and under; measures: Value` -
+      `Age: Aged 5 to 9 years; measures: Value` -
+      `Age: Aged 10 to 15 years; measures: Value`
+  )
+
+domain_sizes |>
+  arrange(domain_id)
+
+write_csv(domain_sizes, file.path(clean_dir, "pop_estimate.csv"))
+```
+
+## Survey Weight
+
+The weight must match the target population and the relevant survey module:
+
+-   `commute_multimodal` uses `WalesAdultWeight`;
+-   `poor_bus_satisfaction` uses `WalesAdultWeight`;
+-   `walk_weekly` uses the active travel module weight, `SampleTravelWeight`, scaled to the adult population total.
+
+```{r}
+wales_adults <- sum(domain_sizes$domain_size, na.rm = TRUE)
+
+weights <- nsw_raw |>
+  transmute(
+    unit_id = CaseNo,
+    WalesAdultWeight,
+    WalesTravelWeight =
+      SampleTravelWeight * wales_adults / sum(SampleTravelWeight, na.rm = TRUE)
+  )
+
+weight_summary <- weights |>
+  summarise(
+    WalesAdultWeight_total = sum(WalesAdultWeight, na.rm = TRUE),
+    WalesTravelWeight_total = sum(WalesTravelWeight, na.rm = TRUE),
+    adult_domain_size_total = wales_adults
+  )
+
+weight_summary
+```
+
+::: {.callout-warning}
+Scaling weights is an analysis choice. It is used here because direct estimation uses known domain sizes. If official grossing weights are supplied for the exact target population, use those instead. If the weight scale is uncertain, consider a ratio estimator.
+:::
+
+## SAE Input Files and Outputs
+
+The final preparation step writes files for direct estimation. Each estimand needs a survey indicator file with:
+
+-   `unit_id`;
+-   `domain_id`;
+-   `indicator`;
+-   `weight`.
+
+The raw NSW names, such as `CaseNo`, are useful while preparing the data. The output files use the common SAE field names from the toolkit.
+
+The file register records the choices used to build each output.
+
+| Indicator | Weight | Domain size |
+|---|---|---|
+| `commute_multimodal` | `WalesAdultWeight` | `domain_size` |
+| `poor_bus_satisfaction` | `WalesAdultWeight` | `domain_size` |
+| `walk_weekly` | `WalesTravelWeight` | `domain_size` |
+
+```{r}
+#| include: false
+file_register <- tibble::tribble(
+  ~indicator, ~weight, ~domain_size,
+  "commute_multimodal", "WalesAdultWeight", "domain_size",
+  "poor_bus_satisfaction", "WalesAdultWeight", "domain_size",
+  "walk_weekly", "WalesTravelWeight", "domain_size"
+)
+```
+
+```{r}
+analysis_data <- indicators |>
+  left_join(survey_domains, by = "unit_id") |>
+  left_join(weights, by = "unit_id")
+
+for (i in seq_len(nrow(file_register))) {
+  spec <- file_register[i, ]
+
+  indicator_file <- analysis_data |>
+    transmute(
+      unit_id,
+      domain_id,
+      indicator = .data[[spec$indicator]],
+      weight = .data[[spec$weight]]
+    )
+
+  write_csv(
+    indicator_file,
+    file.path(clean_dir, str_c("ind_weight_", spec$indicator, ".csv"))
+  )
+}
+```
+
+Check one indicator file and the domain-size file.
+
+```{r}
+read_csv(
+  file.path(clean_dir, "ind_weight_walk_weekly.csv"),
+  show_col_types = FALSE
+) |>
+  glimpse()
+
+read_csv(
+  file.path(clean_dir, "pop_estimate.csv"),
+  show_col_types = FALSE
+) |>
+  glimpse()
+```
+
+The preparation produces:
+
+-   one domain-size file, `data/clean/pop_estimate.csv`;
+-   three survey indicator files in `data/clean/`;
+-   a documented link from each output back to the estimand, indicator construction, target domain, domain size, and weight decision.
+
+That documentation is part of the SAE input. Without it, the estimate is difficult to interpret and easy to misuse.

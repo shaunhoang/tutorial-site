@@ -1,0 +1,28 @@
+---
+title: "Diagnostics, Validation, and Uncertainty"
+---
+
+After direct estimation and SAE modelling, check whether the estimates are stable, interpretable, and useful for reporting.
+
+## Model Diagnostics
+
+-   Compare direct and model-based estimates.
+-   Inspect residuals and remaining spatial pattern.
+-   Review sensitivity to covariates and modelling choices.
+-   Identify domains where the model is driven strongly by covariates rather than local survey information.
+-   Check whether estimates should aggregate to known national or regional totals.
+
+## Uncertainty
+
+-   Decide which uncertainty measure to report: standard error, confidence interval, credible interval, MSE, or relative standard error.
+-   Compare uncertainty before and after modelling.
+-   Flag domains with high uncertainty or very small effective sample sizes.
+-   Map uncertainty as well as point estimates.
+-   Avoid presenting smoothed estimates as if they were observed survey results.
+
+## Reporting Checks
+
+-   Use wording that matches the estimand, target population, and domain size.
+-   Report caveats for routed questions, uncertain denominators, or missing domain sizes.
+-   Keep direct estimates available as a baseline comparison.
+-   Document any model choices that materially affect the estimates.

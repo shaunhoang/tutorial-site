@@ -1,0 +1,93 @@
+---
+title: "Direct Estimation"
+---
+
+Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say before borrowing strength from covariates or spatial structure.
+
+In R, this step can be implemented with the `sae` package, using `sae::direct()` to compute direct estimates and their sampling variances under common survey-design settings.
+
+## Inputs
+
+The direct-estimation step uses the standard files prepared earlier:
+
+| File | Required fields |
+|---|---|
+| Survey indicator file | `unit_id`, `domain_id`, `indicator`, `weight` |
+| Domain-size file | `domain_id`, `domain_size` |
+
+The `indicator` column can be binary, such as `1` for adults who walk weekly and `0` otherwise, or numeric for a continuous outcome.
+
+## Choosing the Direct Estimator
+
+The estimator should match the information available in the survey file and the estimand definition.
+
+| Situation | Estimator | Strengths | Main caution |
+|---|---|---|---|
+| Domain size is known and grossing weight available | Horvitz-Thompson estimator | Direct link between weighted survey totals and population denominator | Weight scale must match the domain-size definition |
+| Domain size is unknown and/or only analysis weight available | Hájek estimator | Robust for means and proportions when weight scale is uncertain | Does not estimate totals |
+
+### Horvitz-Thompson Estimator With Known Domain Size
+
+For means and proportions in domain ($d$), the direct estimate $\hat{\theta}_d$ is calculated as:
+
+$$
+\hat{\theta}_d =
+\frac{\sum_{i \in s_d} w_{di} y_{di}}{N_d}
+$$
+
+where $N_d$ is `domain_size`, $w_{di}$ is `weight`, and $y_{di}$ is `indicator`. The variance approximation for this direct estimates is:
+$$
+\widehat{V}(\hat{\theta}_d)
+\approx
+\frac{\sum_{i \in s_d} w_{di}^{2}(y_{di} - \hat{\theta}_d)^2}{N_d^2}.
+$$
+
+### Hájek Estimator With Unknown Domain Size
+
+For means and proportions in domain ($d$), the direct estimate $\hat{\theta}_d$ is calculated as:
+
+$$
+\hat{\theta}_d =
+\frac{\sum_{i \in s_d} w_{di} y_{di}}
+{\sum_{i \in s_d} w_{di}}.
+$$
+
+where $w_{di}$ is `weight`, and $y_{di}$ is `indicator`. The variance approximation for this direct estimates is:
+
+$$
+\widehat{V}(\hat{\theta}_d)
+\approx
+\frac{\sum_{i \in s_d} w_{di}^{2}(y_{di} - \hat{\theta}_d)^2}
+{\left(\sum_{i \in s_d} w_{di}\right)^2}.
+$$
+
+:::{.callout-note}
+So far in our variance estimation, we assume the survey has no stratification information and is conducted *without replacement* (i.e., no duplicate respondents). The good news is that the R package `sae` handles the choice of estimator HT vs. Hájek and survey design features (e.g., stratification and with/without replacement) automatically when performing direct estimation with `sae::direct()`.
+:::
+
+## Next Step
+
+The output needed for **Area-level Modelling** is:
+
+- `domain_id`
+- `Direct`, the survey-only estimate
+- `Variance`, the estimated sampling variance of `Direct`
+
+:::{.callout-note}
+`sae::direct()` returns core direct-estimation outputs by domain, including sample size (`N`), direct estimate (`Direct`), and standard deviation (`SD`), which can be squared to obtain `Variance`.
+:::
+
+However, before proceeding, check whether the direct estimates are ready for area-level modelling:
+
+- domains with no sampled units
+- domains with very few valid units, or dominated by very few large weights
+- zero or extremely small variances
+- estimates outside the valid range for the indicator
+
+The table below links common direct-estimate patterns to practical next steps.
+
+| Scenario | Next step |
+|---|---|
+| Most domains have usable sample sizes and uncertainty is acceptable | Direct estimates may be enough for reporting. |
+| Too many domains have no sample or unusable variances | Revisit the domain choice or redefine estimand. |
+| Estimates are noisy but variances are usable | Fit a covariate-based [area-level SAE model](area-level-sae.qmd). |

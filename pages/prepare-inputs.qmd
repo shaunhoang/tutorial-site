@@ -1,0 +1,79 @@
+---
+title: "From Estimands to SAE Inputs"
+---
+
+A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to [Tutorial: Data Preparation](tutorial-dataprep.qmd).
+
+## Defining the Estimand
+
+Before fitting any SAE model, define exactly what the survey estimate should represent. This so-called **estimand** determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:
+
+> Estimate the **measure** of **what outcome**, among **which population**, across **which geographic domains**.
+
+E.g.,
+
+1. Share of adults who use the bus weekly across MSOA
+2. Mean commute distance among workers across Wards
+
+## Constructing the Indicator
+
+After defining the estimand, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:
+
+| Indicator type | What to define | Example |
+|---|---|---|
+| Binary | What is `1`, `0`, missing, and out of scope. Also suitable for categorical variables | **Estimand:** Share of adults who use the bus weekly<br>**Indicator:** Uses bus weekly: yes/no |
+| Continuous | The numeric value and unit | **Estimand:** Mean commute distance among workers <br>**Indicator:** Commute distance in miles |
+
+Use the survey questionnaire, response codes, and routing rules to guide indicator construction. Some indicators are direct recodes of one survey question; others need to combine several variables. The same raw survey variable can support different estimands.
+
+## Choosing Domain Sizes and Survey Weights
+### Domain size
+The **domain size** $N_d$ is the size of the target population in each domain $d$. It is the denominator for domain means and proportions, and is essential for the SAE pipeline. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.
+
+-   The **target population** is the group the estimate is about, such as *all adults, households, workers, commuters, or public transport users*, etc.
+-   The **target domain** is the geographic area for which estimates will be produced, such as *Local Authority, Ward, LSOA, or MSOA*, etc. 
+
+The choice of target domain, besides being shaped by the estimand definition, should also be informed by data availability. For example, 
+
+- if survey respondent records are only identified at the Local Authority level and no finer, then Local Authority is the most granular target domain for SAE
+- if the domain sizes are only available at the Ward level and no finer (e.g., total worker population by Ward), then it is recommended to use Ward as the most granular target domain for SAE
+
+\[ADD IMAGE\]
+
+### Survey weight
+
+Survey weights connect the sample back to the population to ensure the survey sample can **best represent real-world proportions**. The Survey User Guide is the go-to resource to understand which weight variables are available, how they are derived, and which survey modules/questions they apply to. In general, weight variables are derived to adjust for one or more aspects, such as:
+
+1.  **Selection adjustment**: accounts for unequal probabilities of selection.
+2.  **Non-response adjustment**: compensates for differences between respondents and non-respondents.
+3.  **Calibration adjustment**: aligns the weighted sample with known population totals, such as age, sex, region, Local Authority, tenure, or household structure.
+4.  **Subsample adjustment**: accounts for cases where only part of the sample was asked a module or completed a diary.
+
+For a SAE workflow, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. Moreover, it is also important to distinguish the **scale** of the weight variable, as it implies different estimation approaches.
+
+- Some weights are **grossing weights** $w^{G}$. They make proportions representative of the target population and sum to a population total or domain size $N_d$.
+- Other weights are **analysis weights** $w^{A}$. They make proportions representative of the target population, but often sum to the achieved sample size $n_d$.
+
+If analysis weights are provided and the domain sizes $N_d$ are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula $w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}$ if required.
+
+\[ADD IMAGE\]
+
+::: {.callout-note}
+For the SAE workflow, the preferred setup is one where **grossing weights** are provided for each survey respondent record and **domain sizes** are available, because it gives a direct link between the survey respondent records and the population count in each domain.
+
+If the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, [alternative direct estimation methods](pages\direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
+:::
+
+## Preparing SAE inputs
+
+Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:
+
+| # | Estimand | Indicator | Indicator construction | Target domain | Domain size | Weight variable | Other remarks |
+|---|---|---|---|---|---|---|---|
+| 1 | Share of adults who use the bus weekly across MSOAs | `is_freq_bus_user` | Binary: `1` if `BusUseFreq = 1`; `0` if adult does not use the bus weekly; `null` for invalid or refused responses | MSOA | Adult population aged 16+ by MSOA | `AdultWeight`; applies to all adult respondents; grossing weight | Stratified by `age_group` |
+| 2 | Mean commute distance among workers across Wards | `commute_distance` | Continuous: numeric miles from `TravelWorkDistance`; only workers with valid commute distance are in scope | Ward | Worker population by Ward | `CommuteModuleWeight`; applies to commute module respondents (a subsample) | --- |
+
+Finally, each estimand should have enough information to create:
+
+1.  a survey indicator file with one row per sampled unit and the fields `unit_id`, `domain_id`, `indicator`, and `weight`;
+2.  a domain-size file with one row per target domain and the fields `domain_id`, `domain_size` (optionally, `domain_name`);
