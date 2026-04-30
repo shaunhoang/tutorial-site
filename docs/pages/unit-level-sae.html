@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Unit-Level SAE Models</title>
+<title>Small Area Estimation for Urban Analytics - Unit-Level Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../pages/diagnostics.html" rel="next">
-<link href="../pages/spatial-bayesian-sae.html" rel="prev">
+<link href="../pages/bayesian-area-sae.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -183,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/unit-level-sae.html">Unit-Level SAE Models</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/unit-level-sae.html">Unit-Level Estimation</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -263,20 +263,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level SAE Models</span></a>
+  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Frequentist Area-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area and Spatial Smoothing</span></a>
+  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Unit-Level SAE Models</span></a>
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -356,16 +356,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#area-level-versus-unit-level-sae" id="toc-area-level-versus-unit-level-sae" class="nav-link active" data-scroll-target="#area-level-versus-unit-level-sae"><span class="header-section-number">1</span> Area-Level versus Unit-Level SAE</a></li>
-  <li><a href="#basic-unit-level-idea" id="toc-basic-unit-level-idea" class="nav-link" data-scroll-target="#basic-unit-level-idea"><span class="header-section-number">2</span> Basic Unit-Level Idea</a></li>
-  <li><a href="#estimating-a-domain-mean" id="toc-estimating-a-domain-mean" class="nav-link" data-scroll-target="#estimating-a-domain-mean"><span class="header-section-number">3</span> Estimating a Domain Mean</a></li>
-  <li><a href="#required-data" id="toc-required-data" class="nav-link" data-scroll-target="#required-data"><span class="header-section-number">4</span> Required Data</a></li>
-  <li><a href="#why-it-can-be-powerful" id="toc-why-it-can-be-powerful" class="nav-link" data-scroll-target="#why-it-can-be-powerful"><span class="header-section-number">5</span> Why It Can Be Powerful</a></li>
-  <li><a href="#why-it-is-not-the-main-practical-route-here" id="toc-why-it-is-not-the-main-practical-route-here" class="nav-link" data-scroll-target="#why-it-is-not-the-main-practical-route-here"><span class="header-section-number">6</span> Why It Is Not the Main Practical Route Here</a></li>
-  <li><a href="#relationship-to-synthetic-populations" id="toc-relationship-to-synthetic-populations" class="nav-link" data-scroll-target="#relationship-to-synthetic-populations"><span class="header-section-number">7</span> Relationship to Synthetic Populations</a></li>
-  <li><a href="#practical-pattern" id="toc-practical-pattern" class="nav-link" data-scroll-target="#practical-pattern"><span class="header-section-number">8</span> Practical Pattern</a></li>
-  <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats"><span class="header-section-number">9</span> Caveats</a></li>
-  <li><a href="#notes-on-sources" id="toc-notes-on-sources" class="nav-link" data-scroll-target="#notes-on-sources"><span class="header-section-number">10</span> Notes on Sources</a></li>
+  <li><a href="#understanding-unit-level-sae" id="toc-understanding-unit-level-sae" class="nav-link active" data-scroll-target="#understanding-unit-level-sae"><span class="header-section-number">1</span> Understanding Unit-Level SAE</a></li>
+  <li><a href="#pros-and-cons" id="toc-pros-and-cons" class="nav-link" data-scroll-target="#pros-and-cons"><span class="header-section-number">2</span> Pros and Cons</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a>
+  <ul class="collapse">
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">3.1</span> Worked example</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -374,7 +370,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unit-Level SAE Models</h1>
+<h1 class="title">Unit-Level Estimation</h1>
 </div>
 
 
@@ -389,194 +385,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Unit-level SAE models use survey microdata directly. They can be more powerful than area-level models, but they require much stronger data conditions.</p>
-<p>For this TRACK-UK tutorial, unit-level SAE is mainly included as theory and context. The practical workflow focuses on area-level models because the available survey and covariate structure is better suited to Fay-Herriot-style estimation.</p>
-<section id="area-level-versus-unit-level-sae" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="area-level-versus-unit-level-sae"><span class="header-section-number">1</span> Area-Level versus Unit-Level SAE</h2>
-<table class="table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Feature</th>
-<th>Area-level SAE</th>
-<th>Unit-level SAE</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Main data input</td>
-<td>Direct estimates by domain</td>
-<td>Individual or household survey records</td>
-</tr>
-<tr class="even">
-<td>Auxiliary data</td>
-<td>Domain-level covariates</td>
-<td>Unit-level covariates for the population or poststrata</td>
-</tr>
-<tr class="odd">
-<td>Typical model</td>
-<td>Fay-Herriot</td>
-<td>Nested-error model, GLMM, MRP, empirical best prediction</td>
-</tr>
-<tr class="even">
-<td>Output</td>
-<td>One estimate per area</td>
-<td>Estimates can be aggregated to several geographies</td>
-</tr>
-<tr class="odd">
-<td>Practical burden</td>
-<td>Lower</td>
-<td>Higher</td>
-</tr>
-<tr class="even">
-<td>Main risk</td>
-<td>Too little information per domain</td>
-<td>Survey-population mismatch and stronger model assumptions</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="basic-unit-level-idea" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="basic-unit-level-idea"><span class="header-section-number">2</span> Basic Unit-Level Idea</h2>
-<p>Suppose (y_{di}) is the outcome for unit (i) in domain (d), and (x_{di}) is a vector of unit-level covariates.</p>
-<p>A common nested-error model is:</p>
+<p>Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models.</p>
+<section id="understanding-unit-level-sae" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="understanding-unit-level-sae"><span class="header-section-number">1</span> Understanding Unit-Level SAE</h2>
+<p>In area-level SAE, the model starts from one direct estimate per domain. In unit-level SAE, the model starts from individual or household survey records:</p>
 <p><span class="math display">\[
 y_{di} =
 x_{di}^{\top}\beta + u_d + e_{di},
 \]</span></p>
-<p>where:</p>
-<p><span class="math display">\[
-u_d \sim N(0, \sigma_u^2),
-\quad
-e_{di} \sim N(0, \sigma_e^2).
-\]</span></p>
-<p>The domain random effect (u_d) captures unexplained differences between areas. The unit error (e_{di}) captures unexplained differences between people, households, or other sampled units within areas.</p>
-<p>For binary outcomes, the model is usually changed to a logistic or probit mixed model:</p>
-<p><span class="math display">\[
-\operatorname{logit}(p_{di}) =
-x_{di}^{\top}\beta + u_d,
-\]</span></p>
-<p>where:</p>
-<p><span class="math display">\[
-y_{di} \sim \operatorname{Bernoulli}(p_{di}).
-\]</span></p>
-</section>
-<section id="estimating-a-domain-mean" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="estimating-a-domain-mean"><span class="header-section-number">3</span> Estimating a Domain Mean</h2>
-<p>The finite-population target for domain (d) is:</p>
+<p>where <span class="math inline">\(y_{di}\)</span> is the outcome for unit <span class="math inline">\(i\)</span> in domain <span class="math inline">\(d\)</span>, <span class="math inline">\(x_{di}\)</span> is a vector of unit-level covariates, <span class="math inline">\(u_d\)</span> is the area effect, and <span class="math inline">\(e_{di}\)</span> is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.</p>
+<p>The domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:</p>
 <p><span class="math display">\[
 \theta_d =
 \frac{1}{N_d}
 \sum_{i \in U_d} y_{di}.
 \]</span></p>
-<p>The sampled units have observed (y_{di}). For the non-sampled population units, the model predicts or simulates (y_{di}) using their covariates.</p>
-<p>A simple empirical best prediction idea is:</p>
-<p><span class="math display">\[
-\hat{\theta}^{EBP}_d =
-\frac{1}{N_d}
-\left[
-\sum_{i \in s_d} y_{di}
-+
-\sum_{i \in r_d} \hat{y}_{di}
-\right],
-\]</span></p>
-<p>where (r_d) is the non-sampled part of the population in domain (d). In practice, many methods simulate values for the non-sampled population repeatedly, then summarise the simulated domain estimates.</p>
+<p>This makes unit-level SAE a bottom-up approach: model people or households first, then aggregate to the geographic domain of choice.</p>
 </section>
-<section id="required-data" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="required-data"><span class="header-section-number">4</span> Required Data</h2>
-<p>Unit-level SAE usually needs:</p>
-<ul>
-<li>survey microdata with the outcome and unit-level covariates,</li>
-<li>population or census microdata with the same covariates for all units, or poststratification cell counts,</li>
-<li>comparable variable definitions across survey and population data,</li>
-<li>domain identifiers that link the survey and population data,</li>
-<li>weights or design information, especially if the survey design is informative,</li>
-<li>enough sampled domains to estimate area effects reliably.</li>
-</ul>
-<p>The most difficult condition is comparability. If a covariate is measured differently in the survey and census, or if the survey and census refer to different populations or periods, the resulting estimates can be biased.</p>
+<section id="pros-and-cons" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="pros-and-cons"><span class="header-section-number">2</span> Pros and Cons</h2>
+<p>Unit-level SAE is useful when the survey and population data share comparable individual, household, or poststratification covariates.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Can aggregate estimates to multiple geographies</td>
+<td>Needs detailed population data, not just area averages</td>
+</tr>
+<tr class="even">
+<td>Can use survey microdata directly without aggregating to domains</td>
+<td>Survey and population variables must be coded in the same way</td>
+</tr>
+</tbody>
+</table>
+<p>The main barriers to unit-level estimation are microdata availability and privacy. In general, use area-level SAE when only domain-level covariates are available (more common). Unit-level SAE becomes more realistic when suitable population microdata, or a synthetic population, can provide the prediction population.</p>
 </section>
-<section id="why-it-can-be-powerful" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="why-it-can-be-powerful"><span class="header-section-number">5</span> Why It Can Be Powerful</h2>
-<p>Unit-level models can:</p>
-<ul>
-<li>use more information than area-level models,</li>
-<li>estimate indicators for unsampled domains,</li>
-<li>produce estimates at multiple aggregation levels,</li>
-<li>handle non-linear indicators through simulation,</li>
-<li>use individual or household covariates rather than area averages.</li>
-</ul>
-<p>This is why unit-level methods are common in poverty mapping and microsimulation contexts.</p>
-</section>
-<section id="why-it-is-not-the-main-practical-route-here" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="why-it-is-not-the-main-practical-route-here"><span class="header-section-number">6</span> Why It Is Not the Main Practical Route Here</h2>
-<p>For the current TRACK-UK SAE tutorial, area-level models are more productive because:</p>
-<ul>
-<li>the worked survey outputs are naturally prepared as indicator-by-domain files,</li>
-<li>Local Authority identifiers are available for the National Survey for Wales example,</li>
-<li>population microdata with all required matching covariates may not be available,</li>
-<li>routed transport indicators can make unit-level target populations difficult to define,</li>
-<li>the aim is to teach a reusable workflow for researchers starting from direct estimates.</li>
-</ul>
-<p>Unit-level SAE is still useful to understand. It becomes more relevant if the project later connects SAE with synthetic populations or poststratification cell counts.</p>
-</section>
-<section id="relationship-to-synthetic-populations" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="relationship-to-synthetic-populations"><span class="header-section-number">7</span> Relationship to Synthetic Populations</h2>
-<p>Synthetic populations and unit-level SAE can work together. A synthetic population can provide a population-like set of units with covariates, and a fitted survey model can predict or simulate outcomes for those units.</p>
-<p>However, this introduces additional assumptions:</p>
-<ul>
-<li>the synthetic population must represent the target domains well,</li>
-<li>survey and synthetic-population covariates must be comparable,</li>
-<li>uncertainty from the synthetic population should not be ignored,</li>
-<li>model predictions should be validated against direct estimates or known aggregates where possible.</li>
-</ul>
-<p>The connection is noted here, but a full synthetic population SAE workflow is outside the present scope.</p>
-</section>
-<section id="practical-pattern" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="practical-pattern"><span class="header-section-number">8</span> Practical Pattern</h2>
-<p>A generic unit-level workflow is:</p>
-<ol type="1">
-<li>Harmonise survey and population covariates.</li>
-<li>Fit a mixed model to the survey microdata.</li>
-<li>Predict or simulate outcomes for the non-sampled population.</li>
-<li>Aggregate predicted and observed outcomes to domains.</li>
-<li>Estimate uncertainty using bootstrap, posterior simulation, or model-specific MSE methods.</li>
-<li>Compare estimates against direct estimates and higher-level benchmarks.</li>
-</ol>
+<section id="code-implementation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
+<p>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothUnit.html"><code>SUMMER::smoothUnit()</code></a> to fit a basic unit-level SAE model from a <code>survey::svydesign()</code> object and population unit-level covariates. It supports Gaussian or binomial outcomes and can optionally use an adjacency matrix for spatial structure.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Placeholder only: final code depends on the selected package and data structure.</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># library(emdi)</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ebp_fit &lt;- ebp(</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   fixed = outcome ~ age_group + household_type + car_access,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   pop_data = population_microdata,</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   pop_domains = "domain_id",</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   smp_data = survey_microdata,</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   smp_domains = "domain_id",</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   weights = "survey_weight",</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   MSE = TRUE</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SUMMER)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># survey_microdata should contain:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - indicator</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># - weight and survey design variables</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># - unit-level covariates used in the model</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># population_microdata should contain:</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># - the same unit-level covariates for the target population</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span>psu,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>stratum,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_microdata,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">nest =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>unit_fit <span class="ot">&lt;-</span> SUMMER<span class="sc">::</span><span class="fu">smoothUnit</span>(</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> outcome <span class="sc">~</span> age_group <span class="sc">+</span> employment_status <span class="sc">+</span> car_access,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain =</span> <span class="sc">~</span>domain_id,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">X.pop =</span> population_microdata,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">adj.mat =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="caveats" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="caveats"><span class="header-section-number">9</span> Caveats</h2>
-<ul>
-<li>Unit-level SAE is model-heavy and should be checked carefully.</li>
-<li>If the survey design is informative, ignoring weights can bias estimates.</li>
-<li>If population covariates are weak predictors, estimates can be poor even with many population records.</li>
-<li>MSE estimation can be computationally expensive.</li>
-<li>Outliers, non-normality, and model misspecification can matter.</li>
-<li>The method can give a false sense of detail if the population microdata are synthetic or weakly validated.</li>
-</ul>
-</section>
-<section id="notes-on-sources" class="level2" data-number="10">
-<h2 data-number="10" class="anchored" data-anchor-id="notes-on-sources"><span class="header-section-number">10</span> Notes on Sources</h2>
-<p>The standard unit-level SAE idea is to model the outcome using survey microdata, then predict or simulate outcomes for population units before aggregating to domains. See the <a href="https://ssegoviajuarez.github.io/sae/04_unit-level.html">unit-level SAE chapter in the poverty mapping guide</a> for a fuller discussion of empirical best prediction, census-based workflows, requirements, and caveats.</p>
+<section id="worked-example" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">3.1</span> Worked example</h3>
+<p>N/A</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -829,8 +722,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/spatial-bayesian-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Bayesian Area and Spatial Smoothing</span>
+      <a href="../pages/bayesian-area-sae.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Bayesian Area-Level Estimation (+Spatial)</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

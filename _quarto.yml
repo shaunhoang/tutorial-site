@@ -54,8 +54,8 @@ website:
           - section: "Part 2: Estimation"
             contents:
               - pages/direct-estimation.qmd
-              - pages/area-level-sae.qmd
-              - pages/spatial-bayesian-sae.qmd
+              - pages/freq-area-sae.qmd
+              - pages/bayesian-area-sae.qmd
               - pages/unit-level-sae.qmd
           - section: "Part 3: Reporting"
             contents:

@@ -1,0 +1,113 @@
+---
+title: "Frequentist Area-Level Estimation"
+---
+
+Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct estimates with domain-level covariates to improve precision.
+
+## Understanding the Fay-Herriot model
+
+Fay-Herriot combines two pieces of information for each domain:
+
+1. the direct estimate from the survey, and
+2. a covariate-based model prediction.
+
+The direct estimate $\hat{\theta}_d^{DIR}$ can be written as the covariate-explained part $x_d^\top\beta$, plus an area-specific unexplained effect $u_d$, plus survey sampling noise $e_d$.
+
+$$
+\hat{\theta}^{DIR}_d =
+x_d^\top\beta + u_d + e_d.
+$$
+
+The FH estimate, is a weighted average of the direct estimate and the covariate-based prediction:
+
+$$
+\hat{\theta}^{FH}_d =
+\hat{\gamma}_d \hat{\theta}^{DIR}_d
++
+(1-\hat{\gamma}_d) x_d^\top\hat{\beta}.
+$$
+
+The shrinkage weight $\hat{\gamma}_d = \frac{\hat{\sigma}_u^2}{\hat{\sigma}_u^2 + \psi_d}$, where $\psi_d$ is the sampling variance of the direct estimate, controls how much the FH estimate "trusts" the direct estimate:
+
+- if $\psi_d$ is small, the direct estimate is precise, so $\hat{\gamma}_d$ is closer to 1;
+- if $\psi_d$ is large, the direct estimate is noisy, so $\hat{\gamma}_d$ is closer to 0.
+
+In practice, FH leaves precise direct estimates mostly unchanged, while pulling noisy direct estimates toward the covariate-based prediction.
+
+:::{.callout-note}
+In this **frequentist** FH workflow, the main outputs are the model-based estimate (**EBLUP**) and its uncertainty (**RMSE**, the square root of model-based MSE). For domains without a usable direct estimate, the EBLUP comes entirely from the model component.
+:::
+
+## Covariate Choices
+
+Domain-level covariates can often be found via census datas and other population-level aggregate statistics.Choose covariates with emphasis on coverage and comparability across domains. 
+
+- **Coverage:** each covariate should be available for all target domains.
+- **Alignment:** match geography, definition, and reference period to the survey indicator.
+- **Relevance:** keep variables with a clear substantive link to the outcome and avoid including many weak predictors.
+- **Predictive:** choose covariates that improve domain-level prediction and are easy to explain; avoid downstream variables, and remove or combine highly correlated predictors.
+
+Common examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessbility metrics, car ownership, etc.
+
+[ADD IMAGE]
+
+## Evaluation
+
+Evaluate the FH outputs (EBLUPs) and uncertainty (RMSEs) to decide how to proceed:
+
+| Scenario | Next step |
+|---|---|
+| Estimates are stable, and uncertainty acceptable | Use EBLUPs for reporting. |
+| Results are sensitive to covariate choice, coefficients are unstable, or diagnostics show poor fit | Revisit covariates and refit FH. |
+|  A probability-style uncertainty would help interpretation  | Move to [Bayesian Area-Level SAE (+Spatial)](bayesian-area-sae.qmd) to represent uncertainty through posterior estimates and Credible Intervals. |
+| Residuals show spatial autocorrelation after the covariate FH model | Consider adding spatial structure to borrow strength from neighbouring areas. See [Bayesian Area-Level SAE (+Spatial)](bayesian-area-sae.qmd).|
+
+## Implementation in R
+### Functions
+Use [`sae::eblupFH()`](https://search.r-project.org/CRAN/refmans/sae/html/eblupFH.html) to fit a frequentist Fay-Herriot model and [`sae::mseFH()`](https://search.r-project.org/CRAN/refmans/sae/html/mseFH.html) to estimate uncertainty. 
+
+```{r}
+library(sae)
+
+# direct_results should contain: 
+# - domain_id, 
+# - Direct, 
+# - Variance 
+#
+# domain_covariates should contain: 
+# - domain_id, 
+# - area-level covariates
+
+fh_data <- merge(
+  direct_results,
+  domain_covariates,
+  by = "domain_id"
+)
+
+# Fit Fay-Herriot EBLUPs + RMSEs
+fh_fit <- sae::eblupFH(
+  formula = Direct ~ x_income + x_car_ownership + x_urban,
+  vardir = fh_data$Variance,
+  data = fh_data
+)
+
+fh_mse <- sae::mseFH(
+  formula = Direct ~ x_income + x_car_ownership + x_urban,
+  vardir = fh_data$Variance,
+  data = fh_data
+)
+
+# Combine EBLUP + RMSE outputs for reporting
+fh_results <- data.frame(
+  domain_id = fh_data$domain_id,
+  direct = fh_data$Direct,
+  eblup = fh_fit$eblup,
+  mse = fh_mse$mse,
+  rmse = sqrt(fh_mse$mse)
+)
+```
+
+### Worked example
+
+Lorem Ipsum - share real example
+National Survey of Wales

@@ -226,20 +226,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level SAE Models</span></a>
+  <a href="./pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Frequentist Area-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area and Spatial Smoothing</span></a>
+  <a href="./pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level SAE Models</span></a>
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -321,8 +321,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#why-small-area-estimation" id="toc-why-small-area-estimation" class="nav-link active" data-scroll-target="#why-small-area-estimation"><span class="header-section-number">1</span> Why Small Area Estimation?</a></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">2</span> Methods</a></li>
-  <li><a href="#tutorial" id="toc-tutorial" class="nav-link" data-scroll-target="#tutorial"><span class="header-section-number">3</span> Tutorial</a></li>
-  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"><span class="header-section-number">4</span> Resources</a></li>
+  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources"><span class="header-section-number">3</span> Resources</a></li>
   </ul>
 </nav>
     </div>
@@ -372,7 +371,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td>1</td>
-<td><strong><a href="./pages/prepare-inputs.html">Preparing the inputs</a></strong></td>
+<td><strong><a href="./pages/prepare-inputs.html">Preparing the Inputs</a></strong></td>
 <td>Define what is being estimated, for whom, and at what geographical scale.</td>
 </tr>
 <tr class="even">
@@ -382,32 +381,24 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>3</td>
-<td><strong><a href="pages/area-level-sea.qmd">Area-level estimation</a></strong></td>
-<td>Improve unstable direct estimates by borrowing strength from auxiliary covariates.</td>
+<td><strong><a href="./pages/freq-area-sae.html">Frequentist Area-Level SAE</a></strong></td>
+<td>Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates.</td>
 </tr>
 <tr class="even">
 <td>4</td>
-<td><strong><a href="./pages/spatial-bayesian-sae.html">Bayesian and Spatial SAE</a></strong></td>
-<td>Apply a Bayesian approach to better handle sparse areas using similarity and proximity between neighbouring areas.</td>
+<td><strong><a href="./pages/bayesian-area-sae.html">Bayesian Area-Level SAE (+Spatial)</a></strong></td>
+<td>Reframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas.</td>
 </tr>
 <tr class="odd">
 <td>5</td>
-<td><strong><a href="./pages/diagnostics.html">Diagnose and report</a></strong></td>
+<td><strong><a href="./pages/diagnostics.html">Diagnose and Report</a></strong></td>
 <td>Check model performance, report uncertainty, and present estimates.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="tutorial" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="tutorial"><span class="header-section-number">3</span> Tutorial</h2>
-<p>The applied tutorial has two chapters:</p>
-<ul>
-<li><strong><a href="./pages/tutorial-dataprep.html">Data Preparation</a></strong> prepares inputs for SAE: estimands, surveys indicators, domains, domain sizes, and weights, etc.</li>
-<li><strong><a href="./pages/tutorial-sae.html">Estimation &amp; Reporting</a></strong> applies SAE methods step-by-step: direct estimation, area-level covariates modelling, and adding spatial sturcture. Reporting and diagnostics.</li>
-</ul>
-</section>
-<section id="resources" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="resources"><span class="header-section-number">4</span> Resources</h2>
+<section id="resources" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="resources"><span class="header-section-number">3</span> Resources</h2>
 <p>Supporting materials for adapting the workflow:</p>
 <ul>
 <li><strong><a href="./pages/sae-toolkit.html">SAE Toolkit</a></strong> collects reusable input formats and helper scripts.</li>

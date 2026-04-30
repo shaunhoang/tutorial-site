@@ -227,20 +227,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level SAE Models</span></a>
+  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Frequentist Area-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area and Spatial Smoothing</span></a>
+  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level SAE Models</span></a>
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -320,9 +320,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#model-diagnostics" id="toc-model-diagnostics" class="nav-link active" data-scroll-target="#model-diagnostics"><span class="header-section-number">1</span> Model Diagnostics</a></li>
+  <li><a href="#model-comparison" id="toc-model-comparison" class="nav-link active" data-scroll-target="#model-comparison"><span class="header-section-number">1</span> Model Comparison</a></li>
   <li><a href="#uncertainty" id="toc-uncertainty" class="nav-link" data-scroll-target="#uncertainty"><span class="header-section-number">2</span> Uncertainty</a></li>
-  <li><a href="#reporting-checks" id="toc-reporting-checks" class="nav-link" data-scroll-target="#reporting-checks"><span class="header-section-number">3</span> Reporting Checks</a></li>
+  <li><a href="#benchmarking-and-reporting" id="toc-benchmarking-and-reporting" class="nav-link" data-scroll-target="#benchmarking-and-reporting"><span class="header-section-number">3</span> Benchmarking and Reporting</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4</span> Worked example</a></li>
   </ul>
 </nav>
     </div>
@@ -346,35 +347,84 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>After direct estimation and SAE modelling, check whether the estimates are stable, interpretable, and useful for reporting.</p>
-<section id="model-diagnostics" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="model-diagnostics"><span class="header-section-number">1</span> Model Diagnostics</h2>
+<p>Diagnostics decide whether SAE outputs are stable, interpretable, and suitable for reporting. They should compare the survey-only signal, the modelled estimates, and the uncertainty attached to each result.</p>
+<section id="model-comparison" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="model-comparison"><span class="header-section-number">1</span> Model Comparison</h2>
+<p>Compare direct estimates, non-spatial Fay-Herriot estimates, Bayesian estimates, and spatial estimates where available. The aim is not to choose the smoothest map, but to understand what the model has changed.</p>
+<p>Useful checks include:</p>
 <ul>
-<li>Compare direct and model-based estimates.</li>
-<li>Inspect residuals and remaining spatial pattern.</li>
-<li>Review sensitivity to covariates and modelling choices.</li>
-<li>Identify domains where the model is driven strongly by covariates rather than local survey information.</li>
-<li>Check whether estimates should aggregate to known national or regional totals.</li>
+<li>direct estimate versus model estimate,</li>
+<li>domains with the largest shrinkage,</li>
+<li>changes between non-spatial and spatial models,</li>
+<li>residual pattern and remaining spatial autocorrelation,</li>
+<li>sensitivity to covariates and modelling choices,</li>
+<li>whether model estimates aggregate sensibly to known higher-level totals.</li>
 </ul>
+<p>When teaching with simulated or complete-population data, ground-truth comparison can be useful. For real survey applications, use direct estimates, external benchmarks, known totals, held-out checks where feasible, and substantive plausibility.</p>
 </section>
 <section id="uncertainty" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="uncertainty"><span class="header-section-number">2</span> Uncertainty</h2>
-<ul>
-<li>Decide which uncertainty measure to report: standard error, confidence interval, credible interval, MSE, or relative standard error.</li>
-<li>Compare uncertainty before and after modelling.</li>
-<li>Flag domains with high uncertainty or very small effective sample sizes.</li>
-<li>Map uncertainty as well as point estimates.</li>
-<li>Avoid presenting smoothed estimates as if they were observed survey results.</li>
-</ul>
+<p>Direct estimates, frequentist FH models, and Bayesian models use different uncertainty summaries. Avoid treating them as interchangeable.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Workflow</th>
+<th>Common uncertainty output</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Direct estimation</td>
+<td>sampling variance, standard error, confidence interval, relative standard error</td>
+</tr>
+<tr class="even">
+<td>Frequentist FH</td>
+<td>MSE, RMSE, approximate confidence interval</td>
+</tr>
+<tr class="odd">
+<td>Bayesian FH / spatial model</td>
+<td>posterior interval, credible interval, exceedance probability</td>
+</tr>
+</tbody>
+</table>
+<p>Map uncertainty as well as point estimates. Flag domains with high uncertainty, very small sample sizes, unstable weights, or estimates driven mostly by the model rather than local survey information.</p>
 </section>
-<section id="reporting-checks" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="reporting-checks"><span class="header-section-number">3</span> Reporting Checks</h2>
+<section id="benchmarking-and-reporting" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="benchmarking-and-reporting"><span class="header-section-number">3</span> Benchmarking and Reporting</h2>
+<p>Benchmarking adjusts estimates so they agree with known totals at a higher geography, such as national or regional totals. It is useful when consistency with official aggregates matters, but it should be documented because it changes the model output.</p>
+<p>Reporting should make clear:</p>
 <ul>
-<li>Use wording that matches the estimand, target population, and domain size.</li>
-<li>Report caveats for routed questions, uncertain denominators, or missing domain sizes.</li>
-<li>Keep direct estimates available as a baseline comparison.</li>
-<li>Document any model choices that materially affect the estimates.</li>
+<li>the estimand and target population,</li>
+<li>the domain geography,</li>
+<li>whether estimates are direct, model-based, or benchmarked,</li>
+<li>which covariates and model family were used,</li>
+<li>how uncertainty should be read,</li>
+<li>which domains should be interpreted cautiously.</li>
 </ul>
+<p>Do not present smoothed or modelled estimates as if they were observed survey results.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Useful R functions depend on the fitted model. In <code>sae</code>, <code>mseFH()</code> estimates MSE for Fay-Herriot EBLUPs and <code>pbmseBHF()</code> can be used for bootstrap MSE in Battese-Harter-Fuller workflows. Base R and tidyverse tools are usually enough for comparison tables once estimates are in a common format.</p>
+<p>Documentation: <a href="https://search.r-project.org/CRAN/refmans/sae/html/mseFH.html"><code>sae::mseFH()</code></a>, <a href="https://search.r-project.org/CRAN/refmans/sae/html/pbmseBHF.html"><code>sae::pbmseBHF()</code></a></p>
+</div>
+</div>
+</section>
+<section id="worked-example" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4</span> Worked example</h2>
+<p>Lorem Ipsum - share real example here, no need for live code block<br>
+National Survey of Wales</p>
 
 
 </section>
@@ -630,7 +680,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../pages/unit-level-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Unit-Level SAE Models</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Unit-Level Estimation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

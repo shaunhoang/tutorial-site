@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Area-Level SAE Models</title>
+<title>Small Area Estimation for Urban Analytics - Frequentist Area-Level Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/spatial-bayesian-sae.html" rel="next">
+<link href="../pages/bayesian-area-sae.html" rel="next">
 <link href="../pages/direct-estimation.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -183,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/area-level-sae.html">Area-Level SAE Models</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/freq-area-sae.html">Frequentist Area-Level Estimation</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -263,20 +263,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Area-Level SAE Models</span></a>
+  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Frequentist Area-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area and Spatial Smoothing</span></a>
+  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level SAE Models</span></a>
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -356,22 +356,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#when-fay-herriot-is-useful" id="toc-when-fay-herriot-is-useful" class="nav-link active" data-scroll-target="#when-fay-herriot-is-useful"><span class="header-section-number">1</span> When Fay-Herriot Is Useful</a></li>
-  <li><a href="#required-inputs" id="toc-required-inputs" class="nav-link" data-scroll-target="#required-inputs"><span class="header-section-number">2</span> Required Inputs</a></li>
-  <li><a href="#two-stage-model" id="toc-two-stage-model" class="nav-link" data-scroll-target="#two-stage-model"><span class="header-section-number">3</span> Two-Stage Model</a>
+  <li><a href="#understanding-the-fay-herriot-model" id="toc-understanding-the-fay-herriot-model" class="nav-link active" data-scroll-target="#understanding-the-fay-herriot-model"><span class="header-section-number">1</span> Understanding the Fay-Herriot model</a></li>
+  <li><a href="#covariate-choices" id="toc-covariate-choices" class="nav-link" data-scroll-target="#covariate-choices"><span class="header-section-number">2</span> Covariate Choices</a></li>
+  <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">3</span> Evaluation</a></li>
+  <li><a href="#implementation-in-r" id="toc-implementation-in-r" class="nav-link" data-scroll-target="#implementation-in-r"><span class="header-section-number">4</span> Implementation in R</a>
   <ul class="collapse">
-  <li><a href="#sampling-model" id="toc-sampling-model" class="nav-link" data-scroll-target="#sampling-model"><span class="header-section-number">3.1</span> Sampling Model</a></li>
-  <li><a href="#linking-model" id="toc-linking-model" class="nav-link" data-scroll-target="#linking-model"><span class="header-section-number">3.2</span> Linking Model</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="header-section-number">4.1</span> Functions</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.2</span> Worked example</a></li>
   </ul></li>
-  <li><a href="#shrinkage-interpretation" id="toc-shrinkage-interpretation" class="nav-link" data-scroll-target="#shrinkage-interpretation"><span class="header-section-number">4</span> Shrinkage Interpretation</a></li>
-  <li><a href="#estimating-model-uncertainty" id="toc-estimating-model-uncertainty" class="nav-link" data-scroll-target="#estimating-model-uncertainty"><span class="header-section-number">5</span> Estimating Model Uncertainty</a></li>
-  <li><a href="#baseline-sae-pattern" id="toc-baseline-sae-pattern" class="nav-link" data-scroll-target="#baseline-sae-pattern"><span class="header-section-number">6</span> Baseline <code>sae</code> Pattern</a></li>
-  <li><a href="#covariate-choice" id="toc-covariate-choice" class="nav-link" data-scroll-target="#covariate-choice"><span class="header-section-number">7</span> Covariate Choice</a></li>
-  <li><a href="#practical-checks" id="toc-practical-checks" class="nav-link" data-scroll-target="#practical-checks"><span class="header-section-number">8</span> Practical Checks</a></li>
-  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">9</span> Limitations</a></li>
-  <li><a href="#transformations-for-proportions" id="toc-transformations-for-proportions" class="nav-link" data-scroll-target="#transformations-for-proportions"><span class="header-section-number">10</span> Transformations for Proportions</a></li>
-  <li><a href="#what-to-report" id="toc-what-to-report" class="nav-link" data-scroll-target="#what-to-report"><span class="header-section-number">11</span> What to Report</a></li>
-  <li><a href="#notes-on-sources" id="toc-notes-on-sources" class="nav-link" data-scroll-target="#notes-on-sources"><span class="header-section-number">12</span> Notes on Sources</a></li>
   </ul>
 </nav>
     </div>
@@ -380,7 +372,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Area-Level SAE Models</h1>
+<h1 class="title">Frequentist Area-Level Estimation</h1>
 </div>
 
 
@@ -395,198 +387,140 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Area-level SAE models are usually the first model-based step after direct estimation. They are useful when direct estimates exist for at least some domains but are too noisy, unstable, or missing for others.</p>
-<p>The standard starting point is the Fay-Herriot (FH) model. It does not model individual survey records. Instead, it models domain-level direct estimates and their sampling variances.</p>
-<section id="when-fay-herriot-is-useful" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="when-fay-herriot-is-useful"><span class="header-section-number">1</span> When Fay-Herriot Is Useful</h2>
-<p>Use an area-level model when:</p>
-<ul>
-<li>You have direct estimates for sampled domains.</li>
-<li>You have an estimated sampling variance for each direct estimate.</li>
-<li>You have domain-level covariates for every domain you want to estimate.</li>
-<li>Unit-level population microdata are unavailable, restricted, or not comparable with the survey.</li>
-<li>The target output is one estimate per area.</li>
-</ul>
-<p>FH is particularly attractive for surveys where the public or project-safe data can be prepared as one row per domain.</p>
-</section>
-<section id="required-inputs" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="required-inputs"><span class="header-section-number">2</span> Required Inputs</h2>
-<p>For each domain (d=1,,D), the FH model needs:</p>
-<ul>
-<li>(^{DIR}_d): direct estimate from the survey.</li>
-<li>(_d): estimated sampling variance of the direct estimate.</li>
-<li>(x_d): a vector of area-level covariates.</li>
-<li>A domain identifier that aligns across survey, covariate, and boundary files.</li>
-</ul>
-<p>The model is usually fitted on domains with usable direct estimates and variances. Predictions can then be produced for unsampled domains using the covariates and model structure.</p>
-</section>
-<section id="two-stage-model" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="two-stage-model"><span class="header-section-number">3</span> Two-Stage Model</h2>
-<p>The FH model is often described as two linked models.</p>
-<section id="sampling-model" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="sampling-model"><span class="header-section-number">3.1</span> Sampling Model</h3>
-<p>The direct estimate is treated as a noisy observation of the true domain value:</p>
-<p><span class="math display">\[
-\hat{\theta}^{DIR}_d = \theta_d + e_d,
-\]</span></p>
-<p>where:</p>
-<p><span class="math display">\[
-e_d \sim N(0, \psi_d).
-\]</span></p>
-<p>Here, (_d) is the sampling variance estimated during direct estimation. The model treats (_d) as known, even though in practice it is estimated.</p>
-</section>
-<section id="linking-model" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="linking-model"><span class="header-section-number">3.2</span> Linking Model</h3>
-<p>The true domain value is related to area-level covariates:</p>
-<p><span class="math display">\[
-\theta_d = x_d^\top\beta + u_d,
-\]</span></p>
-<p>where:</p>
-<p><span class="math display">\[
-u_d \sim N(0, \sigma_u^2).
-\]</span></p>
-<p>The random effect (u_d) captures between-area variation not explained by the covariates.</p>
-<p>Combining both pieces gives:</p>
+<p>Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct estimates with domain-level covariates to improve precision.</p>
+<section id="understanding-the-fay-herriot-model" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="understanding-the-fay-herriot-model"><span class="header-section-number">1</span> Understanding the Fay-Herriot model</h2>
+<p>Fay-Herriot combines two pieces of information for each domain:</p>
+<ol type="1">
+<li>the direct estimate from the survey, and</li>
+<li>a covariate-based model prediction.</li>
+</ol>
+<p>The direct estimate <span class="math inline">\(\hat{\theta}_d^{DIR}\)</span> can be written as the covariate-explained part <span class="math inline">\(x_d^\top\beta\)</span>, plus an area-specific unexplained effect <span class="math inline">\(u_d\)</span>, plus survey sampling noise <span class="math inline">\(e_d\)</span>.</p>
 <p><span class="math display">\[
 \hat{\theta}^{DIR}_d =
 x_d^\top\beta + u_d + e_d.
 \]</span></p>
-</section>
-</section>
-<section id="shrinkage-interpretation" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="shrinkage-interpretation"><span class="header-section-number">4</span> Shrinkage Interpretation</h2>
-<p>The FH estimate can be written as a weighted average of:</p>
-<ul>
-<li>the direct estimate (^{DIR}_d), and</li>
-<li>the regression-synthetic estimate (x_d^).</li>
-</ul>
-<p>The empirical best linear unbiased predictor (EBLUP) is:</p>
+<p>The FH estimate, is a weighted average of the direct estimate and the covariate-based prediction:</p>
 <p><span class="math display">\[
 \hat{\theta}^{FH}_d =
-\hat{\gamma}_d\hat{\theta}^{DIR}_d
+\hat{\gamma}_d \hat{\theta}^{DIR}_d
 +
-(1-\hat{\gamma}_d)x_d^\top\hat{\beta}.
+(1-\hat{\gamma}_d) x_d^\top\hat{\beta}.
 \]</span></p>
-<p>The shrinkage factor is:</p>
-<p><span class="math display">\[
-\hat{\gamma}_d =
-\frac{\hat{\sigma}_u^2}
-{\hat{\sigma}_u^2+\psi_d}.
-\]</span></p>
-<p>Interpretation:</p>
+<p>The shrinkage weight <span class="math inline">\(\hat{\gamma}_d = \frac{\hat{\sigma}_u^2}{\hat{\sigma}_u^2 + \psi_d}\)</span>, where <span class="math inline">\(\psi_d\)</span> is the sampling variance of the direct estimate, controls how much the FH estimate “trusts” the direct estimate:</p>
 <ul>
-<li>If (_d) is small, the direct estimate is precise and (_d) is close to 1.</li>
-<li>If (_d) is large, the direct estimate is noisy and (_d) is closer to 0.</li>
-<li>Unsampled domains have no direct estimate, so their estimates rely on the synthetic component and any modelled area effect structure.</li>
+<li>if <span class="math inline">\(\psi_d\)</span> is small, the direct estimate is precise, so <span class="math inline">\(\hat{\gamma}_d\)</span> is closer to 1;</li>
+<li>if <span class="math inline">\(\psi_d\)</span> is large, the direct estimate is noisy, so <span class="math inline">\(\hat{\gamma}_d\)</span> is closer to 0.</li>
 </ul>
-<p>This is why FH estimates should usually stay close to precise direct estimates but move noisy direct estimates toward the model prediction.</p>
-</section>
-<section id="estimating-model-uncertainty" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="estimating-model-uncertainty"><span class="header-section-number">5</span> Estimating Model Uncertainty</h2>
-<p>FH uncertainty is usually summarised through an estimated mean squared error:</p>
-<p><span class="math display">\[
-\operatorname{MSE}\left(\hat{\theta}^{FH}_d\right)
-=
-E\left[
-\left(
-\hat{\theta}^{FH}_d-\theta_d
-\right)^2
-\right].
-\]</span></p>
-<p>In practice, packages such as <code>sae</code> return an MSE estimate for the EBLUP. The square root of the MSE is often reported as an RMSE or model standard error.</p>
-<p>Be careful: FH MSE is model-based. It is not the same object as the sampling variance of a direct estimate.</p>
-</section>
-<section id="baseline-sae-pattern" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="baseline-sae-pattern"><span class="header-section-number">6</span> Baseline <code>sae</code> Pattern</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sae)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fh_data <span class="ot">&lt;-</span> direct_estimates <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(covariates, <span class="at">by =</span> <span class="st">"domain_id"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>fh_fit <span class="ot">&lt;-</span> <span class="fu">eblupFH</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  direct <span class="sc">~</span> prop_urban <span class="sc">+</span> median_age <span class="sc">+</span> employment_rate,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">vardir =</span> variance,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fh_data</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>fh_results <span class="ot">&lt;-</span> fh_data <span class="sc">|&gt;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fh_estimate =</span> fh_fit<span class="sc">$</span>eblup<span class="sc">$</span>eblup,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">fh_mse =</span> fh_fit<span class="sc">$</span>mse<span class="sc">$</span>mse,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">fh_rmse =</span> <span class="fu">sqrt</span>(fh_mse)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In practice, FH leaves precise direct estimates mostly unchanged, while pulling noisy direct estimates toward the covariate-based prediction.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this <strong>frequentist</strong> FH workflow, the main outputs are the model-based estimate (<strong>EBLUP</strong>) and its uncertainty (<strong>RMSE</strong>, the square root of model-based MSE). For domains without a usable direct estimate, the EBLUP comes entirely from the model component.</p>
+</div>
 </div>
 </section>
-<section id="covariate-choice" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="covariate-choice"><span class="header-section-number">7</span> Covariate Choice</h2>
-<p>Use covariates that are:</p>
+<section id="covariate-choices" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="covariate-choices"><span class="header-section-number">2</span> Covariate Choices</h2>
+<p>Domain-level covariates can often be found via census datas and other population-level aggregate statistics.Choose covariates with emphasis on coverage and comparability across domains.</p>
 <ul>
-<li>available for every target domain,</li>
-<li>measured at the correct geography,</li>
-<li>plausibly related to the indicator,</li>
-<li>comparable in time to the survey,</li>
-<li>not too collinear with each other,</li>
-<li>interpretable enough to explain to users.</li>
+<li><strong>Coverage:</strong> each covariate should be available for all target domains.</li>
+<li><strong>Alignment:</strong> match geography, definition, and reference period to the survey indicator.</li>
+<li><strong>Relevance:</strong> keep variables with a clear substantive link to the outcome and avoid including many weak predictors.</li>
+<li><strong>Predictive:</strong> choose covariates that improve domain-level prediction and are easy to explain; avoid downstream variables, and remove or combine highly correlated predictors.</li>
 </ul>
-<p>For transport and energy indicators, useful covariate families might include age structure, household composition, car availability, urban-rural classification, housing tenure, employment, deprivation, public transport access, and energy-related housing characteristics.</p>
+<p>Common examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessbility metrics, car ownership, etc.</p>
+<p>[ADD IMAGE]</p>
 </section>
-<section id="practical-checks" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="practical-checks"><span class="header-section-number">8</span> Practical Checks</h2>
-<p>Before trusting the model, check:</p>
-<ul>
-<li>Are direct estimates and variances plausible?</li>
-<li>Are zero or missing sampling variances handled?</li>
-<li>Are covariate signs and magnitudes plausible?</li>
-<li>Are predictions outside the valid range for proportions?</li>
-<li>Do FH estimates stay close to precise direct estimates?</li>
-<li>Which areas are strongly pulled toward the model?</li>
-<li>Do residuals show remaining spatial pattern?</li>
-</ul>
+<section id="evaluation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="evaluation"><span class="header-section-number">3</span> Evaluation</h2>
+<p>Evaluate the FH outputs (EBLUPs) and uncertainty (RMSEs) to decide how to proceed:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Next step</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Estimates are stable, and uncertainty acceptable</td>
+<td>Use EBLUPs for reporting.</td>
+</tr>
+<tr class="even">
+<td>Results are sensitive to covariate choice, coefficients are unstable, or diagnostics show poor fit</td>
+<td>Revisit covariates and refit FH.</td>
+</tr>
+<tr class="odd">
+<td>A probability-style uncertainty would help interpretation</td>
+<td>Move to <a href="../pages/bayesian-area-sae.html">Bayesian Area-Level SAE (+Spatial)</a> to represent uncertainty through posterior estimates and Credible Intervals.</td>
+</tr>
+<tr class="even">
+<td>Residuals show spatial autocorrelation after the covariate FH model</td>
+<td>Consider adding spatial structure to borrow strength from neighbouring areas. See <a href="../pages/bayesian-area-sae.html">Bayesian Area-Level SAE (+Spatial)</a>.</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="limitations" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="limitations"><span class="header-section-number">9</span> Limitations</h2>
-<p>FH is often practical, but it has important limitations:</p>
-<ul>
-<li>It assumes the direct estimate is approximately normal.</li>
-<li>It treats estimated sampling variances as known.</li>
-<li>It uses one observation per domain, so the number of model observations can be small.</li>
-<li>Each indicator usually needs a separate model.</li>
-<li>It cannot produce sub-domain estimates unless a new model is built at that geography.</li>
-<li>For proportions near 0 or 1, a transformation or alternative model may be needed.</li>
-</ul>
+<section id="implementation-in-r" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="implementation-in-r"><span class="header-section-number">4</span> Implementation in R</h2>
+<section id="functions" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="functions"><span class="header-section-number">4.1</span> Functions</h3>
+<p>Use <a href="https://search.r-project.org/CRAN/refmans/sae/html/eblupFH.html"><code>sae::eblupFH()</code></a> to fit a frequentist Fay-Herriot model and <a href="https://search.r-project.org/CRAN/refmans/sae/html/mseFH.html"><code>sae::mseFH()</code></a> to estimate uncertainty.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sae)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># direct_results should contain: </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id, </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - Direct, </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># - Variance </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># domain_covariates should contain: </span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id, </span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># - area-level covariates</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>fh_data <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  direct_results,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  domain_covariates,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="st">"domain_id"</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Fay-Herriot EBLUPs + RMSEs</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>fh_fit <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">eblupFH</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> Direct <span class="sc">~</span> x_income <span class="sc">+</span> x_car_ownership <span class="sc">+</span> x_urban,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">vardir =</span> fh_data<span class="sc">$</span>Variance,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fh_data</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>fh_mse <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">mseFH</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> Direct <span class="sc">~</span> x_income <span class="sc">+</span> x_car_ownership <span class="sc">+</span> x_urban,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">vardir =</span> fh_data<span class="sc">$</span>Variance,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fh_data</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine EBLUP + RMSE outputs for reporting</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>fh_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain_id =</span> fh_data<span class="sc">$</span>domain_id,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">direct =</span> fh_data<span class="sc">$</span>Direct,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">eblup =</span> fh_fit<span class="sc">$</span>eblup,</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">mse =</span> fh_mse<span class="sc">$</span>mse,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">rmse =</span> <span class="fu">sqrt</span>(fh_mse<span class="sc">$</span>mse)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="transformations-for-proportions" class="level2" data-number="10">
-<h2 data-number="10" class="anchored" data-anchor-id="transformations-for-proportions"><span class="header-section-number">10</span> Transformations for Proportions</h2>
-<p>For binary indicators, plain FH can produce estimates below 0 or above 1. This is most likely when direct estimates are near the boundary or sampling variances are large.</p>
-<p>Possible responses:</p>
-<ul>
-<li>Use a logit or arcsine transformation.</li>
-<li>Fit a binomial or beta-binomial model where appropriate.</li>
-<li>Treat boundary estimates and zero variances carefully before modelling.</li>
-<li>Report when transformed estimates have been back-transformed.</li>
-</ul>
-<p>The right choice depends on the indicator, sample size, and modelling package.</p>
-</section>
-<section id="what-to-report" class="level2" data-number="11">
-<h2 data-number="11" class="anchored" data-anchor-id="what-to-report"><span class="header-section-number">11</span> What to Report</h2>
-<p>At minimum, report:</p>
-<ul>
-<li>direct estimate,</li>
-<li>direct sampling variance or standard error,</li>
-<li>FH estimate,</li>
-<li>FH MSE or RMSE,</li>
-<li>sample size or non-missing sample size,</li>
-<li>covariates used,</li>
-<li>areas where model estimates differ strongly from direct estimates.</li>
-</ul>
-</section>
-<section id="notes-on-sources" class="level2" data-number="12">
-<h2 data-number="12" class="anchored" data-anchor-id="notes-on-sources"><span class="header-section-number">12</span> Notes on Sources</h2>
-<p>The FH presentation above follows the usual sampling-model plus linking-model structure, with the EBLUP expressed as a weighted average of the direct and regression-synthetic estimates. See the <a href="https://ssegoviajuarez.github.io/sae/03_area-level.html">area-level SAE chapter in the poverty mapping guide</a> for a fuller worked discussion.</p>
+<section id="worked-example" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.2</span> Worked example</h3>
+<p>Lorem Ipsum - share real example National Survey of Wales</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -844,8 +778,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/spatial-bayesian-sae.html" class="pagination-link">
-        <span class="nav-page-text">Bayesian Area and Spatial Smoothing</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/bayesian-area-sae.html" class="pagination-link">
+        <span class="nav-page-text">Bayesian Area-Level Estimation (+Spatial)</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

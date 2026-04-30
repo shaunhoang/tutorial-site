@@ -28,18 +28,11 @@ Use these pages to understand the concepts and decisions behind the workflow.
 
 | No. | Step | Objective |
 |---|---|---|
-| 1 |**[Preparing the inputs](pages/prepare-inputs.qmd)** | Define what is being estimated, for whom, and at what geographical scale. |
+| 1 |**[Preparing the Inputs](pages/prepare-inputs.qmd)** | Define what is being estimated, for whom, and at what geographical scale. |
 | 2 |**[Direct estimation](pages/direct-estimation.qmd)** | Estimate area-level indicators directly from the survey and assess their precision. |
-| 3 |**[Area-level estimation](pages/area-level-sea.qmd)** | Improve unstable direct estimates by borrowing strength from auxiliary covariates. |
-| 4 |**[Bayesian and Spatial SAE](pages/spatial-bayesian-sae.qmd)** | Apply a Bayesian approach to better handle sparse areas using similarity and proximity between neighbouring areas. |
-| 5 |**[Diagnose and report](pages/diagnostics.qmd)** | Check model performance, report uncertainty, and present estimates. |
-
-## Tutorial
-
-The applied tutorial has two chapters:
-
--   **[Data Preparation](pages/tutorial-dataprep.qmd)** prepares inputs for SAE: estimands, surveys indicators, domains, domain sizes, and weights, etc.
--   **[Estimation & Reporting](pages/tutorial-sae.qmd)** applies SAE methods step-by-step: direct estimation, area-level covariates modelling, and adding spatial sturcture. Reporting and diagnostics.
+| 3 |**[Frequentist Area-Level SAE](pages/freq-area-sae.qmd)** | Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates. |
+| 4 |**[Bayesian Area-Level SAE (+Spatial)](pages/bayesian-area-sae.qmd)** | Reframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas. |
+| 5 |**[Diagnose and Report](pages/diagnostics.qmd)** | Check model performance, report uncertainty, and present estimates. |
 
 ## Resources
 

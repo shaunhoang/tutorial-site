@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Bayesian Area and Spatial Smoothing</title>
+<title>Small Area Estimation for Urban Analytics - Bayesian Area-Level Estimation (+Spatial)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../pages/unit-level-sae.html" rel="next">
-<link href="../pages/area-level-sae.html" rel="prev">
+<link href="../pages/freq-area-sae.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -96,6 +96,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -181,7 +183,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/spatial-bayesian-sae.html">Bayesian Area and Spatial Smoothing</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Methods</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/bayesian-area-sae.html">Bayesian Area-Level Estimation (+Spatial)</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -261,20 +263,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level SAE Models</span></a>
+  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Frequentist Area-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Bayesian Area and Spatial Smoothing</span></a>
+  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level SAE Models</span></a>
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -354,11 +356,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#when-spatial-structure-helps" id="toc-when-spatial-structure-helps" class="nav-link active" data-scroll-target="#when-spatial-structure-helps"><span class="header-section-number">1</span> When spatial structure helps</a></li>
-  <li><a href="#when-to-be-cautious" id="toc-when-to-be-cautious" class="nav-link" data-scroll-target="#when-to-be-cautious"><span class="header-section-number">2</span> When to be cautious</a></li>
-  <li><a href="#adjacency-checks" id="toc-adjacency-checks" class="nav-link" data-scroll-target="#adjacency-checks"><span class="header-section-number">3</span> Adjacency checks</a></li>
-  <li><a href="#bayesian-fh-with-spatial-effects" id="toc-bayesian-fh-with-spatial-effects" class="nav-link" data-scroll-target="#bayesian-fh-with-spatial-effects"><span class="header-section-number">4</span> Bayesian FH with spatial effects</a></li>
-  <li><a href="#outputs-to-communicate" id="toc-outputs-to-communicate" class="nav-link" data-scroll-target="#outputs-to-communicate"><span class="header-section-number">5</span> Outputs to communicate</a></li>
+  <li><a href="#bayesian-versus-frequentist-approach-in-sae" id="toc-bayesian-versus-frequentist-approach-in-sae" class="nav-link active" data-scroll-target="#bayesian-versus-frequentist-approach-in-sae"><span class="header-section-number">1</span> Bayesian versus Frequentist approach in SAE</a></li>
+  <li><a href="#spatial-structure" id="toc-spatial-structure" class="nav-link" data-scroll-target="#spatial-structure"><span class="header-section-number">2</span> Spatial Structure</a></li>
+  <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">3</span> Evaluation</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">4</span> Code Implementation</a>
+  <ul class="collapse">
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.1</span> Worked example</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -367,7 +371,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Bayesian Area and Spatial Smoothing</h1>
+<h1 class="title">Bayesian Area-Level Estimation (+Spatial)</h1>
 </div>
 
 
@@ -382,67 +386,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Spatial SAE adds structure when neighbouring domains are expected to have similar values after accounting for covariates. Bayesian SAE extends this by representing uncertainty through posterior distributions.</p>
-<section id="when-spatial-structure-helps" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="when-spatial-structure-helps"><span class="header-section-number">1</span> When spatial structure helps</h2>
-<p>Spatial modelling is most defensible when:</p>
+<p>This notebook extends the area-level Fay-Herriot workflow. It first reframes area-level SAE in Bayesian terms, then shows why spatial structure may be useful when neighbouring domains share unexplained patterns.</p>
+<section id="bayesian-versus-frequentist-approach-in-sae" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="bayesian-versus-frequentist-approach-in-sae"><span class="header-section-number">1</span> Bayesian versus Frequentist approach in SAE</h2>
+<p>Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea:</p>
+<p><span class="math display">\[
+\hat{\theta}^{DIR}_d =
+x_d^\top\beta + u_d + e_d.
+\]</span></p>
+<p>The difference is how the unknown quantities are estimated and how uncertainty is interpreted.</p>
 <ul>
-<li>The indicator has a plausible spatial process.</li>
-<li>Domains are geographically meaningful for the process.</li>
-<li>Residuals from a non-spatial model show spatial patterning.</li>
-<li>The adjacency structure is reliable and aligned with the modelling table.</li>
+<li>In the <strong>frequentist</strong> approach, <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\sigma_u^2\)</span>, and area effects are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), plus uncertainty measures such as RMSE, and confidence intervals.</li>
+<li>In the <strong>Bayesian</strong> approach, unknown quantities such as <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\sigma_u^2\)</span>, and <span class="math inline">\(u_d\)</span> are treated as uncertain and assigned prior distributions. Typical outputs are posterior means or medians, credible intervals, and probability summaries.</li>
 </ul>
-</section>
-<section id="when-to-be-cautious" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="when-to-be-cautious"><span class="header-section-number">2</span> When to be cautious</h2>
-<p>Spatial smoothing can hide real local differences. It can also create overconfident maps if adjacency is treated as a substitute for missing survey signal.</p>
-</section>
-<section id="adjacency-checks" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="adjacency-checks"><span class="header-section-number">3</span> Adjacency checks</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spdep)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>domains_sf <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"../data/boundaries/boundaries-ltla.geojson"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>neighbors <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(domains_sf, <span class="at">queen =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>adjacency <span class="ot">&lt;-</span> <span class="fu">nb2mat</span>(neighbors, <span class="at">style =</span> <span class="st">"B"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">nrow</span>(adjacency) <span class="sc">==</span> <span class="fu">nrow</span>(domains_sf))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-</section>
-<section id="bayesian-fh-with-spatial-effects" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="bayesian-fh-with-spatial-effects"><span class="header-section-number">4</span> Bayesian FH with spatial effects</h2>
-<p>This section should introduce the practical pattern for <code>SUMMER</code> and <code>INLA</code>:</p>
-<ol type="1">
-<li>Prepare direct estimates and variances.</li>
-<li>Prepare domain covariates.</li>
-<li>Prepare an adjacency graph.</li>
-<li>Fit a non-spatial Bayesian FH model.</li>
-<li>Fit a spatial FH model.</li>
-<li>Compare posterior summaries, residuals, and mapped uncertainty.</li>
-</ol>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Placeholder pattern only. Final code will depend on the selected package API.</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fit &lt;- SUMMER::smoothSurvey(</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   data = direct_estimates,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   Amat = adjacency,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   responseType = "gaussian",</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   formula = direct ~ covariate_1 + covariate_2</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-title-container flex-fill">
+Note
 </div>
-</section>
-<section id="outputs-to-communicate" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="outputs-to-communicate"><span class="header-section-number">5</span> Outputs to communicate</h2>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>Posterior mean or median.</li>
-<li>Credible intervals.</li>
-<li>Exceedance probabilities for policy thresholds.</li>
-<li>Maps of uncertainty, not only maps of point estimates.</li>
+<li>Use the <strong>frequentist</strong> Fay-Herriot workflow as the simpler starting point when you need stable area estimates, RMSEs, and a transparent model-based improvement over direct estimates.</li>
+<li>Use a <strong>Bayesian</strong> workflow when probability-style summaries are useful for the decision, or when you want to add spatial structure.</li>
 </ul>
+</div>
+</div>
+<p>[ADD IMAGE]</p>
+</section>
+<section id="spatial-structure" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="spatial-structure"><span class="header-section-number">2</span> Spatial Structure</h2>
+<p>Let’s go back to the FH model equation cited above. The non-spatial area-level model assumes the unexplained area effects <span class="math inline">\(u_d\)</span> are <em>independent</em> after accounting for covariates. In urban research, this is rarely true: Neighbouring places may share more similarities that could help inform our estimates.</p>
+<p><strong>Spatial area-level models</strong> add a structured area effect using an adjacency matrix or neighbourhood graph. This lets the model borrow strength not only from covariates, but also from nearby areas.</p>
+<p>The spatial structure is usually provided as a <strong>spatial weights matrix</strong>: a table that tells the model which areas are connected, and how strongly. The simplest spatial weights matrix is a <strong>binary adjacency matrix</strong>. Each row and column represents a domain. A value of <code>1</code> means two domains are neighbours, and <code>0</code> means they are not. Neighbours are usually defined by shared boundaries, for example Queen contiguity or Rook contiguity, or distance threshold.</p>
+<p>[ADD IMAGE]</p>
+</section>
+<section id="evaluation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="evaluation"><span class="header-section-number">3</span> Evaluation</h2>
+<p>At this stage, it is worth comparing the evolving outputs of the estimates and their uncertainties from direct estimates through each addition of covariates and spatial information.The aim is simply to check whether the extra modelling is useful and defensible.</p>
+<p>Focus on three checks:</p>
+<ul>
+<li><strong>Estimates:</strong> do posterior estimates broadly agree with reliable direct estimates and frequentist EBLUPs?</li>
+<li><strong>Uncertainty:</strong> do credible intervals or threshold probabilities make the results easier to interpret than RMSE alone?</li>
+<li><strong>Spatial effect:</strong> if spatial smoothing changes the map, is that supported by residual spatial autocorrelation and substantive knowledge?</li>
+</ul>
+<p>If the Bayesian or spatial model changes results substantially, check priors, covariates, direct variances, influential domains, and the adjacency structure before reporting.</p>
+</section>
+<section id="code-implementation" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">4</span> Code Implementation</h2>
+<p>For Bayesian area-level SAE, the main package used here is <a href="https://cran.r-project.org/package=SUMMER"><code>SUMMER</code></a>. It fits area-level smoothing models using INLA, and can work either from direct estimates or from survey microdata.</p>
+<ul>
+<li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html"><code>SUMMER::smoothArea()</code></a> when you already have direct estimates and their variances.</li>
+<li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html"><code>SUMMER::smoothSurvey()</code></a> when you want SUMMER to calculate design-adjusted direct estimates from survey microdata before smoothing. Both can use an adjacency matrix for spatial structure.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SUMMER)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># direct_results should contain: </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id, </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - Direct, </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># - Variance </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># domain_covariates should contain: </span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id, </span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># - area-level covariates</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># adjacency_matrix should have row and column names matching domain_id</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>direct_est <span class="ot">&lt;-</span> direct_results[, <span class="fu">c</span>(<span class="st">"domain_id"</span>, <span class="st">"Direct"</span>, <span class="st">"Variance"</span>)]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>bayes_area_fit <span class="ot">&lt;-</span> SUMMER<span class="sc">::</span><span class="fu">smoothArea</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> Direct <span class="sc">~</span> x_income <span class="sc">+</span> x_car_ownership <span class="sc">+</span> x_urban,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain =</span> <span class="sc">~</span>domain_id,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">direct.est =</span> direct_est,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">X.domain =</span> domain_covariates,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">adj.mat =</span> adjacency_matrix,       <span class="co"># if NULL, the model is non-spatial</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">"identity"</span>,           <span class="co"># no data transformation of estimates</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span>                      <span class="co"># CI level</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="worked-example" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.1</span> Worked example</h3>
+<p>Lorem Ipsum - share real example here National Survey of Wales</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -695,13 +727,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/area-level-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Area-Level SAE Models</span>
+      <a href="../pages/freq-area-sae.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Frequentist Area-Level Estimation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../pages/unit-level-sae.html" class="pagination-link">
-        <span class="nav-page-text">Unit-Level SAE Models</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">Unit-Level Estimation</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

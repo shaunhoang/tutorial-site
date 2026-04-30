@@ -1,59 +1,21 @@
 ---
-title: "Unit-Level SAE Models"
+title: "Unit-Level Estimation"
 ---
 
-Unit-level SAE models use survey microdata directly. They can be more powerful than area-level models, but they require much stronger data conditions.
+Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models. 
 
-For this TRACK-UK tutorial, unit-level SAE is mainly included as theory and context. The practical workflow focuses on area-level models because the available survey and covariate structure is better suited to Fay-Herriot-style estimation.
+## Understanding Unit-Level SAE
 
-## Area-Level versus Unit-Level SAE
-
-| Feature | Area-level SAE | Unit-level SAE |
-| --- | --- | --- |
-| Main data input | Direct estimates by domain | Individual or household survey records |
-| Auxiliary data | Domain-level covariates | Unit-level covariates for the population or poststrata |
-| Typical model | Fay-Herriot | Nested-error model, GLMM, MRP, empirical best prediction |
-| Output | One estimate per area | Estimates can be aggregated to several geographies |
-| Practical burden | Lower | Higher |
-| Main risk | Too little information per domain | Survey-population mismatch and stronger model assumptions |
-
-## Basic Unit-Level Idea
-
-Suppose \(y_{di}\) is the outcome for unit \(i\) in domain \(d\), and \(x_{di}\) is a vector of unit-level covariates.
-
-A common nested-error model is:
+In area-level SAE, the model starts from one direct estimate per domain. In unit-level SAE, the model starts from individual or household survey records:
 
 $$
 y_{di} =
 x_{di}^{\top}\beta + u_d + e_{di},
 $$
 
-where:
+where $y_{di}$ is the outcome for unit $i$ in domain $d$, $x_{di}$ is a vector of unit-level covariates, $u_d$ is the area effect, and $e_{di}$ is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.
 
-$$
-u_d \sim N(0, \sigma_u^2),
-\quad
-e_{di} \sim N(0, \sigma_e^2).
-$$
-
-The domain random effect \(u_d\) captures unexplained differences between areas. The unit error \(e_{di}\) captures unexplained differences between people, households, or other sampled units within areas.
-
-For binary outcomes, the model is usually changed to a logistic or probit mixed model:
-
-$$
-\operatorname{logit}(p_{di}) =
-x_{di}^{\top}\beta + u_d,
-$$
-
-where:
-
-$$
-y_{di} \sim \operatorname{Bernoulli}(p_{di}).
-$$
-
-## Estimating a Domain Mean
-
-The finite-population target for domain \(d\) is:
+The domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:
 
 $$
 \theta_d =
@@ -61,107 +23,56 @@ $$
 \sum_{i \in U_d} y_{di}.
 $$
 
-The sampled units have observed \(y_{di}\). For the non-sampled population units, the model predicts or simulates \(y_{di}\) using their covariates.
+This makes unit-level SAE a bottom-up approach: model people or households first, then aggregate to the geographic domain of choice.
 
-A simple empirical best prediction idea is:
+## Pros and Cons
 
-$$
-\hat{\theta}^{EBP}_d =
-\frac{1}{N_d}
-\left[
-\sum_{i \in s_d} y_{di}
-+
-\sum_{i \in r_d} \hat{y}_{di}
-\right],
-$$
+Unit-level SAE is useful when the survey and population data share comparable individual, household, or poststratification covariates.
 
-where \(r_d\) is the non-sampled part of the population in domain \(d\). In practice, many methods simulate values for the non-sampled population repeatedly, then summarise the simulated domain estimates.
+| Pros | Cons |
+|---|---|
+| Can aggregate estimates to multiple geographies | Needs detailed population data, not just area averages |
+| Can use survey microdata directly without aggregating to domains | Survey and population variables must be coded in the same way |
 
-## Required Data
+The main barriers to unit-level estimation are microdata availability and privacy. In general, use area-level SAE when only domain-level covariates are available (more common). Unit-level SAE becomes more realistic when suitable population microdata, or a synthetic population, can provide the prediction population.
 
-Unit-level SAE usually needs:
+## Code Implementation
 
-- survey microdata with the outcome and unit-level covariates,
-- population or census microdata with the same covariates for all units, or poststratification cell counts,
-- comparable variable definitions across survey and population data,
-- domain identifiers that link the survey and population data,
-- weights or design information, especially if the survey design is informative,
-- enough sampled domains to estimate area effects reliably.
-
-The most difficult condition is comparability. If a covariate is measured differently in the survey and census, or if the survey and census refer to different populations or periods, the resulting estimates can be biased.
-
-## Why It Can Be Powerful
-
-Unit-level models can:
-
-- use more information than area-level models,
-- estimate indicators for unsampled domains,
-- produce estimates at multiple aggregation levels,
-- handle non-linear indicators through simulation,
-- use individual or household covariates rather than area averages.
-
-This is why unit-level methods are common in poverty mapping and microsimulation contexts.
-
-## Why It Is Not the Main Practical Route Here
-
-For the current TRACK-UK SAE tutorial, area-level models are more productive because:
-
-- the worked survey outputs are naturally prepared as indicator-by-domain files,
-- Local Authority identifiers are available for the National Survey for Wales example,
-- population microdata with all required matching covariates may not be available,
-- routed transport indicators can make unit-level target populations difficult to define,
-- the aim is to teach a reusable workflow for researchers starting from direct estimates.
-
-Unit-level SAE is still useful to understand. It becomes more relevant if the project later connects SAE with synthetic populations or poststratification cell counts.
-
-## Relationship to Synthetic Populations
-
-Synthetic populations and unit-level SAE can work together. A synthetic population can provide a population-like set of units with covariates, and a fitted survey model can predict or simulate outcomes for those units.
-
-However, this introduces additional assumptions:
-
-- the synthetic population must represent the target domains well,
-- survey and synthetic-population covariates must be comparable,
-- uncertainty from the synthetic population should not be ignored,
-- model predictions should be validated against direct estimates or known aggregates where possible.
-
-The connection is noted here, but a full synthetic population SAE workflow is outside the present scope.
-
-## Practical Pattern
-
-A generic unit-level workflow is:
-
-1. Harmonise survey and population covariates.
-2. Fit a mixed model to the survey microdata.
-3. Predict or simulate outcomes for the non-sampled population.
-4. Aggregate predicted and observed outcomes to domains.
-5. Estimate uncertainty using bootstrap, posterior simulation, or model-specific MSE methods.
-6. Compare estimates against direct estimates and higher-level benchmarks.
+Use [`SUMMER::smoothUnit()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothUnit.html) to fit a basic unit-level SAE model from a `survey::svydesign()` object and population unit-level covariates. It supports Gaussian or binomial outcomes and can optionally use an adjacency matrix for spatial structure.
 
 ```{r}
-# Placeholder only: final code depends on the selected package and data structure.
+library(survey)
+library(SUMMER)
 
-# library(emdi)
-# ebp_fit <- ebp(
-#   fixed = outcome ~ age_group + household_type + car_access,
-#   pop_data = population_microdata,
-#   pop_domains = "domain_id",
-#   smp_data = survey_microdata,
-#   smp_domains = "domain_id",
-#   weights = "survey_weight",
-#   MSE = TRUE
-# )
+# survey_microdata should contain:
+# - indicator
+# - domain_id
+# - weight and survey design variables
+# - unit-level covariates used in the model
+#
+# population_microdata should contain:
+# - domain_id
+# - the same unit-level covariates for the target population
+
+design <- survey::svydesign(
+  ids = ~psu,
+  strata = ~stratum,
+  weights = ~weight,
+  data = survey_microdata,
+  nest = TRUE
+)
+
+unit_fit <- SUMMER::smoothUnit(
+  formula = outcome ~ age_group + employment_status + car_access,
+  domain = ~domain_id,
+  design = design,
+  family = "binomial",
+  X.pop = population_microdata,
+  adj.mat = NULL,
+  level = 0.95
+)
 ```
 
-## Caveats
+### Worked example
 
-- Unit-level SAE is model-heavy and should be checked carefully.
-- If the survey design is informative, ignoring weights can bias estimates.
-- If population covariates are weak predictors, estimates can be poor even with many population records.
-- MSE estimation can be computationally expensive.
-- Outliers, non-normality, and model misspecification can matter.
-- The method can give a false sense of detail if the population microdata are synthetic or weakly validated.
-
-## Notes on Sources
-
-The standard unit-level SAE idea is to model the outcome using survey microdata, then predict or simulate outcomes for population units before aggregating to domains. See the [unit-level SAE chapter in the poverty mapping guide](https://ssegoviajuarez.github.io/sae/04_unit-level.html) for a fuller discussion of empirical best prediction, census-based workflows, requirements, and caveats.
+N/A

@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,7 +64,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/area-level-sae.html" rel="next">
+<link href="../pages/freq-area-sae.html" rel="next">
 <link href="../pages/prepare-inputs.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -229,20 +263,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/area-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level SAE Models</span></a>
+  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Frequentist Area-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/spatial-bayesian-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area and Spatial Smoothing</span></a>
+  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level SAE Models</span></a>
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -323,12 +357,13 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#inputs" id="toc-inputs" class="nav-link active" data-scroll-target="#inputs"><span class="header-section-number">1</span> Inputs</a></li>
-  <li><a href="#choosing-the-direct-estimator" id="toc-choosing-the-direct-estimator" class="nav-link" data-scroll-target="#choosing-the-direct-estimator"><span class="header-section-number">2</span> Choosing the Direct Estimator</a>
+  <li><a href="#direct-estimator-and-sampling-variances" id="toc-direct-estimator-and-sampling-variances" class="nav-link" data-scroll-target="#direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</a></li>
+  <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">3</span> Evaluation</a></li>
+  <li><a href="#implementation-in-r" id="toc-implementation-in-r" class="nav-link" data-scroll-target="#implementation-in-r"><span class="header-section-number">4</span> Implementation in R</a>
   <ul class="collapse">
-  <li><a href="#horvitz-thompson-estimator-with-known-domain-size" id="toc-horvitz-thompson-estimator-with-known-domain-size" class="nav-link" data-scroll-target="#horvitz-thompson-estimator-with-known-domain-size"><span class="header-section-number">2.1</span> Horvitz-Thompson Estimator With Known Domain Size</a></li>
-  <li><a href="#hájek-estimator-with-unknown-domain-size" id="toc-hájek-estimator-with-unknown-domain-size" class="nav-link" data-scroll-target="#hájek-estimator-with-unknown-domain-size"><span class="header-section-number">2.2</span> Hájek Estimator With Unknown Domain Size</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="header-section-number">4.1</span> Functions</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.2</span> Worked example</a></li>
   </ul></li>
-  <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step"><span class="header-section-number">3</span> Next Step</a></li>
   </ul>
 </nav>
     </div>
@@ -353,7 +388,6 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 <p>Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say before borrowing strength from covariates or spatial structure.</p>
-<p>In R, this step can be implemented with the <code>sae</code> package, using <code>sae::direct()</code> to compute direct estimates and their sampling variances under common survey-design settings.</p>
 <section id="inputs" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="inputs"><span class="header-section-number">1</span> Inputs</h2>
 <p>The direct-estimation step uses the standard files prepared earlier:</p>
@@ -381,111 +415,52 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>The <code>indicator</code> column can be binary, such as <code>1</code> for adults who walk weekly and <code>0</code> otherwise, or numeric for a continuous outcome.</p>
 </section>
-<section id="choosing-the-direct-estimator" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="choosing-the-direct-estimator"><span class="header-section-number">2</span> Choosing the Direct Estimator</h2>
+<section id="direct-estimator-and-sampling-variances" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</h2>
 <p>The estimator should match the information available in the survey file and the estimand definition.</p>
 <table class="table">
 <colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Situation</th>
 <th>Estimator</th>
-<th>Strengths</th>
-<th>Main caution</th>
+<th>When to use</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Domain size is known and grossing weight available</td>
+<td>Domain size is known and grossing weight is available</td>
 <td>Horvitz-Thompson estimator</td>
-<td>Direct link between weighted survey totals and population denominator</td>
-<td>Weight scale must match the domain-size definition</td>
+<td>Anchors estimates to true domain size and gives design-unbiased levels; required for estimating <em>counts or totals</em></td>
 </tr>
 <tr class="even">
-<td>Domain size is unknown and/or only analysis weight available</td>
+<td>Domain size is unknown and/or only analysis weights are available</td>
 <td>Hájek estimator</td>
-<td>Robust for means and proportions when weight scale is uncertain</td>
-<td>Does not estimate totals</td>
+<td>Preferred for <em>means or proportions</em> when using normalised analysis weights and no reliable domain size is available</td>
 </tr>
 </tbody>
 </table>
-<section id="horvitz-thompson-estimator-with-known-domain-size" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="horvitz-thompson-estimator-with-known-domain-size"><span class="header-section-number">2.1</span> Horvitz-Thompson Estimator With Known Domain Size</h3>
-<p>For means and proportions in domain (<span class="math inline">\(d\)</span>), the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> is calculated as:</p>
+<p>The <strong>Horvitz-Thompson estimator</strong> calculates the direct estimate <span class="math inline">\(\hat{\theta}_d^{DIR}\)</span> in domain (<span class="math inline">\(d\)</span>) as:</p>
 <p><span class="math display">\[
-\hat{\theta}_d =
+\hat{\theta}_d^{DIR} =
 \frac{\sum_{i \in s_d} w_{di} y_{di}}{N_d}
 \]</span></p>
-<p>where <span class="math inline">\(N_d\)</span> is <code>domain_size</code>, <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>. The variance approximation for this direct estimates is: <span class="math display">\[
-\widehat{V}(\hat{\theta}_d)
-\approx
-\frac{\sum_{i \in s_d} w_{di}^{2}(y_{di} - \hat{\theta}_d)^2}{N_d^2}.
-\]</span></p>
-</section>
-<section id="hájek-estimator-with-unknown-domain-size" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="hájek-estimator-with-unknown-domain-size"><span class="header-section-number">2.2</span> Hájek Estimator With Unknown Domain Size</h3>
-<p>For means and proportions in domain (<span class="math inline">\(d\)</span>), the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> is calculated as:</p>
+<p>The <strong>Hájek Estimator</strong> calculates the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> in domain (<span class="math inline">\(d\)</span>) as:</p>
 <p><span class="math display">\[
-\hat{\theta}_d =
+\hat{\theta}_d^{DIR} =
 \frac{\sum_{i \in s_d} w_{di} y_{di}}
 {\sum_{i \in s_d} w_{di}}.
 \]</span></p>
-<p>where <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>. The variance approximation for this direct estimates is:</p>
-<p><span class="math display">\[
-\widehat{V}(\hat{\theta}_d)
-\approx
-\frac{\sum_{i \in s_d} w_{di}^{2}(y_{di} - \hat{\theta}_d)^2}
-{\left(\sum_{i \in s_d} w_{di}\right)^2}.
-\]</span></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>So far in our variance estimation, we assume the survey has no stratification information and is conducted <em>without replacement</em> (i.e., no duplicate respondents). The good news is that the R package <code>sae</code> handles the choice of estimator HT vs.&nbsp;Hájek and survey design features (e.g., stratification and with/without replacement) automatically when performing direct estimation with <code>sae::direct()</code>.</p>
-</div>
-</div>
+<p>where <span class="math inline">\(N_d\)</span> is <code>domain_size</code>, <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>.</p>
+<p>Direct estimates are paired with estimated <strong>sampling variances</strong>, telling us how much uncertainty comes from observing only a sample within each domain. In practice, the variance depends on the estimator, weight scale, and survey design information available.</p>
 </section>
-</section>
-<section id="next-step" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="next-step"><span class="header-section-number">3</span> Next Step</h2>
-<p>The output needed for <strong>Area-level Modelling</strong> is:</p>
-<ul>
-<li><code>domain_id</code></li>
-<li><code>Direct</code>, the survey-only estimate</li>
-<li><code>Variance</code>, the estimated sampling variance of <code>Direct</code></li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>sae::direct()</code> returns core direct-estimation outputs by domain, including sample size (<code>N</code>), direct estimate (<code>Direct</code>), and standard deviation (<code>SD</code>), which can be squared to obtain <code>Variance</code>.</p>
-</div>
-</div>
-<p>However, before proceeding, check whether the direct estimates are ready for area-level modelling:</p>
-<ul>
-<li>domains with no sampled units</li>
-<li>domains with very few valid units, or dominated by very few large weights</li>
-<li>zero or extremely small variances</li>
-<li>estimates outside the valid range for the indicator</li>
-</ul>
-<p>The table below links common direct-estimate patterns to practical next steps.</p>
+<section id="evaluation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="evaluation"><span class="header-section-number">3</span> Evaluation</h2>
+<p>Evaluate the direct estimates and variances outputs to make a decision how to proceed:</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -499,17 +474,83 @@ Note
 <td>Direct estimates may be enough for reporting.</td>
 </tr>
 <tr class="even">
-<td>Too many domains have no sample or unusable variances</td>
+<td>Many domains have no sample, or invalid variances</td>
 <td>Revisit the domain choice or redefine estimand.</td>
 </tr>
 <tr class="odd">
-<td>Estimates are noisy but variances are usable</td>
-<td>Fit a covariate-based <a href="../pages/area-level-sae.html">area-level SAE model</a>.</td>
+<td>Variances are acceptable but poor precision</td>
+<td>Proceed to <a href="../pages/freq-area-sae.html">Frequentist Area-Level SAE</a> to ‘tighten’ the estimates and their variances</td>
 </tr>
 </tbody>
 </table>
+<p>(*)Here, “usable variance” means a finite, positive sampling variance for the direct estimate in each domain.</p>
+<p>In case <strong>Model-based SAE</strong> is necessary, the output needed will be:</p>
+<ul>
+<li><code>domain_id</code></li>
+<li><code>Direct</code>, the survey-only estimate</li>
+<li><code>Variance</code>, the estimated sampling variance of <code>Direct</code></li>
+</ul>
+</section>
+<section id="implementation-in-r" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="implementation-in-r"><span class="header-section-number">4</span> Implementation in R</h2>
+<section id="functions" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="functions"><span class="header-section-number">4.1</span> Functions</h3>
+<p>Use <a href="https://search.r-project.org/CRAN/refmans/sae/html/direct.html"><code>sae::direct()</code></a> to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (<code>SampSize</code>), direct estimate (<code>Direct</code>), estimated standard deviation (<code>SD</code>), and coefficient of variation (<code>CV</code>). Square <code>SD</code> to obtain the <code>Variance</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sae)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>direct_fit <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator<span class="sc">$</span>indicator,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator<span class="sc">$</span>domain_id,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator<span class="sc">$</span>weight,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> domain_sizes, </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="co"># without replacement (i.e., no duplicate respondents)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>direct_results <span class="ot">&lt;-</span> direct_fit <span class="sc">|&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">domain_id =</span> Domain) <span class="sc">|&gt;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Variance =</span> SD<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In <code>sae::direct()</code>, if <code>domsize</code> is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.</p>
+</div>
+</div>
+<p>If the survey includes more detailed design information, use the <a href="https://cran.r-project.org/package=survey"><code>survey</code></a> package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span>psu,                 <span class="co"># primary sampling unit</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>stratum,          <span class="co"># survey stratum ID</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,          <span class="co"># survey weight</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator,    <span class="co"># survey indicator file</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>direct_design_fit <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,       </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id,            </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design,            </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> svymean,  <span class="co"># other values: svytotal, svyratio, etc.</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="fu">c</span>(<span class="st">"se"</span>, <span class="st">"ci"</span>),    <span class="co"># output SE, CI, CV</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="worked-example" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.2</span> Worked example</h3>
+<p>Lorem Ipsum - share real example National Survey of Wales</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -767,8 +808,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/area-level-sae.html" class="pagination-link">
-        <span class="nav-page-text">Area-Level SAE Models</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/freq-area-sae.html" class="pagination-link">
+        <span class="nav-page-text">Frequentist Area-Level Estimation</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
