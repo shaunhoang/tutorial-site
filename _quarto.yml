@@ -31,6 +31,8 @@ website:
             href: pages/sae-toolkit.qmd
           - text: "Troubleshooting"
             href: pages/troubleshooting.qmd
+      - text: "About"
+        href: pages/about.qmd
 
 
   sidebar:
@@ -59,6 +61,9 @@ website:
         contents:
           - pages/sae-toolkit.qmd
           - pages/troubleshooting.qmd
+      - section: "About"
+        contents:
+          - pages/about.qmd
 
 format:
   html:
