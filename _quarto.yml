@@ -17,7 +17,7 @@ website:
     left:
       - text: "Home"
         href: index.qmd
-      - text: "Methods"
+      - text: "Tutorial"
         menu:
           - text: "Preparation"
             href: pages/prepare-inputs.qmd
@@ -42,7 +42,7 @@ website:
       - section: "Home"
         contents:
           - index.qmd
-      - section: "Methods"
+      - section: "Tutorial"
         contents:
           - section: "Part 1: Preparation"
             contents:

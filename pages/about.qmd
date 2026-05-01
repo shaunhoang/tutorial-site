@@ -2,4 +2,4 @@
 title: "About"
 ---
 
-Lorem ipsum [TRACK-UK]
+Lorem ipsum \[TRACK-UK\]

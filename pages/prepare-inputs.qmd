@@ -62,7 +62,7 @@ If analysis weights are provided and the domain sizes $N_d$ are known, analysis 
 ::: {.callout-note}
 For the SAE workflow, the preferred setup is one where **grossing weights** are provided for each survey respondent record and **domain sizes** are available, because it gives a direct link between the survey respondent records and the population count in each domain.
 
-If the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, [alternative direct estimation methods](pages\direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
+If the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, [alternative direct estimation methods](direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
 :::
 
 ## Preparing SAE inputs
