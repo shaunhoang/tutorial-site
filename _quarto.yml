@@ -61,9 +61,6 @@ website:
         contents:
           - pages/sae-toolkit.qmd
           - pages/troubleshooting.qmd
-      - section: "About"
-        contents:
-          - pages/about.qmd
 
 format:
   html:
