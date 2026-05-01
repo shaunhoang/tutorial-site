@@ -43,23 +43,16 @@ where $N_d$ is `domain_size`, $w_{di}$ is `weight`, and $y_{di}$ is `indicator`.
 
 Direct estimates are paired with estimated **sampling variances**, telling us how much uncertainty comes from observing only a sample within each domain. In practice, the variance depends on the estimator, weight scale, and survey design information available.
 
-## Evaluation
+## Next Step
 
-Evaluate the direct estimates and variances outputs to make a decision how to proceed:
+Use the direct estimates and sampling variances to decide whether direct reporting is enough, or whether model-based SAE is needed.
 
 | Scenario | Next step |
 |---|---|
-| Most domains have usable sample sizes and uncertainty is acceptable | Direct estimates may be enough for reporting. |
-| Many domains have no sample, or invalid variances | Revisit the domain choice or redefine estimand. |
-| Variances are acceptable but poor precision  | Proceed to [Frequentist Area-Level SAE](freq-area-sae.qmd) to 'tighten' the estimates and their variances |
-
-(*)Here, "usable variance" means a finite, positive sampling variance for the direct estimate in each domain.
-
-In case **Model-based SAE** is necessary, the output needed will be:
-
-- `domain_id`
-- `Direct`, the survey-only estimate
-- `Variance`, the estimated sampling variance of `Direct`
+| Most domains have usable sample sizes and acceptable uncertainty | Direct estimates may be enough for reporting. |
+| Many domains have no sample, or sampling variances are missing, zero, or unreasonable | Revisit the domain choice, estimand, or input data before modelling. |
+| Direct estimates are imprecise and a quick model-based approach is enough | Fit a [Frequentist Area-Level SAE](freq-area-sae.qmd) model to borrow strength from covariates. |
+| Direct estimates are imprecise, spatial effects matter, or uncertainty needs to be reported as probabilities | Fit a [Bayesian Area-Level SAE with Spatial](bayesian-area-sae.qmd) model to borrow strength from covariates and neighbouring areas. |
 
 ## Code Implementation
 

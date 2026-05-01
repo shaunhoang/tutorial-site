@@ -196,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Example: Input Preparation</span></a>
+ <span class="menu-text">Worked Example</span></a>
   </div>
 </li>
       </ul>
@@ -290,10 +290,12 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#minimum-inputs-and-recommended-schema" id="toc-minimum-inputs-and-recommended-schema" class="nav-link active" data-scroll-target="#minimum-inputs-and-recommended-schema"><span class="header-section-number">1</span> Minimum inputs and recommended schema</a>
   <ul class="collapse">
-  <li><a href="#survey-indicator-file" id="toc-survey-indicator-file" class="nav-link" data-scroll-target="#survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file</a></li>
+  <li><a href="#survey-indicator-file" id="toc-survey-indicator-file" class="nav-link" data-scroll-target="#survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file:</a></li>
   <li><a href="#domain-size-file" id="toc-domain-size-file" class="nav-link" data-scroll-target="#domain-size-file"><span class="header-section-number">1.2</span> Domain-size file</a></li>
   <li><a href="#geometry-file" id="toc-geometry-file" class="nav-link" data-scroll-target="#geometry-file"><span class="header-section-number">1.3</span> Geometry file</a></li>
   <li><a href="#covariate-file-for-area-level-estimation" id="toc-covariate-file-for-area-level-estimation" class="nav-link" data-scroll-target="#covariate-file-for-area-level-estimation"><span class="header-section-number">1.4</span> Covariate file for area-level estimation</a></li>
+  <li><a href="#files-for-unit-level-estimation" id="toc-files-for-unit-level-estimation" class="nav-link" data-scroll-target="#files-for-unit-level-estimation"><span class="header-section-number">1.5</span> Files for unit-level estimation</a></li>
+  <li><a href="#recommended-output-schema" id="toc-recommended-output-schema" class="nav-link" data-scroll-target="#recommended-output-schema"><span class="header-section-number">1.6</span> Recommended output schema</a></li>
   </ul></li>
   <li><a href="#downloadable-scripts" id="toc-downloadable-scripts" class="nav-link" data-scroll-target="#downloadable-scripts"><span class="header-section-number">2</span> Downloadable scripts</a></li>
   </ul>
@@ -319,18 +321,19 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>SAE Toolkit Lite is for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach.</p>
+<p>SAE Toolkit Lite is meant for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach.</p>
 <section id="minimum-inputs-and-recommended-schema" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="minimum-inputs-and-recommended-schema"><span class="header-section-number">1</span> Minimum inputs and recommended schema</h2>
-<p>At minimum, an SAE workflow for Urban Analytics needs:</p>
+<p>A SAE workflow usually needs:</p>
 <ul>
-<li>a survey indicator file, with one row per sampled unit used in the estimate</li>
-<li>a domain-size file, with one row per target domain</li>
-<li>a covariate file, when fitting an area-level model</li>
-<li>boundary geometry to map results or drive spatial structure for spatially-informed models</li>
+<li>a <strong>survey indicator file</strong>, with one row per sampled unit used in the estimate</li>
+<li>a <strong>domain-size file</strong>, with one row per target domain</li>
+<li>a <strong>covariate file</strong>, when fitting an area-level model</li>
+<li><strong>boundary geometry</strong> to map results or derive spatial structure, if relevant</li>
+<li>(optional) <strong>population unit file</strong> when fitting unit-level SAE</li>
 </ul>
 <section id="survey-indicator-file" class="level3" data-number="1.1">
-<h3 data-number="1.1" class="anchored" data-anchor-id="survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file</h3>
+<h3 data-number="1.1" class="anchored" data-anchor-id="survey-indicator-file"><span class="header-section-number">1.1</span> Survey indicator file:</h3>
 <p>A survey indicator file links each sampled unit to the chosen outcome, target domain, and survey weight. Survey documentation should be kept alongside the file so that routing, missingness, design variables, and weight choice can be checked.</p>
 <table class="table">
 <thead>
@@ -365,7 +368,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="domain-size-file" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="domain-size-file"><span class="header-section-number">1.2</span> Domain-size file</h3>
-<p>A domain-size file gives the denominator for each target domain. The denominator must match the estimand’s target population rather than the full resident population by default.</p>
+<p>If available, a domain-size file gives the denominator for each target domain. The denominator must match the estimand’s target population rather than the full resident population by default.</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -382,16 +385,12 @@ ul.task-list li input[type="checkbox"] {
 <td><code>domain_size</code></td>
 <td>Denominator matching the target population.</td>
 </tr>
-<tr class="odd">
-<td><code>domain_name</code></td>
-<td>Human-readable area name.</td>
-</tr>
 </tbody>
 </table>
 </section>
 <section id="geometry-file" class="level3" data-number="1.3">
 <h3 data-number="1.3" class="anchored" data-anchor-id="geometry-file"><span class="header-section-number">1.3</span> Geometry file</h3>
-<p>Boundary geometry is useful for visualising estimates and for deriving adjacency structures for spatial models. It is not required for direct estimates or non-spatial area-level models.</p>
+<p>Boundary geometry is useful for visualising estimates and for creating adjacency matrix for spatial models.</p>
 <table class="table">
 <colgroup>
 <col style="width: 19%">
@@ -442,17 +441,129 @@ ul.task-list li input[type="checkbox"] {
 <td><code>covariate_*</code></td>
 <td>Area-level predictor available for every target domain.</td>
 </tr>
+</tbody>
+</table>
+</section>
+<section id="files-for-unit-level-estimation" class="level3" data-number="1.5">
+<h3 data-number="1.5" class="anchored" data-anchor-id="files-for-unit-level-estimation"><span class="header-section-number">1.5</span> Files for unit-level estimation</h3>
+<p>Unit-level SAE needs two harmonised files:</p>
+<ul>
+<li>The <code>survey_unit_data</code> file besides <code>indicator</code> also needs covariates used to fit the model</li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 79%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
 <tr class="odd">
-<td><code>median_age</code></td>
-<td>Example demographic covariate.</td>
+<td><code>unit_id</code></td>
+<td>Survey respondent, household, or sampled unit ID.</td>
 </tr>
 <tr class="even">
-<td><code>prop_urban</code></td>
-<td>Example settlement or land-use covariate.</td>
+<td><code>domain_id</code></td>
+<td>Reporting domain code.</td>
 </tr>
 <tr class="odd">
-<td><code>employment_rate</code></td>
-<td>Example socioeconomic covariate.</td>
+<td><code>indicator</code></td>
+<td>Outcome to model.</td>
+</tr>
+<tr class="even">
+<td><code>weight</code></td>
+<td>Survey weight selected for the estimand.</td>
+</tr>
+<tr class="odd">
+<td><code>stratum</code></td>
+<td>(optional) survey stratum.</td>
+</tr>
+<tr class="even">
+<td><code>covariate_*</code></td>
+<td>Individual or household covariate.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The <code>population_unit_data</code> file provides the prediction population (real or synthetic microdata), with one row per population unit, household, or population cell. The covariates must match those in <code>survey_unit_data</code>.</li>
+</ul>
+<table class="table">
+<colgroup>
+<col style="width: 62%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>unit_id</code></td>
+<td>Population person, household, or synthetic unit ID.</td>
+</tr>
+<tr class="even">
+<td><code>domain_id</code></td>
+<td>Reporting domain code used to aggregate predictions.</td>
+</tr>
+<tr class="odd">
+<td><code>covariate_*</code></td>
+<td>Matching individual or household covariate also used in <code>survey_unit_data</code>.</td>
+</tr>
+<tr class="even">
+<td><code>pop_weight</code></td>
+<td>Population count represented by the row (optional, in case population cells are used)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="recommended-output-schema" class="level3" data-number="1.6">
+<h3 data-number="1.6" class="anchored" data-anchor-id="recommended-output-schema"><span class="header-section-number">1.6</span> Recommended output schema</h3>
+<p>For diagnostics, each estimation script should end with a domain-level results table using the same column names. This makes it easier to combine direct, area-level, spatial, and unit-level outputs.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>domain_id</code></td>
+<td>Reporting domain code.</td>
+</tr>
+<tr class="even">
+<td><code>method</code></td>
+<td>Estimation method label.</td>
+</tr>
+<tr class="odd">
+<td><code>estimate</code></td>
+<td>Point estimate for the domain.</td>
+</tr>
+<tr class="even">
+<td><code>se</code></td>
+<td>Standard error or posterior standard deviation, where available.</td>
+</tr>
+<tr class="odd">
+<td><code>lower</code></td>
+<td>Lower confidence or credible interval bound.</td>
+</tr>
+<tr class="even">
+<td><code>upper</code></td>
+<td>Upper confidence or credible interval bound.</td>
+</tr>
+<tr class="odd">
+<td><code>uncertainty_type</code></td>
+<td>Type of interval, such as <code>confidence_interval</code> or <code>credible_interval</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -460,7 +571,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="downloadable-scripts" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="downloadable-scripts"><span class="header-section-number">2</span> Downloadable scripts</h2>
-<p>Reusable scripts can be adapted for another survey once the input files follow the schema above.</p>
+<p>Reusable scripts can be adapted once the input files follow the schema above.</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -474,18 +585,14 @@ ul.task-list li input[type="checkbox"] {
 <td>Calculate direct estimates by domain, sampling variances, and confidence intervals.</td>
 </tr>
 <tr class="even">
-<td><a href="../scripts/covariate_sae.R">covariate_sae.R</a></td>
-<td>Fit frequentist Fay-Herriot area-level models using direct estimates, sampling variances, and area-level covariates.</td>
+<td><a href="../scripts/area_level_sae.R">area_level_sae.R</a></td>
+<td>Fit Bayesian area-level model with covariates and spatial structure derived from boundary geometry, if relevant.</td>
 </tr>
 <tr class="odd">
-<td><a href="../scripts/spatial_sae.R">spatial_sae.R</a></td>
-<td>Fit Bayesian area-level models with optional spatial structure using direct estimates, covariates, and an adjacency matrix.</td>
+<td><a href="../scripts/unit_level_sae.R">unit_level_sae.R</a></td>
+<td>Fit Bayesian unit-level model using survey microdata and population or synthetic-population covariates.</td>
 </tr>
 <tr class="even">
-<td><a href="../scripts/unit_level_sae.R">unit_level_sae.R</a></td>
-<td>Fit a unit-level SAE model using survey microdata and population unit-level covariates.</td>
-</tr>
-<tr class="odd">
 <td><a href="../scripts/diagnostics.R">diagnostics.R</a></td>
 <td>Create comparison tables and plots for checking estimates, uncertainty, and model outputs.</td>
 </tr>

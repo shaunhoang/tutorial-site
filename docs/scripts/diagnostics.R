@@ -1,88 +1,61 @@
 # Diagnostics and reporting scaffold
 #
-# Expected inputs, when available:
-# - direct_results: domain_id, Direct, Variance, SD/CV if available
-# - fh_results: domain_id, direct, eblup, mse, rmse
-# - bayes_results: domain_id, posterior_mean/median, credible interval columns
-# - spatial_results: domain_id, posterior_mean/median, credible interval columns
-# - domains_sf: optional sf object with domain geometry
+# Recommended input: a single long table of estimates from each workflow.
+# Each *_results table should use the same result schema:
+# - domain_id
+# - method
+# - estimate
+# - se
+# - lower
+# - upper
+# - uncertainty_type
+#
+# Examples:
+# - direct_results
+# - bayesian_fh_results
+# - spatial_fh_results
+# - unit_level_results
+# - truth_results: optional domain_id, truth for teaching/evaluation examples
 
 library(dplyr)
 library(ggplot2)
 
-comparison_table <- direct_results |>
-  transmute(
-    domain_id,
-    direct = Direct,
-    direct_se = sqrt(Variance)
-  ) |>
-  left_join(
-    fh_results |>
-      transmute(
-        domain_id,
-        fh_eblup = eblup,
-        fh_rmse = rmse
-      ),
-    by = "domain_id"
+estimate_results <- bind_rows(
+  direct_results,
+  bayesian_fh_results,
+  spatial_fh_results,
+  unit_level_results
+)
+
+direct_baseline <- estimate_results |>
+  filter(method == "Direct") |>
+  select(domain_id, direct = estimate, direct_se = se)
+
+comparison_table <- estimate_results |>
+  left_join(direct_baseline, by = "domain_id") |>
+  mutate(
+    difference_from_direct = estimate - direct,
+    interval_width = upper - lower
   )
 
-direct_vs_fh_plot <- ggplot(
-  comparison_table,
-  aes(x = direct, y = fh_eblup)
-) +
+direct_vs_model_plot <- comparison_table |>
+  filter(method != "Direct", !is.na(direct)) |>
+  ggplot(aes(x = direct, y = estimate, colour = method)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
   geom_point() +
   labs(
     x = "Direct estimate",
-    y = "Frequentist FH estimate",
+    y = "Model-based estimate",
     title = "Direct versus model-based estimates"
   )
 
 uncertainty_plot <- ggplot(
   comparison_table,
-  aes(x = fh_rmse)
+  aes(x = interval_width, fill = method)
 ) +
-  geom_histogram(bins = 30) +
+  geom_histogram(bins = 30, alpha = 0.7, position = "identity") +
   labs(
-    x = "FH RMSE",
+    x = "Uncertainty interval width",
     y = "Number of domains",
-    title = "Distribution of model uncertainty"
+    title = "Distribution of uncertainty by method"
   )
-
-# Teaching/evaluation route when true area values are available.
-# In real SAE applications, replace this with external benchmarks or known totals.
-
-if (exists("truth_results")) {
-  compare_eval <- comparison_table |>
-    left_join(truth_results, by = "domain_id") |>
-    mutate(
-      error = fh_eblup - truth,
-      abs_error = abs(error),
-      sq_error = error^2,
-      lower = fh_eblup - 1.96 * fh_rmse,
-      upper = fh_eblup + 1.96 * fh_rmse,
-      covered = truth >= lower & truth <= upper
-    )
-
-  summary_metrics <- compare_eval |>
-    summarise(
-      n = sum(!is.na(fh_eblup) & !is.na(truth)),
-      bias = mean(error, na.rm = TRUE),
-      mae = mean(abs_error, na.rm = TRUE),
-      rmse = sqrt(mean(sq_error, na.rm = TRUE)),
-      coverage_95 = mean(covered, na.rm = TRUE),
-      corr_pearson = cor(fh_eblup, truth, use = "complete.obs")
-    )
-
-  estimate_vs_truth_plot <- ggplot(
-    compare_eval,
-    aes(x = truth, y = fh_eblup)
-  ) +
-    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-    geom_point() +
-    labs(
-      x = "True value",
-      y = "Model-based estimate",
-      title = "Estimate versus truth"
-    )
-}

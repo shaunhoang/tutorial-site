@@ -30,8 +30,8 @@ Use these pages to understand the concepts and decisions behind the workflow.
 |---|---|---|
 | 1 |**[Preparing the Inputs](pages/prepare-inputs.qmd)** | Define what is being estimated, for whom, and at what geographical scale. |
 | 2 |**[Direct estimation](pages/direct-estimation.qmd)** | Estimate area-level indicators directly from the survey and assess their precision. |
-| 3a |**[Frequentist Area-Level SAE](pages/freq-area-sae.qmd)** | Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates. |
-| 3b |**[Bayesian Area-Level SAE (+Spatial)](pages/bayesian-area-sae.qmd)** | Reframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas. |
+| 3a |**[Area-Level SAE (Frequentist)](pages/freq-area-sae.qmd)** | Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates (Frequentist approach). |
+| 3b |**[Area-Level SAE (Bayesian) with Spatial](pages/bayesian-area-sae.qmd)** | Reframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas. |
 | 4 |**[Unit-Level SAE](pages/unit-level-sae.qmd)** | A bottom-up approach to SAE using individual person/household records instead of area-level estimates. |
 | 5 |**[Diagnose and Report](pages/diagnostics.qmd)** | Check model performance, report uncertainty, and present estimates. |
 

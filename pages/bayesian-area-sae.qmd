@@ -26,15 +26,15 @@ Therefore, in practice, there is little need to perform Area-Level SAE using bot
 
 ## Spatial Structure
 
-Going back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects $u_d$ are *independent* after accounting for covariates. In urban research, this is rarely true: Neighbouring places may share more similarities that could help inform our estimates.
+Going back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects $u_d$ are *independent* after accounting for covariates. In urban research, this is rarely true. This extension of the Fay-Herriot model assumes spatial correlation between areas, i.e., the values of one area will be influenced *by the values of the areas around it.*
 
-**Spatial area-level models** add a structured area effect using an adjacency matrix or neighbourhood graph. This lets the model borrow strength not only from covariates, but also from nearby areas. The spatial structure is usually provided as a binary **spatial weights matrix**.
+$$
+u = \rho W u + \eta,\qquad \eta \sim N(0,\sigma^2 I)
+$$
+
+Adding spatial structure, usually a binary **spatial weights matrix** $W$, lets the model borrow strength not only from covariates, but also from nearby areas. 
 
 [ADD IMAGE]
-
-## Evaluation
-
-At this stage, it is worth comparing the evolving outputs of the area-level estimates and their uncertainties from direct estimates through each addition of covariates and spatial information. The aim is simply to check whether the extra modelling is useful and defensible.
 
 ## Code Implementation
 
@@ -44,7 +44,7 @@ For Bayesian area-level SAE, the main package used here is [`SUMMER`](https://cr
 - Use [`SUMMER::smoothArea()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html) when you already have direct estimates and their variances. 
 - Use [`SUMMER::smoothSurvey()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html) when you want `SUMMER` to calculate design-adjusted direct estimates from survey microdata before smoothing. 
 
-The `sae` package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure conveniently. Instead, they must be coded manually, which diminishes its utility in many real-life scenarios.
+The `sae` package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure automatically. These cases require extra implementation work.
 :::
 
 ### Worked Example

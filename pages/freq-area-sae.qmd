@@ -35,39 +35,31 @@ The shrinkage weight $\hat{\gamma}_d = \frac{\hat{\sigma}_u^2}{\hat{\sigma}_u^2 
 In practice, FH leaves precise direct estimates mostly unchanged, while pulling noisy direct estimates toward the covariate-based prediction.
 
 :::{.callout-note}
-In this **frequentist** FH workflow, the main outputs are the model-based estimate (**EBLUP**) and its uncertainty (**RMSE**, the square root of model-based MSE). For domains without a usable direct estimate, the EBLUP comes entirely from the model component.
+In this **frequentist** FH workflow, the main outputs are the model-based estimate (**EBLUP**) and its uncertainty (**RMSE**). 
+
+- If EBLUPs stay close to precise direct estimates and RMSE is acceptable, the estimates may be suitable for reporting. 
+- If results are sensitive to covariate choice or diagnostics show poor fit, revisit the covariates and refit the model.
 :::
 
 ## Covariate Choices
 
-Domain-level covariates can often be found via census datas and other population-level aggregate statistics.Choose covariates with emphasis on coverage and comparability across domains. 
+Domain-level covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across domains. 
 
 - **Coverage:** each covariate should be available for all target domains.
 - **Alignment:** match geography, definition, and reference period to the survey indicator.
 - **Relevance:** keep variables with a clear substantive link to the outcome and avoid including many weak predictors.
 - **Predictive:** choose covariates that improve domain-level prediction and are easy to explain; avoid downstream variables, and remove or combine highly correlated predictors.
 
-Common examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessbility metrics, car ownership, etc.
+Common examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessibility metrics, car ownership, etc.
 
 [ADD IMAGE]
-
-## Evaluation
-
-Evaluate the FH outputs (EBLUPs) and uncertainty (RMSEs) to decide how to proceed:
-
-| Scenario | Next step |
-|---|---|
-| Estimates are stable, and uncertainty acceptable | Use EBLUPs for reporting. |
-| Results are sensitive to covariate choice, coefficients are unstable, or diagnostics show poor fit | Revisit covariates and refit FH. |
-|  A probability-style uncertainty provides better interpretation  | Move to [Bayesian Area-Level SAE (+Spatial)](bayesian-area-sae.qmd) to represent uncertainty through posterior estimates and Credible Intervals. |
-| Residuals show spatial autocorrelation after the covariate FH model | Add spatial structure to borrow strength from neighbouring areas. See [Spatial SAE](bayesian-area-sae.qmd).|
 
 ## Code Implementation
 
 :::{.callout-tip}
 Use [`sae::eblupFH()`](https://search.r-project.org/CRAN/refmans/sae/html/eblupFH.html) to fit a frequentist Fay-Herriot model and [`sae::mseFH()`](https://search.r-project.org/CRAN/refmans/sae/html/mseFH.html) to estimate uncertainty. 
 
-Note that `sae` does not handle out-of-sample domains (i.e., domains without respondent records) automatically. They must be manually calculated based on the covariate-modelled predictions.
+`sae` does not handle out-of-sample domains (i.e., domains without respondent records) automatically. These domains require separate model-based predictions from the fitted covariate relationship.
 :::
 
 ### Worked Example

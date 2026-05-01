@@ -4,6 +4,7 @@ execute:
   eval: true
 ---
 
+
 This page applies the SAE input preparation flow to the [*National Survey for Wales 2022-23*](https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details). The main purpose is to show the decisions needed to turn survey data into SAE-ready inputs.
 
 ## Start with the Estimands
@@ -37,6 +38,7 @@ For the active-travel estimand, `SampleTravelWeight` is scaled to a grossing wei
 
 ## Data Processing
 ### Load data
+
 ```{r}
 library(dplyr)
 library(readr)
@@ -57,7 +59,9 @@ nsw_raw <- read_tsv(
   rename(unit_id = CaseNo)     # rename for consistency
 ```
 
+
 Gather and clean LA codes from the survey to be used as `domain_id` field.
+
 ```{r}
 survey_domains <- nsw_raw |>
   transmute(
@@ -71,9 +75,11 @@ survey_domains <- nsw_raw |>
   )
 ```
 
+
 ### Aggregating Domain Size
 
 In this exercise, assume we only have UK population estimates (not worker estimates). We therefore construct the required domain size (the adult population by Local Authority) from the population estimates.
+
 ```{r}
 adult_domain_sizes <- read_csv(
   file.path(census_root, "census2021-ts007-ltla.csv"),
@@ -93,9 +99,11 @@ adult_domain_sizes <- read_csv(
 adult_domain_sizes
 ```
 
+
 ### Building Indicators
 
 Define the missing-value rules used when constructing survey indicators.
+
 
 ```{r}
 missing_codes <- c(-99, -98, -9, -8, -7)
@@ -113,7 +121,9 @@ make_binary <- function(x, yes_values) {
 }
 ```
 
+
 Calculate the indicators based on the rules set out above. 
+
 
 ```{r}
 
@@ -149,9 +159,11 @@ survey_indicators |>
   slice_head(n = 5)
 ```
 
+
 ### Weight
 
 Filter for the relevant weight variables from the survey.
+
 
 ```{r}
 survey_weights <- nsw_raw |>
@@ -165,7 +177,9 @@ survey_weights <- nsw_raw |>
 survey_weights |>
   slice_head(n = 5)
 ```
+
 `SampleTravelWeight` is an analysis weight for the active-travel module. Because `walk_weekly` will use the adult domain size later, create a grossing-style `WalesTravelWeight` by scaling `SampleTravelWeight` within each Local Authority so that the weights sum to the adult population in each Local Authority.
+
 
 
 ```{r}
@@ -220,8 +234,10 @@ survey_weights |>
   slice_head(n = 5)
 ```
 
+
 ### Check Survey Inputs
 At this point, we will check non-NA values of each indicator to evaluate 'missingness' and whether it is expected
+
 ```{r}
 survey_inputs <- survey_domains |>
   left_join(survey_indicators, by = "unit_id") |>
@@ -238,6 +254,7 @@ survey_inputs |>
     values_to = "non_missing"
   )
 ```
+
 The number of non-missing observations reflects both survey routing and module design:
 - `walk_weekly` comes from a subsampled active-travel module of about 2,000 respondents. Its non-missing count is therefore expected; the indicator can still support population-level estimation when paired with the scaled `WalesTravelWeight` 
 - `commute_distance` has relatively few non-missing values because it is only asked of respondents who travel to work. This supports the decision to use an analysis-weight approach to estimate proportions (i.e. 'share of workers').
@@ -246,6 +263,7 @@ The number of non-missing observations reflects both survey routing and module d
 ## Outputs
 
 Keep a small record of the decisions behind each estimand.
+
 ```{r}
 estimand_record <- tibble::tribble(
   ~indicator, ~estimand, ~target_population, ~weight, ~domain_size_file, ~preparation_note,
@@ -274,7 +292,9 @@ estimand_record |>
   slice_head(n = 5)
 ```
 
+
 Write a survey input file for each estimand and its associated weight variable. Also export the domain sizes and estimand record so the estimand definition, weight choice, and domain-size decision remain documented.
+
 ```{r}
 # create survey input for each estimand
 for (i in seq_len(nrow(estimand_record))) {
@@ -297,6 +317,7 @@ for (i in seq_len(nrow(estimand_record))) {
 write_csv(estimand_record, file.path(clean_dir, "estimand_record.csv"))
 write_csv(adult_domain_sizes, file.path(clean_dir, "adult_domain_sizes.csv"))
 ```
+
 We have produced:
 
 - `data/clean/adult_domain_sizes.csv`, for adult-population by LA (from Census 2021);
@@ -313,4 +334,5 @@ The common output schema for the survey input files is:
 | `domain_id` | Reporting domain (LA) code. |
 | `indicator` | Binary or continuous outcome for the estimand. |
 | `weight` | Survey weight selected for that estimand. |
+
 

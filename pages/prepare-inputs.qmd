@@ -4,6 +4,7 @@ title: "Preparing SAE Inputs"
 
 A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to [Tutorial: Data Preparation](tutorial-dataprep.qmd).
 
+
 ## Defining the Estimand
 
 Before fitting any SAE model, define exactly what the survey estimate should represent. This so-called **estimand** determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:
@@ -77,3 +78,5 @@ Finally, each estimand should have enough information to create:
 
 1.  a survey indicator file with one row per sampled unit and the fields `unit_id`, `domain_id`, `indicator`, and `weight`;
 2.  a domain-size file with one row per target domain and the fields `domain_id`, `domain_size` (optionally, `domain_name`);
+
+[ADD IMAGE SUMMARY OF PROCESS]

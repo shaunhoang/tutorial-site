@@ -198,7 +198,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Example: Input Preparation</span></a>
+ <span class="menu-text">Worked Example</span></a>
   </div>
 </li>
       </ul>
@@ -292,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#inputs" id="toc-inputs" class="nav-link active" data-scroll-target="#inputs"><span class="header-section-number">1</span> Inputs</a></li>
   <li><a href="#direct-estimator-and-sampling-variances" id="toc-direct-estimator-and-sampling-variances" class="nav-link" data-scroll-target="#direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</a></li>
-  <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">3</span> Evaluation</a></li>
+  <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step"><span class="header-section-number">3</span> Next Step</a></li>
   <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">4</span> Code Implementation</a>
   <ul class="collapse">
   <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.1</span> Worked Example</a></li>
@@ -391,9 +391,9 @@ ul.task-list li input[type="checkbox"] {
 <p>where <span class="math inline">\(N_d\)</span> is <code>domain_size</code>, <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>.</p>
 <p>Direct estimates are paired with estimated <strong>sampling variances</strong>, telling us how much uncertainty comes from observing only a sample within each domain. In practice, the variance depends on the estimator, weight scale, and survey design information available.</p>
 </section>
-<section id="evaluation" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="evaluation"><span class="header-section-number">3</span> Evaluation</h2>
-<p>Evaluate the direct estimates and variances outputs to make a decision how to proceed:</p>
+<section id="next-step" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="next-step"><span class="header-section-number">3</span> Next Step</h2>
+<p>Use the direct estimates and sampling variances to decide whether direct reporting is enough, or whether model-based SAE is needed.</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -403,26 +403,23 @@ ul.task-list li input[type="checkbox"] {
 </thead>
 <tbody>
 <tr class="odd">
-<td>Most domains have usable sample sizes and uncertainty is acceptable</td>
+<td>Most domains have usable sample sizes and acceptable uncertainty</td>
 <td>Direct estimates may be enough for reporting.</td>
 </tr>
 <tr class="even">
-<td>Many domains have no sample, or invalid variances</td>
-<td>Revisit the domain choice or redefine estimand.</td>
+<td>Many domains have no sample, or sampling variances are missing, zero, or unreasonable</td>
+<td>Revisit the domain choice, estimand, or input data before modelling.</td>
 </tr>
 <tr class="odd">
-<td>Variances are acceptable but poor precision</td>
-<td>Proceed to <a href="../pages/freq-area-sae.html">Frequentist Area-Level SAE</a> to ‘tighten’ the estimates and their variances</td>
+<td>Direct estimates are imprecise and a quick model-based approach is enough</td>
+<td>Fit a <a href="../pages/freq-area-sae.html">Frequentist Area-Level SAE</a> model to borrow strength from covariates.</td>
+</tr>
+<tr class="even">
+<td>Direct estimates are imprecise, spatial effects matter, or uncertainty needs to be reported as probabilities</td>
+<td>Fit a <a href="../pages/bayesian-area-sae.html">Bayesian Area-Level SAE with Spatial</a> model to borrow strength from covariates and neighbouring areas.</td>
 </tr>
 </tbody>
 </table>
-<p>(*)Here, “usable variance” means a finite, positive sampling variance for the direct estimate in each domain.</p>
-<p>In case <strong>Model-based SAE</strong> is necessary, the output needed will be:</p>
-<ul>
-<li><code>domain_id</code></li>
-<li><code>Direct</code>, the survey-only estimate</li>
-<li><code>Variance</code>, the estimated sampling variance of <code>Direct</code></li>
-</ul>
 </section>
 <section id="code-implementation" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">4</span> Code Implementation</h2>
@@ -700,7 +697,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../pages/tutorial-dataprep.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Example: Input Preparation</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Worked Example</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

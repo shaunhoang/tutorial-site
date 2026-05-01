@@ -198,7 +198,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Example: Input Preparation</span></a>
+ <span class="menu-text">Worked Example</span></a>
   </div>
 </li>
       </ul>
@@ -292,10 +292,9 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#bayesian-versus-frequentist-approach" id="toc-bayesian-versus-frequentist-approach" class="nav-link active" data-scroll-target="#bayesian-versus-frequentist-approach"><span class="header-section-number">1</span> Bayesian versus Frequentist approach</a></li>
   <li><a href="#spatial-structure" id="toc-spatial-structure" class="nav-link" data-scroll-target="#spatial-structure"><span class="header-section-number">2</span> Spatial Structure</a></li>
-  <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">3</span> Evaluation</a></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">4</span> Code Implementation</a>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a>
   <ul class="collapse">
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.1</span> Worked Example</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">3.1</span> Worked Example</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -339,16 +338,15 @@ x_d^\top\beta + u_d + e_d.
 </section>
 <section id="spatial-structure" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="spatial-structure"><span class="header-section-number">2</span> Spatial Structure</h2>
-<p>Going back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects <span class="math inline">\(u_d\)</span> are <em>independent</em> after accounting for covariates. In urban research, this is rarely true: Neighbouring places may share more similarities that could help inform our estimates.</p>
-<p><strong>Spatial area-level models</strong> add a structured area effect using an adjacency matrix or neighbourhood graph. This lets the model borrow strength not only from covariates, but also from nearby areas. The spatial structure is usually provided as a binary <strong>spatial weights matrix</strong>.</p>
+<p>Going back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects <span class="math inline">\(u_d\)</span> are <em>independent</em> after accounting for covariates. In urban research, this is rarely true. This extension of the Fay-Herriot model assumes spatial correlation between areas, i.e., the values of one area will be influenced <em>by the values of the areas around it.</em></p>
+<p><span class="math display">\[
+u = \rho W u + \eta,\qquad \eta \sim N(0,\sigma^2 I)
+\]</span></p>
+<p>Adding spatial structure, usually a binary <strong>spatial weights matrix</strong> <span class="math inline">\(W\)</span>, lets the model borrow strength not only from covariates, but also from nearby areas.</p>
 <p>[ADD IMAGE]</p>
 </section>
-<section id="evaluation" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="evaluation"><span class="header-section-number">3</span> Evaluation</h2>
-<p>At this stage, it is worth comparing the evolving outputs of the area-level estimates and their uncertainties from direct estimates through each addition of covariates and spatial information. The aim is simply to check whether the extra modelling is useful and defensible.</p>
-</section>
-<section id="code-implementation" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">4</span> Code Implementation</h2>
+<section id="code-implementation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -364,11 +362,11 @@ Tip
 <li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html"><code>SUMMER::smoothArea()</code></a> when you already have direct estimates and their variances.</li>
 <li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html"><code>SUMMER::smoothSurvey()</code></a> when you want <code>SUMMER</code> to calculate design-adjusted direct estimates from survey microdata before smoothing.</li>
 </ul>
-<p>The <code>sae</code> package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure conveniently. Instead, they must be coded manually, which diminishes its utility in many real-life scenarios.</p>
+<p>The <code>sae</code> package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure automatically. These cases require extra implementation work.</p>
 </div>
 </div>
-<section id="worked-example" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.1</span> Worked Example</h3>
+<section id="worked-example" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">3.1</span> Worked Example</h3>
 <p>Lorem Ipsum - share real example National Survey of Wales</p>
 
 
