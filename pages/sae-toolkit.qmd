@@ -65,6 +65,7 @@ Reusable scripts can be adapted for another survey once the input files follow t
 | Script | Purpose |
 |---|---|
 | [direct_estimates.R](../scripts/direct_estimates.R) | Calculate direct estimates by domain, sampling variances, and confidence intervals. |
-| [covariate_sae.R](../scripts/covariate_sae.R) | Fit Bayesian area-level models using direct estimates, sampling variances, and area-level covariates. |
-| [spatial_sae.R](../scripts/spatial_sae.R) | Build adjacency or spatial weight matrices from domain boundaries and fit Bayesian spatial SAE models. |
+| [covariate_sae.R](../scripts/covariate_sae.R) | Fit frequentist Fay-Herriot area-level models using direct estimates, sampling variances, and area-level covariates. |
+| [spatial_sae.R](../scripts/spatial_sae.R) | Fit Bayesian area-level models with optional spatial structure using direct estimates, covariates, and an adjacency matrix. |
+| [unit_level_sae.R](../scripts/unit_level_sae.R) | Fit a unit-level SAE model using survey microdata and population unit-level covariates. |
 | [diagnostics.R](../scripts/diagnostics.R) | Create comparison tables and plots for checking estimates, uncertainty, and model outputs. |

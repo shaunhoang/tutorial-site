@@ -7,235 +7,67 @@
     "text": "Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models."
   },
   {
-    "objectID": "pages/unit-level-sae.html#understanding-unit-level-sae",
-    "href": "pages/unit-level-sae.html#understanding-unit-level-sae",
+    "objectID": "pages/unit-level-sae.html#understanding-unit-level-estimation",
+    "href": "pages/unit-level-sae.html#understanding-unit-level-estimation",
     "title": "Unit-Level Estimation",
-    "section": "1 Understanding Unit-Level SAE",
-    "text": "1 Understanding Unit-Level SAE\nIn area-level SAE, the model starts from one direct estimate per domain. In unit-level SAE, the model starts from individual or household survey records:\n\\[\ny_{di} =\nx_{di}^{\\top}\\beta + u_d + e_{di},\n\\]\nwhere \\(y_{di}\\) is the outcome for unit \\(i\\) in domain \\(d\\), \\(x_{di}\\) is a vector of unit-level covariates, \\(u_d\\) is the area effect, and \\(e_{di}\\) is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.\nThe domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:\n\\[\n\\theta_d =\n\\frac{1}{N_d}\n\\sum_{i \\in U_d} y_{di}.\n\\]\nThis makes unit-level SAE a bottom-up approach: model people or households first, then aggregate to the geographic domain of choice."
+    "section": "1 Understanding Unit-Level Estimation",
+    "text": "1 Understanding Unit-Level Estimation\nIn area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:\n\\[\ny_{di} =\nx_{di}^{\\top}\\beta + u_d + e_{di},\n\\]\nwhere \\(y_{di}\\) is the outcome for unit \\(i\\) in domain \\(d\\), \\(x_{di}\\) is a vector of unit-level covariates, \\(u_d\\) is the area effect, and \\(e_{di}\\) is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.\nThe domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:\n\\[\n\\theta_d =\n\\frac{1}{N_d}\n\\sum_{i \\in U_d} y_{di}.\n\\]\nThis makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.\n[ADD IMAGE]"
   },
   {
-    "objectID": "pages/unit-level-sae.html#pros-and-cons",
-    "href": "pages/unit-level-sae.html#pros-and-cons",
+    "objectID": "pages/unit-level-sae.html#caveats-with-unit-level-estimation",
+    "href": "pages/unit-level-sae.html#caveats-with-unit-level-estimation",
     "title": "Unit-Level Estimation",
-    "section": "2 Pros and Cons",
-    "text": "2 Pros and Cons\nUnit-level SAE is useful when the survey and population data share comparable individual, household, or poststratification covariates.\n\n\n\n\n\n\n\nPros\nCons\n\n\n\n\nCan aggregate estimates to multiple geographies\nNeeds detailed population data, not just area averages\n\n\nCan use survey microdata directly without aggregating to domains\nSurvey and population variables must be coded in the same way\n\n\n\nThe main barriers to unit-level estimation are microdata availability and privacy. In general, use area-level SAE when only domain-level covariates are available (more common). Unit-level SAE becomes more realistic when suitable population microdata, or a synthetic population, can provide the prediction population."
+    "section": "2 Caveats with Unit-Level Estimation",
+    "text": "2 Caveats with Unit-Level Estimation\nUnit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.\n\n\n\n\n\n\nPros:\n\nUses individual or household covariates directly, rather than area averages\nCan aggregate to several geographic scales\n\nCons:\n\nSurvey and population datasets need to be harmonised and include the same covariates\nMore sensitive estimates because predictions are made for many non-sampled units and scaled up to population level\nMore technically demanding, especially in terms of privacy/access\n\n\n\n\nIn general, prefer Area-level SAE when only domain-level covariates are available. Unit-level SAE is more realistic when suitable population microdata, or a validated synthetic population can provide the prediction population."
   },
   {
     "objectID": "pages/unit-level-sae.html#code-implementation",
     "href": "pages/unit-level-sae.html#code-implementation",
     "title": "Unit-Level Estimation",
     "section": "3 Code Implementation",
-    "text": "3 Code Implementation\nUse SUMMER::smoothUnit() to fit a basic unit-level SAE model from a survey::svydesign() object and population unit-level covariates. It supports Gaussian or binomial outcomes and can optionally use an adjacency matrix for spatial structure.\n\nlibrary(survey)\nlibrary(SUMMER)\n\n# survey_microdata should contain:\n# - indicator\n# - domain_id\n# - weight and survey design variables\n# - unit-level covariates used in the model\n#\n# population_microdata should contain:\n# - domain_id\n# - the same unit-level covariates for the target population\n\ndesign &lt;- survey::svydesign(\n  ids = ~psu,\n  strata = ~stratum,\n  weights = ~weight,\n  data = survey_microdata,\n  nest = TRUE\n)\n\nunit_fit &lt;- SUMMER::smoothUnit(\n  formula = outcome ~ age_group + employment_status + car_access,\n  domain = ~domain_id,\n  design = design,\n  family = \"binomial\",\n  X.pop = population_microdata,\n  adj.mat = NULL,\n  level = 0.95\n)\n\n\n3.1 Worked example\nN/A"
+    "text": "3 Code Implementation\n\n\n\n\n\n\nTip\n\n\n\nUse SUMMER::smoothUnit() to fit a basic unit-level SAE model from a survey::svydesign() object and population unit-level covariates. It supports using an adjacency matrix for spatial structure."
   },
   {
-    "objectID": "pages/tutorial-dataprep.html",
-    "href": "pages/tutorial-dataprep.html",
-    "title": "Data Preparation",
+    "objectID": "pages/troubleshooting.html",
+    "href": "pages/troubleshooting.html",
+    "title": "Troubleshooting",
     "section": "",
-    "text": "The National Survey for Wales (NSW) 2022-23 respondent file provides a concrete example of the input-preparation workflow from From Estimands to SAE Inputs."
+    "text": "Lorem Ipsum"
   },
   {
-    "objectID": "pages/tutorial-dataprep.html#setup",
-    "href": "pages/tutorial-dataprep.html#setup",
-    "title": "Data Preparation",
-    "section": "1 Setup",
-    "text": "1 Setup\n\nlibrary(dplyr)\nlibrary(readr)\nlibrary(stringr)\nlibrary(tidyr)\n\n# Allows chunks to work when run from the project root or from pages/.\nproject_root &lt;- if (dir.exists(\"pages\")) \".\" else \"..\"\n\ndata_root &lt;- file.path(project_root, \"data\")\nraw_dir &lt;- file.path(data_root, \"raw\")\ncensus_root &lt;- file.path(raw_dir, \"census\")\nclean_dir &lt;- file.path(data_root, \"clean\")\ndir.create(clean_dir, recursive = TRUE, showWarnings = FALSE)\n\nrespondent_file &lt;- file.path(\n  raw_dir,\n  \"nsw_2022-23_respondent_file_for_ukds.tab\"\n)\n\nThe NSW materials used here are:\n\nthe main respondent file in data/raw;\nthe data user guide and variable catalogue for survey design and weight choices, as well as variable choices\nCensus 2021 Local Authority tables in data/raw/census\n\nThe respondent file is tab-separated. The catalogue and questionnaire use negative values such as -99, -98, -9, -8, and sometimes -7 for refused, don’t know, routed, or other non-substantive responses. Keep those visible at import, then treat them explicitly during indicator construction.\n\nnsw_raw &lt;- read_tsv(respondent_file, show_col_types = FALSE)\n\nmissing_codes &lt;- c(-99, -98, -9, -8, -7)\n\nis_missing_code &lt;- function(x) {\n  is.na(x) | x %in% missing_codes\n}\n\nmake_binary &lt;- function(x, yes_values) {\n  case_when(\n    is_missing_code(x) ~ NA_integer_,\n    x %in% yes_values ~ 1L,\n    TRUE ~ 0L\n  )\n}"
-  },
-  {
-    "objectID": "pages/tutorial-dataprep.html#estimand",
-    "href": "pages/tutorial-dataprep.html#estimand",
-    "title": "Data Preparation",
-    "section": "2 Estimand",
-    "text": "2 Estimand\nStart with a small set of estimands that illustrate different preparation decisions:\n\na routed travel-to-work measure,\na public transport satisfaction measure,\nan active travel module measure.\n\nEach estimand keeps the same target population and target domain: adults aged 16+ across Local Authorities.\n\n\n\n\n\n\n\n\n\nEstimand\nIndicator to be created\nTarget population\nTarget domain\n\n\n\n\nShare of adults who usually use two or more modes to travel to work\ncommute_multimodal\nAdults aged 16+\nLocal Authority\n\n\nShare of adults dissatisfied with bus services\npoor_bus_satisfaction\nAdults aged 16+\nLocal Authority\n\n\nShare of adults who walk for transport at least weekly\nwalk_weekly\nAdults aged 16+\nLocal Authority"
-  },
-  {
-    "objectID": "pages/tutorial-dataprep.html#indicator-construction",
-    "href": "pages/tutorial-dataprep.html#indicator-construction",
-    "title": "Data Preparation",
-    "section": "3 Indicator Construction",
-    "text": "3 Indicator Construction\nThe indicator is the coded survey variable that measures the outcome in the estimand. The questionnaire and variable catalogue determine the source variables, routing, and response codes.\n\n\n\n\n\n\n\n\nIndicator\nSource variables\nConstruction rule\n\n\n\n\ncommute_multimodal\nTravWkModeAll1 to TravWkModeAll8\n1 when two or more commute modes are selected\n\n\npoor_bus_satisfaction\nBusOverSat\n1 when BusOverSat is 4 or 5, meaning fairly or very dissatisfied\n\n\nwalk_weekly\nAtFrqWlk10\n1 when AtFrqWlk10 is 1, 2, or 3, meaning at least weekly\n\n\n\nMissing and routed values are set to NA, not 0.\n\nmode_cols &lt;- paste0(\"TravWkModeAll\", 1:8)\n\nnsw_with_modes &lt;- nsw_raw |&gt;\n  mutate(\n    commute_mode_count = rowSums(\n      across(all_of(mode_cols), \\(x) x == 1),\n      na.rm = TRUE\n    ),\n    commute_mode_all_missing = if_all(all_of(mode_cols), is_missing_code)\n  )\n\nindicators &lt;- nsw_with_modes |&gt;\n  transmute(\n    unit_id = CaseNo,\n    commute_multimodal = case_when(\n      commute_mode_all_missing ~ NA_integer_,\n      commute_mode_count &gt;= 2 ~ 1L,\n      TRUE ~ 0L\n    ),\n    poor_bus_satisfaction = make_binary(BusOverSat, yes_values = c(4, 5)),\n    walk_weekly = make_binary(AtFrqWlk10, yes_values = c(1, 2, 3))\n  )\n\nindicators |&gt; \n  slice_head(n = 10)\n\n# A tibble: 10 × 4\n     unit_id commute_multimodal poor_bus_satisfaction walk_weekly\n       &lt;dbl&gt;              &lt;int&gt;                 &lt;int&gt;       &lt;int&gt;\n 1 222300001                 NA                    NA          NA\n 2 222300002                 NA                    NA          NA\n 3 222300003                 NA                    NA          NA\n 4 222300004                 NA                    NA          NA\n 5 222300005                 NA                     1          NA\n 6 222300006                 NA                     0           1\n 7 222300007                 NA                     0           0\n 8 222300008                 NA                     0           1\n 9 222300009                  0                     0          NA\n10 222300010                 NA                     1          NA\n\n\nCheck the amount of usable survey information for each indicator.\n\nindicator_missingness &lt;- indicators |&gt;\n  summarise(across(-unit_id, list(\n    non_missing = \\(x) sum(!is.na(x)),\n    missing = \\(x) sum(is.na(x)),\n    positive = \\(x) sum(x == 1, na.rm = TRUE)\n  ))) |&gt;\n  pivot_longer(\n    everything(),\n    names_to = c(\"indicator\", \".value\"),\n    names_pattern = \"(.+)_(non_missing|missing|positive)$\"\n  )\n\nindicator_missingness\n\n# A tibble: 6 × 3\n  indicator                 missing positive\n  &lt;chr&gt;                       &lt;int&gt;    &lt;int&gt;\n1 commute_multimodal_non       3845       NA\n2 commute_multimodal           7295      208\n3 poor_bus_satisfaction_non    8918       NA\n4 poor_bus_satisfaction        2222     2101\n5 walk_weekly_non              1999       NA\n6 walk_weekly                  9141      955"
-  },
-  {
-    "objectID": "pages/tutorial-dataprep.html#target-domain",
-    "href": "pages/tutorial-dataprep.html#target-domain",
-    "title": "Data Preparation",
-    "section": "4 Target Domain",
-    "text": "4 Target Domain\nThe target domain is the geography for which estimates will be produced. The NSW user guide describes results at Local Authority level, and the public respondent file contains DvLA but not a finer public geography.\nUse Local Authority as the target domain.\n\nsurvey_domains &lt;- nsw_raw |&gt;\n  transmute(\n    unit_id = CaseNo,\n    domain_id = str_c(\"W0\", as.integer(DvLA) + 6000000L),\n    domain_id = recode(\n      domain_id,\n      \"W06000007\" = \"W06000023\", # Powys\n      \"W06000017\" = \"W06000024\"  # Merthyr Tydfil\n    )\n  )\n\nsurvey_domains |&gt;\n  count(domain_id, name = \"sample_n\") |&gt;\n  arrange(domain_id)\n\n# A tibble: 22 × 2\n   domain_id sample_n\n   &lt;chr&gt;        &lt;int&gt;\n 1 W06000001      368\n 2 W06000002      465\n 3 W06000003      379\n 4 W06000004      319\n 5 W06000005      467\n 6 W06000006      397\n 7 W06000008      325\n 8 W06000009      409\n 9 W06000010      573\n10 W06000011      749\n# ℹ 12 more rows\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe domain choice is driven by the data. Ward, MSOA, or LSOA estimates would require finer respondent geography, or a documented linkage from respondents to those geographies, plus matching domain sizes and covariates."
-  },
-  {
-    "objectID": "pages/tutorial-dataprep.html#domain-size",
-    "href": "pages/tutorial-dataprep.html#domain-size",
-    "title": "Data Preparation",
-    "section": "5 Domain Size",
-    "text": "5 Domain Size\nThe domain size must match the target population in the estimand. All three selected estimands use adults aged 16+ as the target population, so the required domain_size is the adult population by Local Authority.\nThe Census 2021 TS007 age table provides the adult population denominator.\n\ndomain_sizes &lt;- read_csv(\n  file.path(census_root, \"census2021-ts007-ltla.csv\"),\n  show_col_types = FALSE\n) |&gt;\n  filter(str_starts(`geography code`, \"W\")) |&gt;\n  transmute(\n    domain_id = `geography code`,\n    domain_name = geography,\n    domain_size =\n      `Age: Total; measures: Value` -\n      `Age: Aged 4 years and under; measures: Value` -\n      `Age: Aged 5 to 9 years; measures: Value` -\n      `Age: Aged 10 to 15 years; measures: Value`\n  )\n\ndomain_sizes |&gt;\n  arrange(domain_id)\n\n# A tibble: 22 × 3\n   domain_id domain_name      domain_size\n   &lt;chr&gt;     &lt;chr&gt;                  &lt;dbl&gt;\n 1 W06000001 Isle of Anglesey       57146\n 2 W06000002 Gwynedd                97974\n 3 W06000003 Conwy                  96364\n 4 W06000004 Denbighshire           78907\n 5 W06000005 Flintshire            127581\n 6 W06000006 Wrexham               110270\n 7 W06000008 Ceredigion             61387\n 8 W06000009 Pembrokeshire         102555\n 9 W06000010 Carmarthenshire       155484\n10 W06000011 Swansea               197864\n# ℹ 12 more rows\n\nwrite_csv(domain_sizes, file.path(clean_dir, \"pop_estimate.csv\"))"
-  },
-  {
-    "objectID": "pages/tutorial-dataprep.html#survey-weight",
-    "href": "pages/tutorial-dataprep.html#survey-weight",
-    "title": "Data Preparation",
-    "section": "6 Survey Weight",
-    "text": "6 Survey Weight\nThe weight must match the target population and the relevant survey module:\n\ncommute_multimodal uses WalesAdultWeight;\npoor_bus_satisfaction uses WalesAdultWeight;\nwalk_weekly uses the active travel module weight, SampleTravelWeight, scaled to the adult population total.\n\n\nwales_adults &lt;- sum(domain_sizes$domain_size, na.rm = TRUE)\n\nweights &lt;- nsw_raw |&gt;\n  transmute(\n    unit_id = CaseNo,\n    WalesAdultWeight,\n    WalesTravelWeight =\n      SampleTravelWeight * wales_adults / sum(SampleTravelWeight, na.rm = TRUE)\n  )\n\nweight_summary &lt;- weights |&gt;\n  summarise(\n    WalesAdultWeight_total = sum(WalesAdultWeight, na.rm = TRUE),\n    WalesTravelWeight_total = sum(WalesTravelWeight, na.rm = TRUE),\n    adult_domain_size_total = wales_adults\n  )\n\nweight_summary\n\n# A tibble: 1 × 3\n  WalesAdultWeight_total WalesTravelWeight_total adult_domain_size_total\n                   &lt;dbl&gt;                   &lt;dbl&gt;                   &lt;dbl&gt;\n1               2549203.                 2559433                 2559433\n\n\n\n\n\n\n\n\nWarning\n\n\n\nScaling weights is an analysis choice. It is used here because direct estimation uses known domain sizes. If official grossing weights are supplied for the exact target population, use those instead. If the weight scale is uncertain, consider a ratio estimator."
-  },
-  {
-    "objectID": "pages/tutorial-dataprep.html#sae-input-files-and-outputs",
-    "href": "pages/tutorial-dataprep.html#sae-input-files-and-outputs",
-    "title": "Data Preparation",
-    "section": "7 SAE Input Files and Outputs",
-    "text": "7 SAE Input Files and Outputs\nThe final preparation step writes files for direct estimation. Each estimand needs a survey indicator file with:\n\nunit_id;\ndomain_id;\nindicator;\nweight.\n\nThe raw NSW names, such as CaseNo, are useful while preparing the data. The output files use the common SAE field names from the toolkit.\nThe file register records the choices used to build each output.\n\n\n\nIndicator\nWeight\nDomain size\n\n\n\n\ncommute_multimodal\nWalesAdultWeight\ndomain_size\n\n\npoor_bus_satisfaction\nWalesAdultWeight\ndomain_size\n\n\nwalk_weekly\nWalesTravelWeight\ndomain_size\n\n\n\n\nanalysis_data &lt;- indicators |&gt;\n  left_join(survey_domains, by = \"unit_id\") |&gt;\n  left_join(weights, by = \"unit_id\")\n\nfor (i in seq_len(nrow(file_register))) {\n  spec &lt;- file_register[i, ]\n\n  indicator_file &lt;- analysis_data |&gt;\n    transmute(\n      unit_id,\n      domain_id,\n      indicator = .data[[spec$indicator]],\n      weight = .data[[spec$weight]]\n    )\n\n  write_csv(\n    indicator_file,\n    file.path(clean_dir, str_c(\"ind_weight_\", spec$indicator, \".csv\"))\n  )\n}\n\nCheck one indicator file and the domain-size file.\n\nread_csv(\n  file.path(clean_dir, \"ind_weight_walk_weekly.csv\"),\n  show_col_types = FALSE\n) |&gt;\n  glimpse()\n\nRows: 11,146\nColumns: 4\n$ unit_id   &lt;dbl&gt; 222300001, 222300002, 222300003, 222300004, 222300005, 22230…\n$ domain_id &lt;chr&gt; \"W06000001\", \"W06000001\", \"W06000001\", \"W06000001\", \"W060000…\n$ indicator &lt;dbl&gt; NA, NA, NA, NA, NA, 1, 0, 1, NA, NA, 0, NA, NA, NA, NA, NA, …\n$ weight    &lt;dbl&gt; NA, NA, NA, NA, NA, 690.6047, 508.3390, 1090.8056, NA, NA, 7…\n\nread_csv(\n  file.path(clean_dir, \"pop_estimate.csv\"),\n  show_col_types = FALSE\n) |&gt;\n  glimpse()\n\nRows: 22\nColumns: 3\n$ domain_id   &lt;chr&gt; \"W06000001\", \"W06000002\", \"W06000003\", \"W06000004\", \"W0600…\n$ domain_name &lt;chr&gt; \"Isle of Anglesey\", \"Gwynedd\", \"Conwy\", \"Denbighshire\", \"F…\n$ domain_size &lt;dbl&gt; 57146, 97974, 96364, 78907, 127581, 110270, 61387, 102555,…\n\n\nThe preparation produces:\n\none domain-size file, data/clean/pop_estimate.csv;\nthree survey indicator files in data/clean/;\na documented link from each output back to the estimand, indicator construction, target domain, domain size, and weight decision.\n\nThat documentation is part of the SAE input. Without it, the estimate is difficult to interpret and easy to misuse."
-  },
-  {
-    "objectID": "pages/sae-toolkit.html",
-    "href": "pages/sae-toolkit.html",
-    "title": "SAE Toolkit Lite",
+    "objectID": "pages/prepare-inputs.html",
+    "href": "pages/prepare-inputs.html",
+    "title": "Preparing SAE Inputs",
     "section": "",
-    "text": "SAE Toolkit Lite is for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach."
+    "text": "A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to Tutorial: Data Preparation."
   },
   {
-    "objectID": "pages/sae-toolkit.html#minimum-inputs-and-recommended-schema",
-    "href": "pages/sae-toolkit.html#minimum-inputs-and-recommended-schema",
-    "title": "SAE Toolkit Lite",
-    "section": "1 Minimum inputs and recommended schema",
-    "text": "1 Minimum inputs and recommended schema\nAt minimum, an SAE workflow for Urban Analytics needs:\n\na survey indicator file, with one row per sampled unit used in the estimate\na domain-size file, with one row per target domain\na covariate file, when fitting an area-level model\nboundary geometry to map results or drive spatial structure for spatially-informed models\n\n\n1.1 Survey indicator file\nA survey indicator file links each sampled unit to the chosen outcome, target domain, and survey weight. Survey documentation should be kept alongside the file so that routing, missingness, design variables, and weight choice can be checked.\n\n\n\nColumn\nMeaning\n\n\n\n\nunit_id\nSurvey respondent, household, or sampled unit ID.\n\n\ndomain_id\nReporting domain code.\n\n\nindicator\nNumeric outcome, or binary 0/1.\n\n\nweight\nSurvey weight selected for the estimand.\n\n\nstratum\n(optional) survey stratum.\n\n\n\n\n\n1.2 Domain-size file\nA domain-size file gives the denominator for each target domain. The denominator must match the estimand’s target population rather than the full resident population by default.\n\n\n\nColumn\nMeaning\n\n\n\n\ndomain_id\nReporting domain code.\n\n\ndomain_size\nDenominator matching the target population.\n\n\ndomain_name\nHuman-readable area name.\n\n\n\n\n\n1.3 Geometry file\nBoundary geometry is useful for visualising estimates and for deriving adjacency structures for spatial models. It is not required for direct estimates or non-spatial area-level models.\n\n\n\n\n\n\n\nColumn\nMeaning\n\n\n\n\ndomain_id\nReporting domain code, matching the domain-size file.\n\n\ndomain_name\nHuman-readable area name.\n\n\ngeometry\nPolygon or multipolygon geometry for the reporting domain.\n\n\n\n\n\n1.4 Covariate file for area-level estimation\nCovariates are area-level predictors available for every target domain. They should be measured on the same geography as the direct estimates, or aggregated to that geography before modelling.\n\n\n\n\n\n\n\nColumn\nMeaning\n\n\n\n\ndomain_id\nReporting domain code.\n\n\ncovariate_*\nArea-level predictor available for every target domain.\n\n\nmedian_age\nExample demographic covariate.\n\n\nprop_urban\nExample settlement or land-use covariate.\n\n\nemployment_rate\nExample socioeconomic covariate."
+    "objectID": "pages/prepare-inputs.html#defining-the-estimand",
+    "href": "pages/prepare-inputs.html#defining-the-estimand",
+    "title": "Preparing SAE Inputs",
+    "section": "1 Defining the Estimand",
+    "text": "1 Defining the Estimand\nBefore fitting any SAE model, define exactly what the survey estimate should represent. This so-called estimand determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:\n\nEstimate the measure of what outcome, among which population, across which geographic domains.\n\nE.g.,\n\nShare of adults who use the bus weekly across MSOA\nMean commute distance among workers across Wards"
   },
   {
-    "objectID": "pages/sae-toolkit.html#downloadable-scripts",
-    "href": "pages/sae-toolkit.html#downloadable-scripts",
-    "title": "SAE Toolkit Lite",
-    "section": "2 Downloadable scripts",
-    "text": "2 Downloadable scripts\nReusable scripts can be adapted for another survey once the input files follow the schema above.\n\n\n\nScript\nPurpose\n\n\n\n\ndirect_estimates.R\nCalculate direct estimates by domain, sampling variances, and confidence intervals.\n\n\ncovariate_sae.R\nFit Bayesian area-level models using direct estimates, sampling variances, and area-level covariates.\n\n\nspatial_sae.R\nBuild adjacency or spatial weight matrices from domain boundaries and fit Bayesian spatial SAE models.\n\n\ndiagnostics.R\nCreate comparison tables and plots for checking estimates, uncertainty, and model outputs."
+    "objectID": "pages/prepare-inputs.html#constructing-the-indicator",
+    "href": "pages/prepare-inputs.html#constructing-the-indicator",
+    "title": "Preparing SAE Inputs",
+    "section": "2 Constructing the Indicator",
+    "text": "2 Constructing the Indicator\nAfter defining the estimand, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:\n\n\n\n\n\n\n\n\nIndicator type\nWhat to define\nExample\n\n\n\n\nBinary\nWhat is 1, 0, missing, and out of scope. Also suitable for categorical variables\nEstimand: Share of adults who use the bus weeklyIndicator: Uses bus weekly: yes/no\n\n\nContinuous\nThe numeric value and unit\nEstimand: Mean commute distance among workers Indicator: Commute distance in miles\n\n\n\nUse the survey questionnaire, response codes, and routing rules to guide indicator construction. Some indicators are direct recodes of one survey question; others need to combine several variables. The same raw survey variable can support different estimands."
   },
   {
-    "objectID": "pages/freq-area-sae.html",
-    "href": "pages/freq-area-sae.html",
-    "title": "Frequentist Area-Level Estimation",
-    "section": "",
-    "text": "Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the Fay-Herriot (FH) model, which combines direct estimates with domain-level covariates to improve precision."
+    "objectID": "pages/prepare-inputs.html#choosing-domain-sizes-and-survey-weights",
+    "href": "pages/prepare-inputs.html#choosing-domain-sizes-and-survey-weights",
+    "title": "Preparing SAE Inputs",
+    "section": "3 Choosing Domain Sizes and Survey Weights",
+    "text": "3 Choosing Domain Sizes and Survey Weights\n\n3.1 Domain size\nThe domain size \\(N_d\\) is the size of the target population in each domain \\(d\\). It is the denominator for domain means and proportions, and is essential for the SAE pipeline. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.\n\nThe target population is the group the estimate is about, such as all adults, households, workers, commuters, or public transport users, etc.\nThe target domain is the geographic area for which estimates will be produced, such as Local Authority, Ward, LSOA, or MSOA, etc.\n\nThe choice of target domain, besides being shaped by the estimand definition, should also be informed by data availability. For example,\n\nif survey respondent records are only identified at the Local Authority level and no finer, then Local Authority is the most granular target domain for SAE\nif the domain sizes are only available at the Ward level and no finer (e.g., total worker population by Ward), then it is recommended to use Ward as the most granular target domain for SAE\n\n[ADD IMAGE]\n\n\n3.2 Survey weight\nSurvey weights connect the sample back to the population to ensure the survey sample can best represent real-world proportions. The Survey User Guide is the go-to resource to understand which weight variables are available, how they are derived, and which survey modules/questions they apply to. In general, weight variables are derived to adjust for one or more aspects, such as:\n\nSelection adjustment: accounts for unequal probabilities of selection.\nNon-response adjustment: compensates for differences between respondents and non-respondents.\nCalibration adjustment: aligns the weighted sample with known population totals, such as age, sex, region, Local Authority, tenure, or household structure.\nSubsample adjustment: accounts for cases where only part of the sample was asked a module or completed a diary.\n\nFor a SAE workflow, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. Moreover, it is also important to distinguish the scale of the weight variable, as it implies different estimation approaches.\n\nSome weights are grossing weights \\(w^{G}\\). They make proportions representative of the target population and sum to a population total or domain size \\(N_d\\).\nOther weights are analysis weights \\(w^{A}\\). They make proportions representative of the target population, but often sum to the achieved sample size \\(n_d\\).\n\nIf analysis weights are provided and the domain sizes \\(N_d\\) are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula \\(w^G_{di} = w^A_{di} * \\frac{N_d}{\\sum w^A_d}\\) if required.\n[ADD IMAGE]\n\n\n\n\n\n\nNote\n\n\n\nFor the SAE workflow, the preferred setup is one where grossing weights are provided for each survey respondent record and domain sizes are available, because it gives a direct link between the survey respondent records and the population count in each domain.\nIf the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, alternative direct estimation methods may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population)."
   },
   {
-    "objectID": "pages/freq-area-sae.html#understanding-the-fay-herriot-model",
-    "href": "pages/freq-area-sae.html#understanding-the-fay-herriot-model",
-    "title": "Frequentist Area-Level Estimation",
-    "section": "1 Understanding the Fay-Herriot model",
-    "text": "1 Understanding the Fay-Herriot model\nFay-Herriot combines two pieces of information for each domain:\n\nthe direct estimate from the survey, and\na covariate-based model prediction.\n\nThe direct estimate \\(\\hat{\\theta}_d^{DIR}\\) can be written as the covariate-explained part \\(x_d^\\top\\beta\\), plus an area-specific unexplained effect \\(u_d\\), plus survey sampling noise \\(e_d\\).\n\\[\n\\hat{\\theta}^{DIR}_d =\nx_d^\\top\\beta + u_d + e_d.\n\\]\nThe FH estimate, is a weighted average of the direct estimate and the covariate-based prediction:\n\\[\n\\hat{\\theta}^{FH}_d =\n\\hat{\\gamma}_d \\hat{\\theta}^{DIR}_d\n+\n(1-\\hat{\\gamma}_d) x_d^\\top\\hat{\\beta}.\n\\]\nThe shrinkage weight \\(\\hat{\\gamma}_d = \\frac{\\hat{\\sigma}_u^2}{\\hat{\\sigma}_u^2 + \\psi_d}\\), where \\(\\psi_d\\) is the sampling variance of the direct estimate, controls how much the FH estimate “trusts” the direct estimate:\n\nif \\(\\psi_d\\) is small, the direct estimate is precise, so \\(\\hat{\\gamma}_d\\) is closer to 1;\nif \\(\\psi_d\\) is large, the direct estimate is noisy, so \\(\\hat{\\gamma}_d\\) is closer to 0.\n\nIn practice, FH leaves precise direct estimates mostly unchanged, while pulling noisy direct estimates toward the covariate-based prediction.\n\n\n\n\n\n\nNote\n\n\n\nIn this frequentist FH workflow, the main outputs are the model-based estimate (EBLUP) and its uncertainty (RMSE, the square root of model-based MSE). For domains without a usable direct estimate, the EBLUP comes entirely from the model component."
-  },
-  {
-    "objectID": "pages/freq-area-sae.html#covariate-choices",
-    "href": "pages/freq-area-sae.html#covariate-choices",
-    "title": "Frequentist Area-Level Estimation",
-    "section": "2 Covariate Choices",
-    "text": "2 Covariate Choices\nDomain-level covariates can often be found via census datas and other population-level aggregate statistics.Choose covariates with emphasis on coverage and comparability across domains.\n\nCoverage: each covariate should be available for all target domains.\nAlignment: match geography, definition, and reference period to the survey indicator.\nRelevance: keep variables with a clear substantive link to the outcome and avoid including many weak predictors.\nPredictive: choose covariates that improve domain-level prediction and are easy to explain; avoid downstream variables, and remove or combine highly correlated predictors.\n\nCommon examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessbility metrics, car ownership, etc.\n[ADD IMAGE]"
-  },
-  {
-    "objectID": "pages/freq-area-sae.html#evaluation",
-    "href": "pages/freq-area-sae.html#evaluation",
-    "title": "Frequentist Area-Level Estimation",
-    "section": "3 Evaluation",
-    "text": "3 Evaluation\nEvaluate the FH outputs (EBLUPs) and uncertainty (RMSEs) to decide how to proceed:\n\n\n\nScenario\nNext step\n\n\n\n\nEstimates are stable, and uncertainty acceptable\nUse EBLUPs for reporting.\n\n\nResults are sensitive to covariate choice, coefficients are unstable, or diagnostics show poor fit\nRevisit covariates and refit FH.\n\n\nA probability-style uncertainty would help interpretation\nMove to Bayesian Area-Level SAE (+Spatial) to represent uncertainty through posterior estimates and Credible Intervals.\n\n\nResiduals show spatial autocorrelation after the covariate FH model\nConsider adding spatial structure to borrow strength from neighbouring areas. See Bayesian Area-Level SAE (+Spatial)."
-  },
-  {
-    "objectID": "pages/freq-area-sae.html#implementation-in-r",
-    "href": "pages/freq-area-sae.html#implementation-in-r",
-    "title": "Frequentist Area-Level Estimation",
-    "section": "4 Implementation in R",
-    "text": "4 Implementation in R\n\n4.1 Functions\nUse sae::eblupFH() to fit a frequentist Fay-Herriot model and sae::mseFH() to estimate uncertainty.\n\nlibrary(sae)\n\n# direct_results should contain: \n# - domain_id, \n# - Direct, \n# - Variance \n#\n# domain_covariates should contain: \n# - domain_id, \n# - area-level covariates\n\nfh_data &lt;- merge(\n  direct_results,\n  domain_covariates,\n  by = \"domain_id\"\n)\n\n# Fit Fay-Herriot EBLUPs + RMSEs\nfh_fit &lt;- sae::eblupFH(\n  formula = Direct ~ x_income + x_car_ownership + x_urban,\n  vardir = fh_data$Variance,\n  data = fh_data\n)\n\nfh_mse &lt;- sae::mseFH(\n  formula = Direct ~ x_income + x_car_ownership + x_urban,\n  vardir = fh_data$Variance,\n  data = fh_data\n)\n\n# Combine EBLUP + RMSE outputs for reporting\nfh_results &lt;- data.frame(\n  domain_id = fh_data$domain_id,\n  direct = fh_data$Direct,\n  eblup = fh_fit$eblup,\n  mse = fh_mse$mse,\n  rmse = sqrt(fh_mse$mse)\n)\n\n\n\n4.2 Worked example\nLorem Ipsum - share real example National Survey of Wales"
-  },
-  {
-    "objectID": "pages/diagnostics.html",
-    "href": "pages/diagnostics.html",
-    "title": "Diagnostics, Validation, and Uncertainty",
-    "section": "",
-    "text": "Diagnostics decide whether SAE outputs are stable, interpretable, and suitable for reporting. They should compare the survey-only signal, the modelled estimates, and the uncertainty attached to each result."
-  },
-  {
-    "objectID": "pages/diagnostics.html#model-comparison",
-    "href": "pages/diagnostics.html#model-comparison",
-    "title": "Diagnostics, Validation, and Uncertainty",
-    "section": "1 Model Comparison",
-    "text": "1 Model Comparison\nCompare direct estimates, non-spatial Fay-Herriot estimates, Bayesian estimates, and spatial estimates where available. The aim is not to choose the smoothest map, but to understand what the model has changed.\nUseful checks include:\n\ndirect estimate versus model estimate,\ndomains with the largest shrinkage,\nchanges between non-spatial and spatial models,\nresidual pattern and remaining spatial autocorrelation,\nsensitivity to covariates and modelling choices,\nwhether model estimates aggregate sensibly to known higher-level totals.\n\nWhen teaching with simulated or complete-population data, ground-truth comparison can be useful. For real survey applications, use direct estimates, external benchmarks, known totals, held-out checks where feasible, and substantive plausibility."
-  },
-  {
-    "objectID": "pages/diagnostics.html#uncertainty",
-    "href": "pages/diagnostics.html#uncertainty",
-    "title": "Diagnostics, Validation, and Uncertainty",
-    "section": "2 Uncertainty",
-    "text": "2 Uncertainty\nDirect estimates, frequentist FH models, and Bayesian models use different uncertainty summaries. Avoid treating them as interchangeable.\n\n\n\n\n\n\n\nWorkflow\nCommon uncertainty output\n\n\n\n\nDirect estimation\nsampling variance, standard error, confidence interval, relative standard error\n\n\nFrequentist FH\nMSE, RMSE, approximate confidence interval\n\n\nBayesian FH / spatial model\nposterior interval, credible interval, exceedance probability\n\n\n\nMap uncertainty as well as point estimates. Flag domains with high uncertainty, very small sample sizes, unstable weights, or estimates driven mostly by the model rather than local survey information."
-  },
-  {
-    "objectID": "pages/diagnostics.html#benchmarking-and-reporting",
-    "href": "pages/diagnostics.html#benchmarking-and-reporting",
-    "title": "Diagnostics, Validation, and Uncertainty",
-    "section": "3 Benchmarking and Reporting",
-    "text": "3 Benchmarking and Reporting\nBenchmarking adjusts estimates so they agree with known totals at a higher geography, such as national or regional totals. It is useful when consistency with official aggregates matters, but it should be documented because it changes the model output.\nReporting should make clear:\n\nthe estimand and target population,\nthe domain geography,\nwhether estimates are direct, model-based, or benchmarked,\nwhich covariates and model family were used,\nhow uncertainty should be read,\nwhich domains should be interpreted cautiously.\n\nDo not present smoothed or modelled estimates as if they were observed survey results.\n\n\n\n\n\n\nTip\n\n\n\nUseful R functions depend on the fitted model. In sae, mseFH() estimates MSE for Fay-Herriot EBLUPs and pbmseBHF() can be used for bootstrap MSE in Battese-Harter-Fuller workflows. Base R and tidyverse tools are usually enough for comparison tables once estimates are in a common format.\nDocumentation: sae::mseFH(), sae::pbmseBHF()"
-  },
-  {
-    "objectID": "pages/diagnostics.html#worked-example",
-    "href": "pages/diagnostics.html#worked-example",
-    "title": "Diagnostics, Validation, and Uncertainty",
-    "section": "4 Worked example",
-    "text": "4 Worked example\nLorem Ipsum - share real example here, no need for live code block\nNational Survey of Wales"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
-    "section": "",
-    "text": "Beginner-friendly Small Area Estimation (SAE) for researchers estimating survey-derived metrics across a whole country or region at fine geographic resolution.\nThe site has two tracks: a theory track that explains the SAE workflow, and a practical tutorial track that applies the workflow to a dataset. It uses the National Survey for Wales as the first worked survey.\nThe main practical uses R, Quarto, and SAE packages such as survey, sae, SUMMER, and INLA.Make sure you have R version 4.5.1 installed. You can download it from CRAN."
-  },
-  {
-    "objectID": "index.html#why-small-area-estimation",
-    "href": "index.html#why-small-area-estimation",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
-    "section": "1 Why Small Area Estimation?",
-    "text": "1 Why Small Area Estimation?\n[draft] Survey are often not precise enough for fine geographies such as Local Authorities, MSOAs, or LSOAs. Some areas have very few/no respondents, unequal weights Taking weighted meands can be unstable. Also out of domain sample\nSAE is useful when direct estimates are too noisy or incomplete. Area-level SAE use direct estimates and their sampling variances, borrow strength across areas using covariates and random effects.\nSAE can be further improved with bayesian statistics (to smooth out area) and add spatial structure (spatial autocorrelation)\nSAE combines survey data, population estimates, auxiliary data, modelling to estimate the unsurveyed in an informed way.\n[add an image that represents SAE]"
-  },
-  {
-    "objectID": "index.html#methods",
-    "href": "index.html#methods",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
-    "section": "2 Methods",
-    "text": "2 Methods\nUse these pages to understand the concepts and decisions behind the workflow.\n\n\n\nNo.\nStep\nObjective\n\n\n\n\n1\nPreparing the Inputs\nDefine what is being estimated, for whom, and at what geographical scale.\n\n\n2\nDirect estimation\nEstimate area-level indicators directly from the survey and assess their precision.\n\n\n3\nFrequentist Area-Level SAE\nFit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates.\n\n\n4\nBayesian Area-Level SAE (+Spatial)\nReframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas.\n\n\n5\nDiagnose and Report\nCheck model performance, report uncertainty, and present estimates."
-  },
-  {
-    "objectID": "index.html#resources",
-    "href": "index.html#resources",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
-    "section": "3 Resources",
-    "text": "3 Resources\nSupporting materials for adapting the workflow:\n\nSAE Toolkit collects reusable input formats and helper scripts.\nTroubleshooting lists common data, estimation, and reporting problems."
-  },
-  {
-    "objectID": "pages/bayesian-area-sae.html",
-    "href": "pages/bayesian-area-sae.html",
-    "title": "Bayesian Area-Level Estimation (+Spatial)",
-    "section": "",
-    "text": "This notebook extends the area-level Fay-Herriot workflow. It first reframes area-level SAE in Bayesian terms, then shows why spatial structure may be useful when neighbouring domains share unexplained patterns."
-  },
-  {
-    "objectID": "pages/bayesian-area-sae.html#bayesian-versus-frequentist-approach-in-sae",
-    "href": "pages/bayesian-area-sae.html#bayesian-versus-frequentist-approach-in-sae",
-    "title": "Bayesian Area-Level Estimation (+Spatial)",
-    "section": "1 Bayesian versus Frequentist approach in SAE",
-    "text": "1 Bayesian versus Frequentist approach in SAE\nBoth frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea:\n\\[\n\\hat{\\theta}^{DIR}_d =\nx_d^\\top\\beta + u_d + e_d.\n\\]\nThe difference is how the unknown quantities are estimated and how uncertainty is interpreted.\n\nIn the frequentist approach, \\(\\beta\\), \\(\\sigma_u^2\\), and area effects are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), plus uncertainty measures such as RMSE, and confidence intervals.\nIn the Bayesian approach, unknown quantities such as \\(\\beta\\), \\(\\sigma_u^2\\), and \\(u_d\\) are treated as uncertain and assigned prior distributions. Typical outputs are posterior means or medians, credible intervals, and probability summaries.\n\nThis means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.\n\n\n\n\n\n\nNote\n\n\n\n\nUse the frequentist Fay-Herriot workflow as the simpler starting point when you need stable area estimates, RMSEs, and a transparent model-based improvement over direct estimates.\nUse a Bayesian workflow when probability-style summaries are useful for the decision, or when you want to add spatial structure.\n\n\n\n[ADD IMAGE]"
-  },
-  {
-    "objectID": "pages/bayesian-area-sae.html#spatial-structure",
-    "href": "pages/bayesian-area-sae.html#spatial-structure",
-    "title": "Bayesian Area-Level Estimation (+Spatial)",
-    "section": "2 Spatial Structure",
-    "text": "2 Spatial Structure\nLet’s go back to the FH model equation cited above. The non-spatial area-level model assumes the unexplained area effects \\(u_d\\) are independent after accounting for covariates. In urban research, this is rarely true: Neighbouring places may share more similarities that could help inform our estimates.\nSpatial area-level models add a structured area effect using an adjacency matrix or neighbourhood graph. This lets the model borrow strength not only from covariates, but also from nearby areas.\nThe spatial structure is usually provided as a spatial weights matrix: a table that tells the model which areas are connected, and how strongly. The simplest spatial weights matrix is a binary adjacency matrix. Each row and column represents a domain. A value of 1 means two domains are neighbours, and 0 means they are not. Neighbours are usually defined by shared boundaries, for example Queen contiguity or Rook contiguity, or distance threshold.\n[ADD IMAGE]"
-  },
-  {
-    "objectID": "pages/bayesian-area-sae.html#evaluation",
-    "href": "pages/bayesian-area-sae.html#evaluation",
-    "title": "Bayesian Area-Level Estimation (+Spatial)",
-    "section": "3 Evaluation",
-    "text": "3 Evaluation\nAt this stage, it is worth comparing the evolving outputs of the estimates and their uncertainties from direct estimates through each addition of covariates and spatial information.The aim is simply to check whether the extra modelling is useful and defensible.\nFocus on three checks:\n\nEstimates: do posterior estimates broadly agree with reliable direct estimates and frequentist EBLUPs?\nUncertainty: do credible intervals or threshold probabilities make the results easier to interpret than RMSE alone?\nSpatial effect: if spatial smoothing changes the map, is that supported by residual spatial autocorrelation and substantive knowledge?\n\nIf the Bayesian or spatial model changes results substantially, check priors, covariates, direct variances, influential domains, and the adjacency structure before reporting."
-  },
-  {
-    "objectID": "pages/bayesian-area-sae.html#code-implementation",
-    "href": "pages/bayesian-area-sae.html#code-implementation",
-    "title": "Bayesian Area-Level Estimation (+Spatial)",
-    "section": "4 Code Implementation",
-    "text": "4 Code Implementation\nFor Bayesian area-level SAE, the main package used here is SUMMER. It fits area-level smoothing models using INLA, and can work either from direct estimates or from survey microdata.\n\nUse SUMMER::smoothArea() when you already have direct estimates and their variances.\nUse SUMMER::smoothSurvey() when you want SUMMER to calculate design-adjusted direct estimates from survey microdata before smoothing. Both can use an adjacency matrix for spatial structure.\n\n\nlibrary(SUMMER)\n\n# direct_results should contain: \n# - domain_id, \n# - Direct, \n# - Variance \n#\n# domain_covariates should contain: \n# - domain_id, \n# - area-level covariates\n#\n# adjacency_matrix should have row and column names matching domain_id\n\ndirect_est &lt;- direct_results[, c(\"domain_id\", \"Direct\", \"Variance\")]\n\nbayes_area_fit &lt;- SUMMER::smoothArea(\n  formula = Direct ~ x_income + x_car_ownership + x_urban,\n  domain = ~domain_id,\n  direct.est = direct_est,\n  X.domain = domain_covariates,\n  adj.mat = adjacency_matrix,       # if NULL, the model is non-spatial\n  transform = \"identity\",           # no data transformation of estimates\n  level = 0.95                      # CI level\n)\n\n\n4.1 Worked example\nLorem Ipsum - share real example here National Survey of Wales"
+    "objectID": "pages/prepare-inputs.html#preparing-sae-inputs",
+    "href": "pages/prepare-inputs.html#preparing-sae-inputs",
+    "title": "Preparing SAE Inputs",
+    "section": "4 Preparing SAE inputs",
+    "text": "4 Preparing SAE inputs\nPutting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:\n\n\n\n\n\n\n\n\n\n\n\n\n\n#\nEstimand\nIndicator\nIndicator construction\nTarget domain\nDomain size\nWeight variable\nOther remarks\n\n\n\n\n1\nShare of adults who use the bus weekly across MSOAs\nis_freq_bus_user\nBinary: 1 if BusUseFreq = 1; 0 if adult does not use the bus weekly; null for invalid or refused responses\nMSOA\nAdult population aged 16+ by MSOA\nAdultWeight; applies to all adult respondents; grossing weight\nStratified by age_group\n\n\n2\nMean commute distance among workers across Wards\ncommute_distance\nContinuous: numeric miles from TravelWorkDistance; only workers with valid commute distance are in scope\nWard\nWorker population by Ward\nCommuteModuleWeight; applies to commute module respondents (a subsample)\n—\n\n\n\nFinally, each estimand should have enough information to create:\n\na survey indicator file with one row per sampled unit and the fields unit_id, domain_id, indicator, and weight;\na domain-size file with one row per target domain and the fields domain_id, domain_size (optionally, domain_name);"
   },
   {
     "objectID": "pages/direct-estimation.html",
@@ -266,59 +98,213 @@
     "text": "3 Evaluation\nEvaluate the direct estimates and variances outputs to make a decision how to proceed:\n\n\n\nScenario\nNext step\n\n\n\n\nMost domains have usable sample sizes and uncertainty is acceptable\nDirect estimates may be enough for reporting.\n\n\nMany domains have no sample, or invalid variances\nRevisit the domain choice or redefine estimand.\n\n\nVariances are acceptable but poor precision\nProceed to Frequentist Area-Level SAE to ‘tighten’ the estimates and their variances\n\n\n\n(*)Here, “usable variance” means a finite, positive sampling variance for the direct estimate in each domain.\nIn case Model-based SAE is necessary, the output needed will be:\n\ndomain_id\nDirect, the survey-only estimate\nVariance, the estimated sampling variance of Direct"
   },
   {
-    "objectID": "pages/direct-estimation.html#implementation-in-r",
-    "href": "pages/direct-estimation.html#implementation-in-r",
+    "objectID": "pages/direct-estimation.html#code-implementation",
+    "href": "pages/direct-estimation.html#code-implementation",
     "title": "Direct Estimation",
-    "section": "4 Implementation in R",
-    "text": "4 Implementation in R\n\n4.1 Functions\nUse sae::direct() to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (SampSize), direct estimate (Direct), estimated standard deviation (SD), and coefficient of variation (CV). Square SD to obtain the Variance.\n\nlibrary(sae)\n\ndirect_fit &lt;- sae::direct(\n  y = survey_indicator$indicator,\n  dom = survey_indicator$domain_id,\n  sweight = survey_indicator$weight,\n  domsize = domain_sizes, \n  replace = FALSE, # without replacement (i.e., no duplicate respondents)\n)\n\ndirect_results &lt;- direct_fit |&gt;\n  dplyr::rename(domain_id = Domain) |&gt;\n  dplyr::mutate(Variance = SD^2)\n\n\n\n\n\n\n\nNote\n\n\n\nIn sae::direct(), if domsize is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.\n\n\nIf the survey includes more detailed design information, use the survey package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.\n\nlibrary(survey)\n\ndesign &lt;- survey::svydesign(\n  ids = ~psu,                 # primary sampling unit\n  strata = ~stratum,          # survey stratum ID\n  weights = ~weight,          # survey weight\n  data = survey_indicator,    # survey indicator file\n)\n\ndirect_design_fit &lt;- survey::svyby(\n  formula = ~indicator,       \n  by = ~domain_id,            \n  design = design,            \n  FUN = svymean,  # other values: svytotal, svyratio, etc.\n  vartype = c(\"se\", \"ci\"),    # output SE, CI, CV\n  na.rm = TRUE\n)\n\n\n\n4.2 Worked example\nLorem Ipsum - share real example National Survey of Wales"
+    "section": "4 Code Implementation",
+    "text": "4 Code Implementation\n\n\n\n\n\n\nTip\n\n\n\nUse sae::direct() to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (SampSize), direct estimate (Direct), estimated standard deviation (SD), and coefficient of variation (CV). Square SD to obtain the Variance.\nIn sae::direct(), if domsize is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.\nIf the survey includes more detailed design information, use the survey package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.\n\n\n\n4.1 Worked Example\nLorem Ipsum - share real example National Survey of Wales"
   },
   {
-    "objectID": "pages/prepare-inputs.html",
-    "href": "pages/prepare-inputs.html",
-    "title": "From Estimands to SAE Inputs",
+    "objectID": "pages/bayesian-area-sae.html",
+    "href": "pages/bayesian-area-sae.html",
+    "title": "Area-Level Estimation (Bayesian) + Spatial",
     "section": "",
-    "text": "A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to Tutorial: Data Preparation."
+    "text": "This notebook extends the area-level Fay-Herriot workflow. It first reframes area-level SAE in Bayesian terms, then shows why spatial structure may be useful when neighbouring domains share unexplained patterns."
   },
   {
-    "objectID": "pages/prepare-inputs.html#defining-the-estimand",
-    "href": "pages/prepare-inputs.html#defining-the-estimand",
-    "title": "From Estimands to SAE Inputs",
-    "section": "1 Defining the Estimand",
-    "text": "1 Defining the Estimand\nBefore fitting any SAE model, define exactly what the survey estimate should represent. This so-called estimand determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:\n\nEstimate the measure of what outcome, among which population, across which geographic domains.\n\nE.g.,\n\nShare of adults who use the bus weekly across MSOA\nMean commute distance among workers across Wards"
+    "objectID": "pages/bayesian-area-sae.html#bayesian-versus-frequentist-approach",
+    "href": "pages/bayesian-area-sae.html#bayesian-versus-frequentist-approach",
+    "title": "Area-Level Estimation (Bayesian) + Spatial",
+    "section": "1 Bayesian versus Frequentist approach",
+    "text": "1 Bayesian versus Frequentist approach\nBoth frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :\n\\[\n\\hat{\\theta}^{DIR}_d =\nx_d^\\top\\beta + u_d + e_d.\n\\]\nThe difference is how the unknown quantities are estimated and how uncertainty is interpreted.\n\nIn the frequentist approach, unknown quantities such as \\(\\beta\\), \\(\\sigma_u^2\\), and \\(u_d\\) are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), uncertainty measures such as RMSE, and confidence intervals.\nIn the Bayesian approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries.\n\nThis means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.\n[ADD IMAGE]\nTherefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach."
   },
   {
-    "objectID": "pages/prepare-inputs.html#constructing-the-indicator",
-    "href": "pages/prepare-inputs.html#constructing-the-indicator",
-    "title": "From Estimands to SAE Inputs",
-    "section": "2 Constructing the Indicator",
-    "text": "2 Constructing the Indicator\nAfter defining the estimand, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:\n\n\n\n\n\n\n\n\nIndicator type\nWhat to define\nExample\n\n\n\n\nBinary\nWhat is 1, 0, missing, and out of scope. Also suitable for categorical variables\nEstimand: Share of adults who use the bus weeklyIndicator: Uses bus weekly: yes/no\n\n\nContinuous\nThe numeric value and unit\nEstimand: Mean commute distance among workers Indicator: Commute distance in miles\n\n\n\nUse the survey questionnaire, response codes, and routing rules to guide indicator construction. Some indicators are direct recodes of one survey question; others need to combine several variables. The same raw survey variable can support different estimands."
+    "objectID": "pages/bayesian-area-sae.html#spatial-structure",
+    "href": "pages/bayesian-area-sae.html#spatial-structure",
+    "title": "Area-Level Estimation (Bayesian) + Spatial",
+    "section": "2 Spatial Structure",
+    "text": "2 Spatial Structure\nGoing back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects \\(u_d\\) are independent after accounting for covariates. In urban research, this is rarely true: Neighbouring places may share more similarities that could help inform our estimates.\nSpatial area-level models add a structured area effect using an adjacency matrix or neighbourhood graph. This lets the model borrow strength not only from covariates, but also from nearby areas. The spatial structure is usually provided as a binary spatial weights matrix.\n[ADD IMAGE]"
   },
   {
-    "objectID": "pages/prepare-inputs.html#choosing-domain-sizes-and-survey-weights",
-    "href": "pages/prepare-inputs.html#choosing-domain-sizes-and-survey-weights",
-    "title": "From Estimands to SAE Inputs",
-    "section": "3 Choosing Domain Sizes and Survey Weights",
-    "text": "3 Choosing Domain Sizes and Survey Weights\n\n3.1 Domain size\nThe domain size \\(N_d\\) is the size of the target population in each domain \\(d\\). It is the denominator for domain means and proportions, and is essential for the SAE pipeline. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.\n\nThe target population is the group the estimate is about, such as all adults, households, workers, commuters, or public transport users, etc.\nThe target domain is the geographic area for which estimates will be produced, such as Local Authority, Ward, LSOA, or MSOA, etc.\n\nThe choice of target domain, besides being shaped by the estimand definition, should also be informed by data availability. For example,\n\nif survey respondent records are only identified at the Local Authority level and no finer, then Local Authority is the most granular target domain for SAE\nif the domain sizes are only available at the Ward level and no finer (e.g., total worker population by Ward), then it is recommended to use Ward as the most granular target domain for SAE\n\n[ADD IMAGE]\n\n\n3.2 Survey weight\nSurvey weights connect the sample back to the population to ensure the survey sample can best represent real-world proportions. The Survey User Guide is the go-to resource to understand which weight variables are available, how they are derived, and which survey modules/questions they apply to. In general, weight variables are derived to adjust for one or more aspects, such as:\n\nSelection adjustment: accounts for unequal probabilities of selection.\nNon-response adjustment: compensates for differences between respondents and non-respondents.\nCalibration adjustment: aligns the weighted sample with known population totals, such as age, sex, region, Local Authority, tenure, or household structure.\nSubsample adjustment: accounts for cases where only part of the sample was asked a module or completed a diary.\n\nFor a SAE workflow, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. Moreover, it is also important to distinguish the scale of the weight variable, as it implies different estimation approaches.\n\nSome weights are grossing weights \\(w^{G}\\). They make proportions representative of the target population and sum to a population total or domain size \\(N_d\\).\nOther weights are analysis weights \\(w^{A}\\). They make proportions representative of the target population, but often sum to the achieved sample size \\(n_d\\).\n\nIf analysis weights are provided and the domain sizes \\(N_d\\) are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula \\(w^G_{di} = w^A_{di} * \\frac{N_d}{\\sum w^A_d}\\) if required.\n[ADD IMAGE]\n\n\n\n\n\n\nNote\n\n\n\nFor the SAE workflow, the preferred setup is one where grossing weights are provided for each survey respondent record and domain sizes are available, because it gives a direct link between the survey respondent records and the population count in each domain.\nIf the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, alternative direct estimation methods may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population)."
+    "objectID": "pages/bayesian-area-sae.html#evaluation",
+    "href": "pages/bayesian-area-sae.html#evaluation",
+    "title": "Area-Level Estimation (Bayesian) + Spatial",
+    "section": "3 Evaluation",
+    "text": "3 Evaluation\nAt this stage, it is worth comparing the evolving outputs of the area-level estimates and their uncertainties from direct estimates through each addition of covariates and spatial information. The aim is simply to check whether the extra modelling is useful and defensible."
   },
   {
-    "objectID": "pages/prepare-inputs.html#preparing-sae-inputs",
-    "href": "pages/prepare-inputs.html#preparing-sae-inputs",
-    "title": "From Estimands to SAE Inputs",
-    "section": "4 Preparing SAE inputs",
-    "text": "4 Preparing SAE inputs\nPutting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:\n\n\n\n\n\n\n\n\n\n\n\n\n\n#\nEstimand\nIndicator\nIndicator construction\nTarget domain\nDomain size\nWeight variable\nOther remarks\n\n\n\n\n1\nShare of adults who use the bus weekly across MSOAs\nis_freq_bus_user\nBinary: 1 if BusUseFreq = 1; 0 if adult does not use the bus weekly; null for invalid or refused responses\nMSOA\nAdult population aged 16+ by MSOA\nAdultWeight; applies to all adult respondents; grossing weight\nStratified by age_group\n\n\n2\nMean commute distance among workers across Wards\ncommute_distance\nContinuous: numeric miles from TravelWorkDistance; only workers with valid commute distance are in scope\nWard\nWorker population by Ward\nCommuteModuleWeight; applies to commute module respondents (a subsample)\n—\n\n\n\nFinally, each estimand should have enough information to create:\n\na survey indicator file with one row per sampled unit and the fields unit_id, domain_id, indicator, and weight;\na domain-size file with one row per target domain and the fields domain_id, domain_size (optionally, domain_name);"
+    "objectID": "pages/bayesian-area-sae.html#code-implementation",
+    "href": "pages/bayesian-area-sae.html#code-implementation",
+    "title": "Area-Level Estimation (Bayesian) + Spatial",
+    "section": "4 Code Implementation",
+    "text": "4 Code Implementation\n\n\n\n\n\n\nTip\n\n\n\nFor Bayesian area-level SAE, the main package used here is SUMMER. It fits area-level smoothing models using INLA, and can work either from direct estimates or from survey microdata, greatly simplifying the implementation of the Bayesian approach and adding spatial structure in Area-Level SAE.\n\nUse SUMMER::smoothArea() when you already have direct estimates and their variances.\nUse SUMMER::smoothSurvey() when you want SUMMER to calculate design-adjusted direct estimates from survey microdata before smoothing.\n\nThe sae package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure conveniently. Instead, they must be coded manually, which diminishes its utility in many real-life scenarios.\n\n\n\n4.1 Worked Example\nLorem Ipsum - share real example National Survey of Wales"
   },
   {
-    "objectID": "pages/troubleshooting.html",
-    "href": "pages/troubleshooting.html",
-    "title": "Troubleshooting",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "An Urban Researcher’s Guide to Small Area Estimation",
     "section": "",
-    "text": "Lorem Ipsum"
+    "text": "Beginner-friendly Small Area Estimation (SAE) for researchers estimating survey-derived metrics across a whole country or region at fine geographic resolution.\nThe site has two tracks: a theory track that explains the SAE workflow, and a practical tutorial track that applies the workflow to a dataset. It uses the National Survey for Wales as the first worked survey.\nThe main practical uses R, Quarto, and SAE packages such as survey, sae, and SUMMER. Make sure you have latest R version installed."
   },
   {
-    "objectID": "pages/tutorial-sae.html",
-    "href": "pages/tutorial-sae.html",
-    "title": "Estimation and Diagnostics",
+    "objectID": "index.html#why-small-area-estimation",
+    "href": "index.html#why-small-area-estimation",
+    "title": "An Urban Researcher’s Guide to Small Area Estimation",
+    "section": "1 Why Small Area Estimation?",
+    "text": "1 Why Small Area Estimation?\n[draft] Survey are often not precise enough for fine geographies such as Local Authorities, MSOAs, or LSOAs. Some areas have very few/no respondents, unequal weights Taking weighted meands can be unstable. Also out of domain sample\nSAE is useful when direct estimates are too noisy or incomplete. Area-level SAE use direct estimates and their sampling variances, borrow strength across areas using covariates and random effects.\nSAE can be further improved with bayesian statistics (to smooth out area) and add spatial structure (spatial autocorrelation)\nSAE combines survey data, population estimates, auxiliary data, modelling to estimate the unsurveyed in an informed way.\n[ADD IMAGE]"
+  },
+  {
+    "objectID": "index.html#methods",
+    "href": "index.html#methods",
+    "title": "An Urban Researcher’s Guide to Small Area Estimation",
+    "section": "2 Methods",
+    "text": "2 Methods\nUse these pages to understand the concepts and decisions behind the workflow.\n\n\n\nNo.\nStep\nObjective\n\n\n\n\n1\nPreparing the Inputs\nDefine what is being estimated, for whom, and at what geographical scale.\n\n\n2\nDirect estimation\nEstimate area-level indicators directly from the survey and assess their precision.\n\n\n3a\nFrequentist Area-Level SAE\nFit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates.\n\n\n3b\nBayesian Area-Level SAE (+Spatial)\nReframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas.\n\n\n4\nUnit-Level SAE\nA bottom-up approach to SAE using individual person/household records instead of area-level estimates.\n\n\n5\nDiagnose and Report\nCheck model performance, report uncertainty, and present estimates."
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "An Urban Researcher’s Guide to Small Area Estimation",
+    "section": "3 Resources",
+    "text": "3 Resources\nSupporting materials for adapting the workflow:\n\nSAE Toolkit collects reusable input formats and helper scripts.\nTroubleshooting lists common data, estimation, and reporting problems."
+  },
+  {
+    "objectID": "pages/diagnostics.html",
+    "href": "pages/diagnostics.html",
+    "title": "Diagnostics, Reporting, and Benchmarking",
     "section": "",
-    "text": "The estimation workflow starts from the prepared SAE inputs from the National Survey for Wales example. It will cover:\n\ncalculating direct estimates and sampling variances,\nchecking sample sizes and unstable domains,\nfitting area-level SAE models,\ncomparing direct and modelled estimates,\ndiagnosing uncertainty and residual patterns,\npreparing outputs for reporting."
+    "text": "SAE methods is best visualised as a pipeline and their outputs should be evaluated at each step to decide whether estimates and uncertainties are good enough to report."
+  },
+  {
+    "objectID": "pages/diagnostics.html#evaluate-the-estimates-and-benchmarking",
+    "href": "pages/diagnostics.html#evaluate-the-estimates-and-benchmarking",
+    "title": "Diagnostics, Reporting, and Benchmarking",
+    "section": "1 Evaluate the Estimates and Benchmarking",
+    "text": "1 Evaluate the Estimates and Benchmarking\nFocus on a few checks:\n\nDirect vs modelled: do modelled estimates stay close to precise direct estimates?\nUncertainty: which domains still have large SE, RMSE, RSE, or wide credible intervals?\nModel effect: which domains move most after adding covariates or spatial structure?\nSpatial pattern: do residuals still show geographic structure?\n\nFinally, compare aggregated final estimates with known higher-level totals, if available. This helps check whether the small-area estimates remain consistent with trusted regional or national figures. This step is more important as the estimation workflow becomes more complex, especially for unit-level estimation approach."
+  },
+  {
+    "objectID": "pages/diagnostics.html#report-estimates-and-uncertainty",
+    "href": "pages/diagnostics.html#report-estimates-and-uncertainty",
+    "title": "Diagnostics, Reporting, and Benchmarking",
+    "section": "2 Report Estimates and Uncertainty",
+    "text": "2 Report Estimates and Uncertainty\nReport the uncertainty measure that matches the method used:\n\n\n\n\n\n\n\nWorkflow\nUncertainty to report\n\n\n\n\nDirect estimation\nstandard error, confidence interval, RSE\n\n\nFrequentist Fay-Herriot\nMSE, RMSE, approximate confidence interval\n\n\nBayesian or spatial SAE\ncredible interval, posterior probability, threshold probability\n\n\nUnit-level SAE\nbootstrap MSE/RMSE, simulation interval, credible interval, or posterior interval depending on the model\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nUseful outputs include estimate maps, uncertainty maps, direct-versus-model plots, and flags for domains where estimates are mostly model-driven."
+  },
+  {
+    "objectID": "pages/diagnostics.html#code-implementation",
+    "href": "pages/diagnostics.html#code-implementation",
+    "title": "Diagnostics, Reporting, and Benchmarking",
+    "section": "3 Code Implementation",
+    "text": "3 Code Implementation\n\n3.1 Worked Example\nLorem Ipsum - share real example National Survey of Wales"
+  },
+  {
+    "objectID": "pages/freq-area-sae.html",
+    "href": "pages/freq-area-sae.html",
+    "title": "Area-Level Estimation (Frequentist)",
+    "section": "",
+    "text": "Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the Fay-Herriot (FH) model, which combines direct estimates with domain-level covariates to improve precision."
+  },
+  {
+    "objectID": "pages/freq-area-sae.html#understanding-the-fay-herriot-model",
+    "href": "pages/freq-area-sae.html#understanding-the-fay-herriot-model",
+    "title": "Area-Level Estimation (Frequentist)",
+    "section": "1 Understanding the Fay-Herriot model",
+    "text": "1 Understanding the Fay-Herriot model\nFay-Herriot combines two pieces of information for each domain:\n\nthe direct estimate from the survey, and\na covariate-based model prediction.\n\nThe direct estimate \\(\\hat{\\theta}_d^{DIR}\\) can be written as the covariate-explained part \\(x_d^\\top\\beta\\), plus an area-specific unexplained effect \\(u_d\\), plus survey sampling noise \\(e_d\\).\n\\[\n\\hat{\\theta}^{DIR}_d =\nx_d^\\top\\beta + u_d + e_d.\n\\]\nThe FH estimate, is a weighted average of the direct estimate and the covariate-based prediction:\n\\[\n\\hat{\\theta}^{FH}_d =\n\\hat{\\gamma}_d \\hat{\\theta}^{DIR}_d\n+\n(1-\\hat{\\gamma}_d) x_d^\\top\\hat{\\beta}.\n\\]\nThe shrinkage weight \\(\\hat{\\gamma}_d = \\frac{\\hat{\\sigma}_u^2}{\\hat{\\sigma}_u^2 + \\psi_d}\\), where \\(\\psi_d\\) is the sampling variance of the direct estimate, controls how much the FH estimate “trusts” the direct estimate:\n\nif \\(\\psi_d\\) is small, the direct estimate is precise, so \\(\\hat{\\gamma}_d\\) is closer to 1;\nif \\(\\psi_d\\) is large, the direct estimate is noisy, so \\(\\hat{\\gamma}_d\\) is closer to 0.\n\nIn practice, FH leaves precise direct estimates mostly unchanged, while pulling noisy direct estimates toward the covariate-based prediction.\n\n\n\n\n\n\nNote\n\n\n\nIn this frequentist FH workflow, the main outputs are the model-based estimate (EBLUP) and its uncertainty (RMSE, the square root of model-based MSE). For domains without a usable direct estimate, the EBLUP comes entirely from the model component."
+  },
+  {
+    "objectID": "pages/freq-area-sae.html#covariate-choices",
+    "href": "pages/freq-area-sae.html#covariate-choices",
+    "title": "Area-Level Estimation (Frequentist)",
+    "section": "2 Covariate Choices",
+    "text": "2 Covariate Choices\nDomain-level covariates can often be found via census datas and other population-level aggregate statistics.Choose covariates with emphasis on coverage and comparability across domains.\n\nCoverage: each covariate should be available for all target domains.\nAlignment: match geography, definition, and reference period to the survey indicator.\nRelevance: keep variables with a clear substantive link to the outcome and avoid including many weak predictors.\nPredictive: choose covariates that improve domain-level prediction and are easy to explain; avoid downstream variables, and remove or combine highly correlated predictors.\n\nCommon examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessbility metrics, car ownership, etc.\n[ADD IMAGE]"
+  },
+  {
+    "objectID": "pages/freq-area-sae.html#evaluation",
+    "href": "pages/freq-area-sae.html#evaluation",
+    "title": "Area-Level Estimation (Frequentist)",
+    "section": "3 Evaluation",
+    "text": "3 Evaluation\nEvaluate the FH outputs (EBLUPs) and uncertainty (RMSEs) to decide how to proceed:\n\n\n\nScenario\nNext step\n\n\n\n\nEstimates are stable, and uncertainty acceptable\nUse EBLUPs for reporting.\n\n\nResults are sensitive to covariate choice, coefficients are unstable, or diagnostics show poor fit\nRevisit covariates and refit FH.\n\n\nA probability-style uncertainty provides better interpretation\nMove to Bayesian Area-Level SAE (+Spatial) to represent uncertainty through posterior estimates and Credible Intervals.\n\n\nResiduals show spatial autocorrelation after the covariate FH model\nAdd spatial structure to borrow strength from neighbouring areas. See Spatial SAE."
+  },
+  {
+    "objectID": "pages/freq-area-sae.html#code-implementation",
+    "href": "pages/freq-area-sae.html#code-implementation",
+    "title": "Area-Level Estimation (Frequentist)",
+    "section": "4 Code Implementation",
+    "text": "4 Code Implementation\n\n\n\n\n\n\nTip\n\n\n\nUse sae::eblupFH() to fit a frequentist Fay-Herriot model and sae::mseFH() to estimate uncertainty.\nNote that sae does not handle out-of-sample domains (i.e., domains without respondent records) automatically. They must be manually calculated based on the covariate-modelled predictions.\n\n\n\n4.1 Worked Example\nLorem Ipsum - share real example National Survey of Wales"
+  },
+  {
+    "objectID": "pages/sae-toolkit.html",
+    "href": "pages/sae-toolkit.html",
+    "title": "SAE Toolkit Lite",
+    "section": "",
+    "text": "SAE Toolkit Lite is for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach."
+  },
+  {
+    "objectID": "pages/sae-toolkit.html#minimum-inputs-and-recommended-schema",
+    "href": "pages/sae-toolkit.html#minimum-inputs-and-recommended-schema",
+    "title": "SAE Toolkit Lite",
+    "section": "1 Minimum inputs and recommended schema",
+    "text": "1 Minimum inputs and recommended schema\nAt minimum, an SAE workflow for Urban Analytics needs:\n\na survey indicator file, with one row per sampled unit used in the estimate\na domain-size file, with one row per target domain\na covariate file, when fitting an area-level model\nboundary geometry to map results or drive spatial structure for spatially-informed models\n\n\n1.1 Survey indicator file\nA survey indicator file links each sampled unit to the chosen outcome, target domain, and survey weight. Survey documentation should be kept alongside the file so that routing, missingness, design variables, and weight choice can be checked.\n\n\n\nColumn\nMeaning\n\n\n\n\nunit_id\nSurvey respondent, household, or sampled unit ID.\n\n\ndomain_id\nReporting domain code.\n\n\nindicator\nNumeric outcome, or binary 0/1.\n\n\nweight\nSurvey weight selected for the estimand.\n\n\nstratum\n(optional) survey stratum.\n\n\n\n\n\n1.2 Domain-size file\nA domain-size file gives the denominator for each target domain. The denominator must match the estimand’s target population rather than the full resident population by default.\n\n\n\nColumn\nMeaning\n\n\n\n\ndomain_id\nReporting domain code.\n\n\ndomain_size\nDenominator matching the target population.\n\n\ndomain_name\nHuman-readable area name.\n\n\n\n\n\n1.3 Geometry file\nBoundary geometry is useful for visualising estimates and for deriving adjacency structures for spatial models. It is not required for direct estimates or non-spatial area-level models.\n\n\n\n\n\n\n\nColumn\nMeaning\n\n\n\n\ndomain_id\nReporting domain code, matching the domain-size file.\n\n\ndomain_name\nHuman-readable area name.\n\n\ngeometry\nPolygon or multipolygon geometry for the reporting domain.\n\n\n\n\n\n1.4 Covariate file for area-level estimation\nCovariates are area-level predictors available for every target domain. They should be measured on the same geography as the direct estimates, or aggregated to that geography before modelling.\n\n\n\n\n\n\n\nColumn\nMeaning\n\n\n\n\ndomain_id\nReporting domain code.\n\n\ncovariate_*\nArea-level predictor available for every target domain.\n\n\nmedian_age\nExample demographic covariate.\n\n\nprop_urban\nExample settlement or land-use covariate.\n\n\nemployment_rate\nExample socioeconomic covariate."
+  },
+  {
+    "objectID": "pages/sae-toolkit.html#downloadable-scripts",
+    "href": "pages/sae-toolkit.html#downloadable-scripts",
+    "title": "SAE Toolkit Lite",
+    "section": "2 Downloadable scripts",
+    "text": "2 Downloadable scripts\nReusable scripts can be adapted for another survey once the input files follow the schema above.\n\n\n\nScript\nPurpose\n\n\n\n\ndirect_estimates.R\nCalculate direct estimates by domain, sampling variances, and confidence intervals.\n\n\ncovariate_sae.R\nFit frequentist Fay-Herriot area-level models using direct estimates, sampling variances, and area-level covariates.\n\n\nspatial_sae.R\nFit Bayesian area-level models with optional spatial structure using direct estimates, covariates, and an adjacency matrix.\n\n\nunit_level_sae.R\nFit a unit-level SAE model using survey microdata and population unit-level covariates.\n\n\ndiagnostics.R\nCreate comparison tables and plots for checking estimates, uncertainty, and model outputs."
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html",
+    "href": "pages/tutorial-dataprep.html",
+    "title": "Example: Input Preparation",
+    "section": "",
+    "text": "The National Survey for Wales (NSW) 2022-23 respondent file provides a concrete example of the input-preparation workflow from From Estimands to SAE Inputs."
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html#setup",
+    "href": "pages/tutorial-dataprep.html#setup",
+    "title": "Example: Input Preparation",
+    "section": "1 Setup",
+    "text": "1 Setup\n\nlibrary(dplyr)\nlibrary(readr)\nlibrary(stringr)\nlibrary(tidyr)\n\n# Allows chunks to work when run from the project root or from pages/.\nproject_root &lt;- if (dir.exists(\"pages\")) \".\" else \"..\"\n\ndata_root &lt;- file.path(project_root, \"data\")\nraw_dir &lt;- file.path(data_root, \"raw\")\ncensus_root &lt;- file.path(raw_dir, \"census\")\nclean_dir &lt;- file.path(data_root, \"clean\")\ndir.create(clean_dir, recursive = TRUE, showWarnings = FALSE)\n\nrespondent_file &lt;- file.path(\n  raw_dir,\n  \"nsw_2022-23_respondent_file_for_ukds.tab\"\n)\n\nThe NSW materials used here are:\n\nthe main respondent file in data/raw;\nthe data user guide and variable catalogue for survey design and weight choices, as well as variable choices\nCensus 2021 Local Authority tables in data/raw/census\n\nThe respondent file is tab-separated. The catalogue and questionnaire use negative values such as -99, -98, -9, -8, and sometimes -7 for refused, don’t know, routed, or other non-substantive responses. Keep those visible at import, then treat them explicitly during indicator construction.\n\nnsw_raw &lt;- read_tsv(respondent_file, show_col_types = FALSE)\n\nmissing_codes &lt;- c(-99, -98, -9, -8, -7)\n\nis_missing_code &lt;- function(x) {\n  is.na(x) | x %in% missing_codes\n}\n\nmake_binary &lt;- function(x, yes_values) {\n  case_when(\n    is_missing_code(x) ~ NA_integer_,\n    x %in% yes_values ~ 1L,\n    TRUE ~ 0L\n  )\n}"
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html#estimand",
+    "href": "pages/tutorial-dataprep.html#estimand",
+    "title": "Example: Input Preparation",
+    "section": "2 Estimand",
+    "text": "2 Estimand\nStart with a small set of estimands that illustrate different preparation decisions:\n\na routed travel-to-work measure,\na public transport satisfaction measure,\nan active travel module measure.\n\nEach estimand keeps the same target population and target domain: adults aged 16+ across Local Authorities.\n\n\n\n\n\n\n\n\n\nEstimand\nIndicator to be created\nTarget population\nTarget domain\n\n\n\n\nShare of adults who usually use two or more modes to travel to work\ncommute_multimodal\nAdults aged 16+\nLocal Authority\n\n\nShare of adults dissatisfied with bus services\npoor_bus_satisfaction\nAdults aged 16+\nLocal Authority\n\n\nShare of adults who walk for transport at least weekly\nwalk_weekly\nAdults aged 16+\nLocal Authority"
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html#indicator-construction",
+    "href": "pages/tutorial-dataprep.html#indicator-construction",
+    "title": "Example: Input Preparation",
+    "section": "3 Indicator Construction",
+    "text": "3 Indicator Construction\nThe indicator is the coded survey variable that measures the outcome in the estimand. The questionnaire and variable catalogue determine the source variables, routing, and response codes.\n\n\n\n\n\n\n\n\nIndicator\nSource variables\nConstruction rule\n\n\n\n\ncommute_multimodal\nTravWkModeAll1 to TravWkModeAll8\n1 when two or more commute modes are selected\n\n\npoor_bus_satisfaction\nBusOverSat\n1 when BusOverSat is 4 or 5, meaning fairly or very dissatisfied\n\n\nwalk_weekly\nAtFrqWlk10\n1 when AtFrqWlk10 is 1, 2, or 3, meaning at least weekly\n\n\n\nMissing and routed values are set to NA, not 0.\n\nmode_cols &lt;- paste0(\"TravWkModeAll\", 1:8)\n\nnsw_with_modes &lt;- nsw_raw |&gt;\n  mutate(\n    commute_mode_count = rowSums(\n      across(all_of(mode_cols), \\(x) x == 1),\n      na.rm = TRUE\n    ),\n    commute_mode_all_missing = if_all(all_of(mode_cols), is_missing_code)\n  )\n\nindicators &lt;- nsw_with_modes |&gt;\n  transmute(\n    unit_id = CaseNo,\n    commute_multimodal = case_when(\n      commute_mode_all_missing ~ NA_integer_,\n      commute_mode_count &gt;= 2 ~ 1L,\n      TRUE ~ 0L\n    ),\n    poor_bus_satisfaction = make_binary(BusOverSat, yes_values = c(4, 5)),\n    walk_weekly = make_binary(AtFrqWlk10, yes_values = c(1, 2, 3))\n  )\n\nindicators |&gt; \n  slice_head(n = 10)\n\n# A tibble: 10 × 4\n     unit_id commute_multimodal poor_bus_satisfaction walk_weekly\n       &lt;dbl&gt;              &lt;int&gt;                 &lt;int&gt;       &lt;int&gt;\n 1 222300001                 NA                    NA          NA\n 2 222300002                 NA                    NA          NA\n 3 222300003                 NA                    NA          NA\n 4 222300004                 NA                    NA          NA\n 5 222300005                 NA                     1          NA\n 6 222300006                 NA                     0           1\n 7 222300007                 NA                     0           0\n 8 222300008                 NA                     0           1\n 9 222300009                  0                     0          NA\n10 222300010                 NA                     1          NA\n\n\nCheck the amount of usable survey information for each indicator.\n\nindicator_missingness &lt;- indicators |&gt;\n  summarise(across(-unit_id, list(\n    non_missing = \\(x) sum(!is.na(x)),\n    missing = \\(x) sum(is.na(x)),\n    positive = \\(x) sum(x == 1, na.rm = TRUE)\n  ))) |&gt;\n  pivot_longer(\n    everything(),\n    names_to = c(\"indicator\", \".value\"),\n    names_pattern = \"(.+)_(non_missing|missing|positive)$\"\n  )\n\nindicator_missingness\n\n# A tibble: 6 × 3\n  indicator                 missing positive\n  &lt;chr&gt;                       &lt;int&gt;    &lt;int&gt;\n1 commute_multimodal_non       3845       NA\n2 commute_multimodal           7295      208\n3 poor_bus_satisfaction_non    8918       NA\n4 poor_bus_satisfaction        2222     2101\n5 walk_weekly_non              1999       NA\n6 walk_weekly                  9141      955"
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html#target-domain",
+    "href": "pages/tutorial-dataprep.html#target-domain",
+    "title": "Example: Input Preparation",
+    "section": "4 Target Domain",
+    "text": "4 Target Domain\nThe target domain is the geography for which estimates will be produced. The NSW user guide describes results at Local Authority level, and the public respondent file contains DvLA but not a finer public geography.\nUse Local Authority as the target domain.\n\nsurvey_domains &lt;- nsw_raw |&gt;\n  transmute(\n    unit_id = CaseNo,\n    domain_id = str_c(\"W0\", as.integer(DvLA) + 6000000L),\n    domain_id = recode(\n      domain_id,\n      \"W06000007\" = \"W06000023\", # Powys\n      \"W06000017\" = \"W06000024\"  # Merthyr Tydfil\n    )\n  )\n\nsurvey_domains |&gt;\n  count(domain_id, name = \"sample_n\") |&gt;\n  arrange(domain_id)\n\n# A tibble: 22 × 2\n   domain_id sample_n\n   &lt;chr&gt;        &lt;int&gt;\n 1 W06000001      368\n 2 W06000002      465\n 3 W06000003      379\n 4 W06000004      319\n 5 W06000005      467\n 6 W06000006      397\n 7 W06000008      325\n 8 W06000009      409\n 9 W06000010      573\n10 W06000011      749\n# ℹ 12 more rows\n\n\n\n\n\n\n\n\nNote\n\n\n\nThe domain choice is driven by the data. Ward, MSOA, or LSOA estimates would require finer respondent geography, or a documented linkage from respondents to those geographies, plus matching domain sizes and covariates."
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html#domain-size",
+    "href": "pages/tutorial-dataprep.html#domain-size",
+    "title": "Example: Input Preparation",
+    "section": "5 Domain Size",
+    "text": "5 Domain Size\nThe domain size must match the target population in the estimand. All three selected estimands use adults aged 16+ as the target population, so the required domain_size is the adult population by Local Authority.\nThe Census 2021 TS007 age table provides the adult population denominator.\n\ndomain_sizes &lt;- read_csv(\n  file.path(census_root, \"census2021-ts007-ltla.csv\"),\n  show_col_types = FALSE\n) |&gt;\n  filter(str_starts(`geography code`, \"W\")) |&gt;\n  transmute(\n    domain_id = `geography code`,\n    domain_name = geography,\n    domain_size =\n      `Age: Total; measures: Value` -\n      `Age: Aged 4 years and under; measures: Value` -\n      `Age: Aged 5 to 9 years; measures: Value` -\n      `Age: Aged 10 to 15 years; measures: Value`\n  )\n\ndomain_sizes |&gt;\n  arrange(domain_id)\n\n# A tibble: 22 × 3\n   domain_id domain_name      domain_size\n   &lt;chr&gt;     &lt;chr&gt;                  &lt;dbl&gt;\n 1 W06000001 Isle of Anglesey       57146\n 2 W06000002 Gwynedd                97974\n 3 W06000003 Conwy                  96364\n 4 W06000004 Denbighshire           78907\n 5 W06000005 Flintshire            127581\n 6 W06000006 Wrexham               110270\n 7 W06000008 Ceredigion             61387\n 8 W06000009 Pembrokeshire         102555\n 9 W06000010 Carmarthenshire       155484\n10 W06000011 Swansea               197864\n# ℹ 12 more rows\n\nwrite_csv(domain_sizes, file.path(clean_dir, \"pop_estimate.csv\"))"
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html#survey-weight",
+    "href": "pages/tutorial-dataprep.html#survey-weight",
+    "title": "Example: Input Preparation",
+    "section": "6 Survey Weight",
+    "text": "6 Survey Weight\nThe weight must match the target population and the relevant survey module:\n\ncommute_multimodal uses WalesAdultWeight;\npoor_bus_satisfaction uses WalesAdultWeight;\nwalk_weekly uses the active travel module weight, SampleTravelWeight, scaled to the adult population total.\n\n\nwales_adults &lt;- sum(domain_sizes$domain_size, na.rm = TRUE)\n\nweights &lt;- nsw_raw |&gt;\n  transmute(\n    unit_id = CaseNo,\n    WalesAdultWeight,\n    WalesTravelWeight =\n      SampleTravelWeight * wales_adults / sum(SampleTravelWeight, na.rm = TRUE)\n  )\n\nweight_summary &lt;- weights |&gt;\n  summarise(\n    WalesAdultWeight_total = sum(WalesAdultWeight, na.rm = TRUE),\n    WalesTravelWeight_total = sum(WalesTravelWeight, na.rm = TRUE),\n    adult_domain_size_total = wales_adults\n  )\n\nweight_summary\n\n# A tibble: 1 × 3\n  WalesAdultWeight_total WalesTravelWeight_total adult_domain_size_total\n                   &lt;dbl&gt;                   &lt;dbl&gt;                   &lt;dbl&gt;\n1               2549203.                 2559433                 2559433\n\n\n\n\n\n\n\n\nWarning\n\n\n\nScaling weights is an analysis choice. It is used here because direct estimation uses known domain sizes. If official grossing weights are supplied for the exact target population, use those instead. If the weight scale is uncertain, consider a ratio estimator."
+  },
+  {
+    "objectID": "pages/tutorial-dataprep.html#sae-input-files-and-outputs",
+    "href": "pages/tutorial-dataprep.html#sae-input-files-and-outputs",
+    "title": "Example: Input Preparation",
+    "section": "7 SAE Input Files and Outputs",
+    "text": "7 SAE Input Files and Outputs\nThe final preparation step writes files for direct estimation. Each estimand needs a survey indicator file with:\n\nunit_id;\ndomain_id;\nindicator;\nweight.\n\nThe raw NSW names, such as CaseNo, are useful while preparing the data. The output files use the common SAE field names from the toolkit.\nThe file register records the choices used to build each output.\n\n\n\nIndicator\nWeight\nDomain size\n\n\n\n\ncommute_multimodal\nWalesAdultWeight\ndomain_size\n\n\npoor_bus_satisfaction\nWalesAdultWeight\ndomain_size\n\n\nwalk_weekly\nWalesTravelWeight\ndomain_size\n\n\n\n\nanalysis_data &lt;- indicators |&gt;\n  left_join(survey_domains, by = \"unit_id\") |&gt;\n  left_join(weights, by = \"unit_id\")\n\nfor (i in seq_len(nrow(file_register))) {\n  spec &lt;- file_register[i, ]\n\n  indicator_file &lt;- analysis_data |&gt;\n    transmute(\n      unit_id,\n      domain_id,\n      indicator = .data[[spec$indicator]],\n      weight = .data[[spec$weight]]\n    )\n\n  write_csv(\n    indicator_file,\n    file.path(clean_dir, str_c(\"ind_weight_\", spec$indicator, \".csv\"))\n  )\n}\n\nCheck one indicator file and the domain-size file.\n\nread_csv(\n  file.path(clean_dir, \"ind_weight_walk_weekly.csv\"),\n  show_col_types = FALSE\n) |&gt;\n  glimpse()\n\nRows: 11,146\nColumns: 4\n$ unit_id   &lt;dbl&gt; 222300001, 222300002, 222300003, 222300004, 222300005, 22230…\n$ domain_id &lt;chr&gt; \"W06000001\", \"W06000001\", \"W06000001\", \"W06000001\", \"W060000…\n$ indicator &lt;dbl&gt; NA, NA, NA, NA, NA, 1, 0, 1, NA, NA, 0, NA, NA, NA, NA, NA, …\n$ weight    &lt;dbl&gt; NA, NA, NA, NA, NA, 690.6047, 508.3390, 1090.8056, NA, NA, 7…\n\nread_csv(\n  file.path(clean_dir, \"pop_estimate.csv\"),\n  show_col_types = FALSE\n) |&gt;\n  glimpse()\n\nRows: 22\nColumns: 3\n$ domain_id   &lt;chr&gt; \"W06000001\", \"W06000002\", \"W06000003\", \"W06000004\", \"W0600…\n$ domain_name &lt;chr&gt; \"Isle of Anglesey\", \"Gwynedd\", \"Conwy\", \"Denbighshire\", \"F…\n$ domain_size &lt;dbl&gt; 57146, 97974, 96364, 78907, 127581, 110270, 61387, 102555,…\n\n\nThe preparation produces:\n\none domain-size file, data/clean/pop_estimate.csv;\nthree survey indicator files in data/clean/;\na documented link from each output back to the estimand, indicator construction, target domain, domain size, and weight decision.\n\nThat documentation is part of the SAE input. Without it, the estimate is difficult to interpret and easy to misuse."
   }
 ]

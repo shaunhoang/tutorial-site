@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -143,21 +109,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
   </li>
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
- <span class="menu-text">Tutorial</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
-        <li>
-    <a class="dropdown-item" href="../pages/tutorial-dataprep.html" rel="" target="">
- <span class="dropdown-text">Input Preparation</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../pages/tutorial-sae.html" rel="" target="">
- <span class="dropdown-text">Estimation &amp; Reporting</span></a>
-  </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-resources" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">Resources</span>
     </a>
@@ -241,7 +192,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">From Estimands to SAE Inputs</span></a>
+ <span class="menu-text">Preparing SAE Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Example: Input Preparation</span></a>
   </div>
 </li>
       </ul>
@@ -264,13 +221,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Frequentist Area-Level Estimation</span></a>
+ <span class="menu-text">Area-Level Estimation (Frequentist)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
+ <span class="menu-text">Area-Level Estimation (Bayesian) + Spatial</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -293,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Diagnostics, Validation, and Uncertainty</span></a>
+ <span class="menu-text">Diagnostics, Reporting, and Benchmarking</span></a>
   </div>
 </li>
       </ul>
@@ -303,35 +260,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
- <span class="menu-text">Tutorial</span></a>
+ <span class="menu-text">Resources</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Preparation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/tutorial-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation and Diagnostics</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
- <span class="menu-text">Resources</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link">
@@ -356,12 +290,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#understanding-unit-level-sae" id="toc-understanding-unit-level-sae" class="nav-link active" data-scroll-target="#understanding-unit-level-sae"><span class="header-section-number">1</span> Understanding Unit-Level SAE</a></li>
-  <li><a href="#pros-and-cons" id="toc-pros-and-cons" class="nav-link" data-scroll-target="#pros-and-cons"><span class="header-section-number">2</span> Pros and Cons</a></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a>
-  <ul class="collapse">
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">3.1</span> Worked example</a></li>
-  </ul></li>
+  <li><a href="#understanding-unit-level-estimation" id="toc-understanding-unit-level-estimation" class="nav-link active" data-scroll-target="#understanding-unit-level-estimation"><span class="header-section-number">1</span> Understanding Unit-Level Estimation</a></li>
+  <li><a href="#caveats-with-unit-level-estimation" id="toc-caveats-with-unit-level-estimation" class="nav-link" data-scroll-target="#caveats-with-unit-level-estimation"><span class="header-section-number">2</span> Caveats with Unit-Level Estimation</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a></li>
   </ul>
 </nav>
     </div>
@@ -386,9 +317,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models.</p>
-<section id="understanding-unit-level-sae" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="understanding-unit-level-sae"><span class="header-section-number">1</span> Understanding Unit-Level SAE</h2>
-<p>In area-level SAE, the model starts from one direct estimate per domain. In unit-level SAE, the model starts from individual or household survey records:</p>
+<section id="understanding-unit-level-estimation" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="understanding-unit-level-estimation"><span class="header-section-number">1</span> Understanding Unit-Level Estimation</h2>
+<p>In area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:</p>
 <p><span class="math display">\[
 y_{di} =
 x_{di}^{\top}\beta + u_d + e_{di},
@@ -400,76 +331,51 @@ x_{di}^{\top}\beta + u_d + e_{di},
 \frac{1}{N_d}
 \sum_{i \in U_d} y_{di}.
 \]</span></p>
-<p>This makes unit-level SAE a bottom-up approach: model people or households first, then aggregate to the geographic domain of choice.</p>
+<p>This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.</p>
+<p>[ADD IMAGE]</p>
 </section>
-<section id="pros-and-cons" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="pros-and-cons"><span class="header-section-number">2</span> Pros and Cons</h2>
-<p>Unit-level SAE is useful when the survey and population data share comparable individual, household, or poststratification covariates.</p>
-<table class="table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Pros</th>
-<th>Cons</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Can aggregate estimates to multiple geographies</td>
-<td>Needs detailed population data, not just area averages</td>
-</tr>
-<tr class="even">
-<td>Can use survey microdata directly without aggregating to domains</td>
-<td>Survey and population variables must be coded in the same way</td>
-</tr>
-</tbody>
-</table>
-<p>The main barriers to unit-level estimation are microdata availability and privacy. In general, use area-level SAE when only domain-level covariates are available (more common). Unit-level SAE becomes more realistic when suitable population microdata, or a synthetic population, can provide the prediction population.</p>
+<section id="caveats-with-unit-level-estimation" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="caveats-with-unit-level-estimation"><span class="header-section-number">2</span> Caveats with Unit-Level Estimation</h2>
+<p>Unit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.</p>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Uses individual or household covariates directly, rather than area averages</li>
+<li>Can aggregate to several geographic scales<br></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Survey and population datasets need to be harmonised and include the same covariates</li>
+<li>More sensitive estimates because predictions are made for many non-sampled units and scaled up to population level</li>
+<li>More technically demanding, especially in terms of privacy/access</li>
+</ul>
+</div>
+</div>
+</div>
+<p>In general, prefer <strong>Area-level SAE</strong> when only domain-level covariates are available. <strong>Unit-level SAE</strong> is more realistic when suitable population microdata, or a validated <strong>synthetic population</strong> can provide the prediction population.</p>
 </section>
 <section id="code-implementation" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
-<p>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothUnit.html"><code>SUMMER::smoothUnit()</code></a> to fit a basic unit-level SAE model from a <code>survey::svydesign()</code> object and population unit-level covariates. It supports Gaussian or binomial outcomes and can optionally use an adjacency matrix for spatial structure.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SUMMER)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># survey_microdata should contain:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - indicator</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># - weight and survey design variables</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># - unit-level covariates used in the model</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># population_microdata should contain:</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># - domain_id</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># - the same unit-level covariates for the target population</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span>psu,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>stratum,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_microdata,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">nest =</span> <span class="cn">TRUE</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>unit_fit <span class="ot">&lt;-</span> SUMMER<span class="sc">::</span><span class="fu">smoothUnit</span>(</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> outcome <span class="sc">~</span> age_group <span class="sc">+</span> employment_status <span class="sc">+</span> car_access,</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain =</span> <span class="sc">~</span>domain_id,</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design,</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">X.pop =</span> population_microdata,</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">adj.mat =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<section id="worked-example" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">3.1</span> Worked example</h3>
-<p>N/A</p>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use <a href="https://rdrr.io/cran/SUMMER/man/smoothUnit.html"><code>SUMMER::smoothUnit()</code></a> to fit a basic unit-level SAE model from a <code>survey::svydesign()</code> object and population unit-level covariates. It supports using an adjacency matrix for spatial structure.</p>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -723,12 +629,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../pages/bayesian-area-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Bayesian Area-Level Estimation (+Spatial)</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Area-Level Estimation (Bayesian) + Spatial</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../pages/diagnostics.html" class="pagination-link">
-        <span class="nav-page-text">Diagnostics, Validation, and Uncertainty</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">Diagnostics, Reporting, and Benchmarking</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

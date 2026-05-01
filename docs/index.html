@@ -106,21 +106,6 @@ ul.task-list li input[type="checkbox"] {
     </ul>
   </li>
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
- <span class="menu-text">Tutorial</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
-        <li>
-    <a class="dropdown-item" href="./pages/tutorial-dataprep.html" rel="" target="">
- <span class="dropdown-text">Input Preparation</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./pages/tutorial-sae.html" rel="" target="">
- <span class="dropdown-text">Estimation &amp; Reporting</span></a>
-  </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-resources" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
  <span class="menu-text">Resources</span>
     </a>
@@ -204,7 +189,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">From Estimands to SAE Inputs</span></a>
+ <span class="menu-text">Preparing SAE Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Example: Input Preparation</span></a>
   </div>
 </li>
       </ul>
@@ -227,13 +218,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Frequentist Area-Level Estimation</span></a>
+ <span class="menu-text">Area-Level Estimation (Frequentist)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
+ <span class="menu-text">Area-Level Estimation (Bayesian) + Spatial</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -256,7 +247,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Diagnostics, Validation, and Uncertainty</span></a>
+ <span class="menu-text">Diagnostics, Reporting, and Benchmarking</span></a>
   </div>
 </li>
       </ul>
@@ -266,35 +257,12 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
- <span class="menu-text">Tutorial</span></a>
+ <span class="menu-text">Resources</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Preparation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./pages/tutorial-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation and Diagnostics</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
- <span class="menu-text">Resources</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pages/sae-toolkit.html" class="sidebar-item-text sidebar-link">
@@ -348,14 +316,14 @@ ul.task-list li input[type="checkbox"] {
 
 <p>Beginner-friendly Small Area Estimation (SAE) for researchers estimating survey-derived metrics across a whole country or region at fine geographic resolution.</p>
 <p>The site has two tracks: a theory track that explains the SAE workflow, and a practical tutorial track that applies the workflow to a dataset. It uses the National Survey for Wales as the first worked survey.</p>
-<p>The main practical uses R, Quarto, and SAE packages such as <code>survey</code>, <code>sae</code>, <code>SUMMER</code>, and <code>INLA</code>.Make sure you have R version 4.5.1 installed. You can download it from <a href="https://cran.r-project.org/">CRAN</a>.</p>
+<p>The main practical uses R, Quarto, and SAE packages such as <code>survey</code>, <code>sae</code>, and <code>SUMMER</code>. Make sure you have <a href="https://cran.r-project.org/">latest R version</a> installed.</p>
 <section id="why-small-area-estimation" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="why-small-area-estimation"><span class="header-section-number">1</span> Why Small Area Estimation?</h2>
 <p>[draft] Survey are often not precise enough for fine geographies such as Local Authorities, MSOAs, or LSOAs. Some areas have very few/no respondents, unequal weights Taking weighted meands can be unstable. Also out of domain sample</p>
 <p>SAE is useful when direct estimates are too noisy or incomplete. Area-level SAE use direct estimates and their sampling variances, borrow strength across areas using covariates and random effects.</p>
 <p>SAE can be further improved with bayesian statistics (to smooth out area) and add spatial structure (spatial autocorrelation)</p>
 <p>SAE combines survey data, population estimates, auxiliary data, modelling to estimate the unsurveyed in an informed way.</p>
-<p>[add an image that represents SAE]</p>
+<p>[ADD IMAGE]</p>
 </section>
 <section id="methods" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="methods"><span class="header-section-number">2</span> Methods</h2>
@@ -380,16 +348,21 @@ ul.task-list li input[type="checkbox"] {
 <td>Estimate area-level indicators directly from the survey and assess their precision.</td>
 </tr>
 <tr class="odd">
-<td>3</td>
+<td>3a</td>
 <td><strong><a href="./pages/freq-area-sae.html">Frequentist Area-Level SAE</a></strong></td>
 <td>Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates.</td>
 </tr>
 <tr class="even">
-<td>4</td>
+<td>3b</td>
 <td><strong><a href="./pages/bayesian-area-sae.html">Bayesian Area-Level SAE (+Spatial)</a></strong></td>
 <td>Reframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas.</td>
 </tr>
 <tr class="odd">
+<td>4</td>
+<td><strong><a href="./pages/unit-level-sae.html">Unit-Level SAE</a></strong></td>
+<td>A bottom-up approach to SAE using individual person/household records instead of area-level estimates.</td>
+</tr>
+<tr class="even">
 <td>5</td>
 <td><strong><a href="./pages/diagnostics.html">Diagnose and Report</a></strong></td>
 <td>Check model performance, report uncertainty, and present estimates.</td>
@@ -661,7 +634,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./pages/prepare-inputs.html" class="pagination-link">
-        <span class="nav-page-text">From Estimands to SAE Inputs</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">Preparing SAE Inputs</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

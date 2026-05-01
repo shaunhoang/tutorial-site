@@ -1,58 +1,37 @@
 ---
-title: "Diagnostics, Validation, and Uncertainty"
+title: "Diagnostics, Reporting, and Benchmarking"
 ---
 
-Diagnostics decide whether SAE outputs are stable, interpretable, and suitable for reporting. They should compare the survey-only signal, the modelled estimates, and the uncertainty attached to each result.
+SAE methods is best visualised as a pipeline and their outputs should be evaluated at each step to decide whether estimates and uncertainties are good enough to report.
 
-## Model Comparison
+## Evaluate the Estimates and Benchmarking
 
-Compare direct estimates, non-spatial Fay-Herriot estimates, Bayesian estimates, and spatial estimates where available. The aim is not to choose the smoothest map, but to understand what the model has changed.
+Focus on a few checks:
 
-Useful checks include:
+- **Direct vs modelled:** do modelled estimates stay close to precise direct estimates?
+- **Uncertainty:** which domains still have large SE, RMSE, RSE, or wide credible intervals?
+- **Model effect:** which domains move most after adding covariates or spatial structure?
+- **Spatial pattern:** do residuals still show geographic structure?
 
-- direct estimate versus model estimate,
-- domains with the largest shrinkage,
-- changes between non-spatial and spatial models,
-- residual pattern and remaining spatial autocorrelation,
-- sensitivity to covariates and modelling choices,
-- whether model estimates aggregate sensibly to known higher-level totals.
+Finally, compare aggregated final estimates with known higher-level totals, if available. This helps check whether the small-area estimates remain consistent with trusted regional or national figures. This step is more important as the estimation workflow becomes more complex, especially for unit-level estimation approach.
 
-When teaching with simulated or complete-population data, ground-truth comparison can be useful. For real survey applications, use direct estimates, external benchmarks, known totals, held-out checks where feasible, and substantive plausibility.
+## Report Estimates and Uncertainty
 
-## Uncertainty
+Report the uncertainty measure that matches the method used:
 
-Direct estimates, frequentist FH models, and Bayesian models use different uncertainty summaries. Avoid treating them as interchangeable.
-
-| Workflow | Common uncertainty output |
+| Workflow | Uncertainty to report |
 |---|---|
-| Direct estimation | sampling variance, standard error, confidence interval, relative standard error |
-| Frequentist FH | MSE, RMSE, approximate confidence interval |
-| Bayesian FH / spatial model | posterior interval, credible interval, exceedance probability |
+| Direct estimation | standard error, confidence interval, RSE |
+| Frequentist Fay-Herriot | MSE, RMSE, approximate confidence interval |
+| Bayesian or spatial SAE | credible interval, posterior probability, threshold probability |
+| Unit-level SAE | bootstrap MSE/RMSE, simulation interval, credible interval, or posterior interval depending on the model |
 
-Map uncertainty as well as point estimates. Flag domains with high uncertainty, very small sample sizes, unstable weights, or estimates driven mostly by the model rather than local survey information.
-
-## Benchmarking and Reporting
-
-Benchmarking adjusts estimates so they agree with known totals at a higher geography, such as national or regional totals. It is useful when consistency with official aggregates matters, but it should be documented because it changes the model output.
-
-Reporting should make clear:
-
-- the estimand and target population,
-- the domain geography,
-- whether estimates are direct, model-based, or benchmarked,
-- which covariates and model family were used,
-- how uncertainty should be read,
-- which domains should be interpreted cautiously.
-
-Do not present smoothed or modelled estimates as if they were observed survey results.
-
-:::{.callout-tip}
-Useful R functions depend on the fitted model. In `sae`, `mseFH()` estimates MSE for Fay-Herriot EBLUPs and `pbmseBHF()` can be used for bootstrap MSE in Battese-Harter-Fuller workflows. Base R and tidyverse tools are usually enough for comparison tables once estimates are in a common format.
-
-Documentation: [`sae::mseFH()`](https://search.r-project.org/CRAN/refmans/sae/html/mseFH.html), [`sae::pbmseBHF()`](https://search.r-project.org/CRAN/refmans/sae/html/pbmseBHF.html)
+:::{.callout-note}
+Useful outputs include estimate maps, uncertainty maps, direct-versus-model plots, and flags for domains where estimates are mostly model-driven.
 :::
 
-## Worked example
+## Code Implementation
 
-Lorem Ipsum - share real example here, no need for live code block  
-National Survey of Wales
+### Worked Example
+
+Lorem Ipsum - share real example National Survey of Wales

@@ -25,12 +25,6 @@ website:
             href: pages/direct-estimation.qmd
           - text: "Reporting"
             href: pages/diagnostics.qmd
-      - text: "Tutorial"
-        menu:
-          - text: "Input Preparation"
-            href: pages/tutorial-dataprep.qmd
-          - text: "Estimation & Reporting"
-            href: pages/tutorial-sae.qmd
       - text: "Resources"
         menu:
           - text: "SAE Toolkit"
@@ -51,6 +45,7 @@ website:
           - section: "Part 1: Preparation"
             contents:
               - pages/prepare-inputs.qmd
+              - pages/tutorial-dataprep.qmd
           - section: "Part 2: Estimation"
             contents:
               - pages/direct-estimation.qmd
@@ -60,10 +55,6 @@ website:
           - section: "Part 3: Reporting"
             contents:
               - pages/diagnostics.qmd
-      - section: "Tutorial"
-        contents:
-          - pages/tutorial-dataprep.qmd
-          - pages/tutorial-sae.qmd
       - section: "Resources"
         contents:
           - pages/sae-toolkit.qmd

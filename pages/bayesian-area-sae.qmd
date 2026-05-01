@@ -1,12 +1,12 @@
 ---
-title: "Bayesian Area-Level Estimation (+Spatial)"
+title: "Area-Level Estimation (Bayesian) + Spatial"
 ---
 
 This notebook extends the area-level Fay-Herriot workflow. It first reframes area-level SAE in Bayesian terms, then shows why spatial structure may be useful when neighbouring domains share unexplained patterns.
 
-## Bayesian versus Frequentist approach in SAE
+## Bayesian versus Frequentist approach
 
-Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea:
+Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :
 
 $$
 \hat{\theta}^{DIR}_d =
@@ -15,75 +15,38 @@ $$
 
 The difference is how the unknown quantities are estimated and how uncertainty is interpreted. 
 
-- In the **frequentist** approach, $\beta$, $\sigma_u^2$, and area effects are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), plus uncertainty measures such as RMSE, and confidence intervals.
-- In the **Bayesian** approach, unknown quantities such as $\beta$, $\sigma_u^2$, and $u_d$ are treated as uncertain and assigned prior distributions. Typical outputs are posterior means or medians, credible intervals, and probability summaries.
+- In the **frequentist** approach, unknown quantities such as $\beta$, $\sigma_u^2$, and $u_d$ are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), uncertainty measures such as RMSE, and confidence intervals.
+- In the **Bayesian** approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries. 
 
 This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.
 
-:::{.callout-note}
-- Use the **frequentist** Fay-Herriot workflow as the simpler starting point when you need stable area estimates, RMSEs, and a transparent model-based improvement over direct estimates. 
-- Use a **Bayesian** workflow when probability-style summaries are useful for the decision, or when you want to add spatial structure.
-:::
-
 [ADD IMAGE]
+
+Therefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach.
 
 ## Spatial Structure
 
-Let's go back to the FH model equation cited above. The non-spatial area-level model assumes the unexplained area effects $u_d$ are *independent* after accounting for covariates. In urban research, this is rarely true: Neighbouring places may share more similarities that could help inform our estimates.
+Going back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects $u_d$ are *independent* after accounting for covariates. In urban research, this is rarely true: Neighbouring places may share more similarities that could help inform our estimates.
 
-**Spatial area-level models** add a structured area effect using an adjacency matrix or neighbourhood graph. This lets the model borrow strength not only from covariates, but also from nearby areas.
-
-The spatial structure is usually provided as a **spatial weights matrix**: a table that tells the model which areas are connected, and how strongly. The simplest spatial weights matrix is a **binary adjacency matrix**. Each row and column represents a domain. A value of `1` means two domains are neighbours, and `0` means they are not. Neighbours are usually defined by shared boundaries, for example Queen contiguity or Rook contiguity, or distance threshold.
+**Spatial area-level models** add a structured area effect using an adjacency matrix or neighbourhood graph. This lets the model borrow strength not only from covariates, but also from nearby areas. The spatial structure is usually provided as a binary **spatial weights matrix**.
 
 [ADD IMAGE]
 
 ## Evaluation
 
-At this stage, it is worth comparing the evolving outputs of the estimates and their uncertainties from direct estimates through each addition of covariates and spatial information.The aim is simply to check whether the extra modelling is useful and defensible.
-
-Focus on three checks:
-
-- **Estimates:** do posterior estimates broadly agree with reliable direct estimates and frequentist EBLUPs?
-- **Uncertainty:** do credible intervals or threshold probabilities make the results easier to interpret than RMSE alone?
-- **Spatial effect:** if spatial smoothing changes the map, is that supported by residual spatial autocorrelation and substantive knowledge?
-
-If the Bayesian or spatial model changes results substantially, check priors, covariates, direct variances, influential domains, and the adjacency structure before reporting.
+At this stage, it is worth comparing the evolving outputs of the area-level estimates and their uncertainties from direct estimates through each addition of covariates and spatial information. The aim is simply to check whether the extra modelling is useful and defensible.
 
 ## Code Implementation
 
-For Bayesian area-level SAE, the main package used here is [`SUMMER`](https://cran.r-project.org/package=SUMMER). It fits area-level smoothing models using INLA, and can work either from direct estimates or from survey microdata.
+:::{.callout-tip}
+For Bayesian area-level SAE, the main package used here is [`SUMMER`](https://cran.r-project.org/package=SUMMER). It fits area-level smoothing models using INLA, and can work either from direct estimates or from survey microdata, greatly simplifying the implementation of the Bayesian approach and adding spatial structure in Area-Level SAE.
 
 - Use [`SUMMER::smoothArea()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html) when you already have direct estimates and their variances. 
-- Use [`SUMMER::smoothSurvey()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html) when you want SUMMER to calculate design-adjusted direct estimates from survey microdata before smoothing. Both can use an adjacency matrix for spatial structure.
+- Use [`SUMMER::smoothSurvey()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html) when you want `SUMMER` to calculate design-adjusted direct estimates from survey microdata before smoothing. 
 
-```{r}
-library(SUMMER)
+The `sae` package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure conveniently. Instead, they must be coded manually, which diminishes its utility in many real-life scenarios.
+:::
 
-# direct_results should contain: 
-# - domain_id, 
-# - Direct, 
-# - Variance 
-#
-# domain_covariates should contain: 
-# - domain_id, 
-# - area-level covariates
-#
-# adjacency_matrix should have row and column names matching domain_id
+### Worked Example
 
-direct_est <- direct_results[, c("domain_id", "Direct", "Variance")]
-
-bayes_area_fit <- SUMMER::smoothArea(
-  formula = Direct ~ x_income + x_car_ownership + x_urban,
-  domain = ~domain_id,
-  direct.est = direct_est,
-  X.domain = domain_covariates,
-  adj.mat = adjacency_matrix,       # if NULL, the model is non-spatial
-  transform = "identity",           # no data transformation of estimates
-  level = 0.95                      # CI level
-)
-```
-
-### Worked example
-
-Lorem Ipsum - share real example here 
-National Survey of Wales
+Lorem Ipsum - share real example National Survey of Wales

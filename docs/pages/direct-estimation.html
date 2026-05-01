@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -65,7 +31,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../pages/freq-area-sae.html" rel="next">
-<link href="../pages/prepare-inputs.html" rel="prev">
+<link href="../pages/tutorial-dataprep.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -139,21 +105,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../pages/diagnostics.html" rel="" target="">
  <span class="dropdown-text">Reporting</span></a>
-  </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
- <span class="menu-text">Tutorial</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
-        <li>
-    <a class="dropdown-item" href="../pages/tutorial-dataprep.html" rel="" target="">
- <span class="dropdown-text">Input Preparation</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../pages/tutorial-sae.html" rel="" target="">
- <span class="dropdown-text">Estimation &amp; Reporting</span></a>
   </li>  
     </ul>
   </li>
@@ -241,7 +192,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">From Estimands to SAE Inputs</span></a>
+ <span class="menu-text">Preparing SAE Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Example: Input Preparation</span></a>
   </div>
 </li>
       </ul>
@@ -264,13 +221,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Frequentist Area-Level Estimation</span></a>
+ <span class="menu-text">Area-Level Estimation (Frequentist)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
+ <span class="menu-text">Area-Level Estimation (Bayesian) + Spatial</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -293,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Diagnostics, Validation, and Uncertainty</span></a>
+ <span class="menu-text">Diagnostics, Reporting, and Benchmarking</span></a>
   </div>
 </li>
       </ul>
@@ -303,35 +260,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
- <span class="menu-text">Tutorial</span></a>
+ <span class="menu-text">Resources</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Preparation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/tutorial-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation and Diagnostics</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
- <span class="menu-text">Resources</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link">
@@ -359,10 +293,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#inputs" id="toc-inputs" class="nav-link active" data-scroll-target="#inputs"><span class="header-section-number">1</span> Inputs</a></li>
   <li><a href="#direct-estimator-and-sampling-variances" id="toc-direct-estimator-and-sampling-variances" class="nav-link" data-scroll-target="#direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</a></li>
   <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">3</span> Evaluation</a></li>
-  <li><a href="#implementation-in-r" id="toc-implementation-in-r" class="nav-link" data-scroll-target="#implementation-in-r"><span class="header-section-number">4</span> Implementation in R</a>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">4</span> Code Implementation</a>
   <ul class="collapse">
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="header-section-number">4.1</span> Functions</a></li>
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.2</span> Worked example</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.1</span> Worked Example</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -491,62 +424,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>Variance</code>, the estimated sampling variance of <code>Direct</code></li>
 </ul>
 </section>
-<section id="implementation-in-r" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="implementation-in-r"><span class="header-section-number">4</span> Implementation in R</h2>
-<section id="functions" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="functions"><span class="header-section-number">4.1</span> Functions</h3>
-<p>Use <a href="https://search.r-project.org/CRAN/refmans/sae/html/direct.html"><code>sae::direct()</code></a> to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (<code>SampSize</code>), direct estimate (<code>Direct</code>), estimated standard deviation (<code>SD</code>), and coefficient of variation (<code>CV</code>). Square <code>SD</code> to obtain the <code>Variance</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sae)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>direct_fit <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator<span class="sc">$</span>indicator,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator<span class="sc">$</span>domain_id,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator<span class="sc">$</span>weight,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> domain_sizes, </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="co"># without replacement (i.e., no duplicate respondents)</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>direct_results <span class="ot">&lt;-</span> direct_fit <span class="sc">|&gt;</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">domain_id =</span> Domain) <span class="sc">|&gt;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Variance =</span> SD<span class="sc">^</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
+<section id="code-implementation" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">4</span> Code Implementation</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<p>Use <a href="https://search.r-project.org/CRAN/refmans/sae/html/direct.html"><code>sae::direct()</code></a> to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (<code>SampSize</code>), direct estimate (<code>Direct</code>), estimated standard deviation (<code>SD</code>), and coefficient of variation (<code>CV</code>). Square <code>SD</code> to obtain the <code>Variance</code>.</p>
 <p>In <code>sae::direct()</code>, if <code>domsize</code> is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.</p>
-</div>
-</div>
 <p>If the survey includes more detailed design information, use the <a href="https://cran.r-project.org/package=survey"><code>survey</code></a> package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span>psu,                 <span class="co"># primary sampling unit</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>stratum,          <span class="co"># survey stratum ID</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,          <span class="co"># survey weight</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator,    <span class="co"># survey indicator file</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>direct_design_fit <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,       </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id,            </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design,            </span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> svymean,  <span class="co"># other values: svytotal, svyratio, etc.</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="fu">c</span>(<span class="st">"se"</span>, <span class="st">"ci"</span>),    <span class="co"># output SE, CI, CV</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="worked-example" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.2</span> Worked example</h3>
+</div>
+<section id="worked-example" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.1</span> Worked Example</h3>
 <p>Lorem Ipsum - share real example National Survey of Wales</p>
 
 
@@ -803,13 +699,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/prepare-inputs.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">From Estimands to SAE Inputs</span>
+      <a href="../pages/tutorial-dataprep.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Example: Input Preparation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../pages/freq-area-sae.html" class="pagination-link">
-        <span class="nav-page-text">Frequentist Area-Level Estimation</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">Area-Level Estimation (Frequentist)</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

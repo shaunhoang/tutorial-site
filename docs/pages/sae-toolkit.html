@@ -31,7 +31,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../pages/troubleshooting.html" rel="next">
-<link href="../pages/tutorial-sae.html" rel="prev">
+<link href="../pages/diagnostics.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -103,21 +103,6 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../pages/diagnostics.html" rel="" target="">
  <span class="dropdown-text">Reporting</span></a>
-  </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tutorial" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
- <span class="menu-text">Tutorial</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
-        <li>
-    <a class="dropdown-item" href="../pages/tutorial-dataprep.html" rel="" target="">
- <span class="dropdown-text">Input Preparation</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../pages/tutorial-sae.html" rel="" target="">
- <span class="dropdown-text">Estimation &amp; Reporting</span></a>
   </li>  
     </ul>
   </li>
@@ -205,7 +190,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">From Estimands to SAE Inputs</span></a>
+ <span class="menu-text">Preparing SAE Inputs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Example: Input Preparation</span></a>
   </div>
 </li>
       </ul>
@@ -228,13 +219,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Frequentist Area-Level Estimation</span></a>
+ <span class="menu-text">Area-Level Estimation (Frequentist)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Bayesian Area-Level Estimation (+Spatial)</span></a>
+ <span class="menu-text">Area-Level Estimation (Bayesian) + Spatial</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -257,7 +248,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Diagnostics, Validation, and Uncertainty</span></a>
+ <span class="menu-text">Diagnostics, Reporting, and Benchmarking</span></a>
   </div>
 </li>
       </ul>
@@ -267,35 +258,12 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
- <span class="menu-text">Tutorial</span></a>
+ <span class="menu-text">Resources</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/tutorial-dataprep.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Data Preparation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/tutorial-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation and Diagnostics</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
- <span class="menu-text">Resources</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link active">
@@ -507,13 +475,17 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><a href="../scripts/covariate_sae.R">covariate_sae.R</a></td>
-<td>Fit Bayesian area-level models using direct estimates, sampling variances, and area-level covariates.</td>
+<td>Fit frequentist Fay-Herriot area-level models using direct estimates, sampling variances, and area-level covariates.</td>
 </tr>
 <tr class="odd">
 <td><a href="../scripts/spatial_sae.R">spatial_sae.R</a></td>
-<td>Build adjacency or spatial weight matrices from domain boundaries and fit Bayesian spatial SAE models.</td>
+<td>Fit Bayesian area-level models with optional spatial structure using direct estimates, covariates, and an adjacency matrix.</td>
 </tr>
 <tr class="even">
+<td><a href="../scripts/unit_level_sae.R">unit_level_sae.R</a></td>
+<td>Fit a unit-level SAE model using survey microdata and population unit-level covariates.</td>
+</tr>
+<tr class="odd">
 <td><a href="../scripts/diagnostics.R">diagnostics.R</a></td>
 <td>Create comparison tables and plots for checking estimates, uncertainty, and model outputs.</td>
 </tr>
@@ -773,8 +745,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/tutorial-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Estimation and Diagnostics</span>
+      <a href="../pages/diagnostics.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Diagnostics, Reporting, and Benchmarking</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

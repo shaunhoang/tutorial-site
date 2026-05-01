@@ -4,9 +4,9 @@ title: "Unit-Level Estimation"
 
 Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models. 
 
-## Understanding Unit-Level SAE
+## Understanding Unit-Level Estimation
 
-In area-level SAE, the model starts from one direct estimate per domain. In unit-level SAE, the model starts from individual or household survey records:
+In area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:
 
 $$
 y_{di} =
@@ -23,56 +23,32 @@ $$
 \sum_{i \in U_d} y_{di}.
 $$
 
-This makes unit-level SAE a bottom-up approach: model people or households first, then aggregate to the geographic domain of choice.
+This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.
 
-## Pros and Cons
+[ADD IMAGE]
 
-Unit-level SAE is useful when the survey and population data share comparable individual, household, or poststratification covariates.
+## Caveats with Unit-Level Estimation
 
-| Pros | Cons |
-|---|---|
-| Can aggregate estimates to multiple geographies | Needs detailed population data, not just area averages |
-| Can use survey microdata directly without aggregating to domains | Survey and population variables must be coded in the same way |
+Unit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.
 
-The main barriers to unit-level estimation are microdata availability and privacy. In general, use area-level SAE when only domain-level covariates are available (more common). Unit-level SAE becomes more realistic when suitable population microdata, or a synthetic population, can provide the prediction population.
+:::{.callout}
+**Pros:**
+
+- Uses individual or household covariates directly, rather than area averages
+- Can aggregate to several geographic scales<br> 
+
+**Cons:**
+
+- Survey and population datasets need to be harmonised and include the same covariates
+- More sensitive estimates because predictions are made for many non-sampled units and scaled up to population level
+- More technically demanding, especially in terms of privacy/access 
+:::
+
+In general, prefer **Area-level SAE** when only domain-level covariates are available. **Unit-level SAE** is more realistic when suitable population microdata, or a validated **synthetic population** can provide the prediction population.
+
 
 ## Code Implementation
 
-Use [`SUMMER::smoothUnit()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothUnit.html) to fit a basic unit-level SAE model from a `survey::svydesign()` object and population unit-level covariates. It supports Gaussian or binomial outcomes and can optionally use an adjacency matrix for spatial structure.
-
-```{r}
-library(survey)
-library(SUMMER)
-
-# survey_microdata should contain:
-# - indicator
-# - domain_id
-# - weight and survey design variables
-# - unit-level covariates used in the model
-#
-# population_microdata should contain:
-# - domain_id
-# - the same unit-level covariates for the target population
-
-design <- survey::svydesign(
-  ids = ~psu,
-  strata = ~stratum,
-  weights = ~weight,
-  data = survey_microdata,
-  nest = TRUE
-)
-
-unit_fit <- SUMMER::smoothUnit(
-  formula = outcome ~ age_group + employment_status + car_access,
-  domain = ~domain_id,
-  design = design,
-  family = "binomial",
-  X.pop = population_microdata,
-  adj.mat = NULL,
-  level = 0.95
-)
-```
-
-### Worked example
-
-N/A
+:::{.callout-tip}
+Use [`SUMMER::smoothUnit()`](https://rdrr.io/cran/SUMMER/man/smoothUnit.html) to fit a basic unit-level SAE model from a `survey::svydesign()` object and population unit-level covariates. It supports using an adjacency matrix for spatial structure.
+:::

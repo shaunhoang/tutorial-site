@@ -1,5 +1,5 @@
 ---
-title: "From Estimands to SAE Inputs"
+title: "Preparing SAE Inputs"
 ---
 
 A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to [Tutorial: Data Preparation](tutorial-dataprep.qmd).

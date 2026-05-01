@@ -7,7 +7,7 @@ Beginner-friendly Small Area Estimation (SAE) for researchers estimating survey-
 
 The site has two tracks: a theory track that explains the SAE workflow, and a practical tutorial track that applies the workflow to a dataset. It uses the National Survey for Wales as the first worked survey.
 
-The main practical uses R, Quarto, and SAE packages such as `survey`, `sae`, `SUMMER`, and `INLA`.Make sure you have R version 4.5.1 installed. You can download it from [CRAN](https://cran.r-project.org/).
+The main practical uses R, Quarto, and SAE packages such as `survey`, `sae`, and `SUMMER`. Make sure you have [latest R version](https://cran.r-project.org/) installed.
 
 ## Why Small Area Estimation?
 
@@ -20,7 +20,7 @@ SAE can be further improved with bayesian statistics (to smooth out area) and ad
 
 SAE combines survey data, population estimates, auxiliary data, modelling to estimate the unsurveyed in an informed way.
 
-\[add an image that represents SAE\]
+[ADD IMAGE]
 
 ## Methods
 
@@ -30,8 +30,9 @@ Use these pages to understand the concepts and decisions behind the workflow.
 |---|---|---|
 | 1 |**[Preparing the Inputs](pages/prepare-inputs.qmd)** | Define what is being estimated, for whom, and at what geographical scale. |
 | 2 |**[Direct estimation](pages/direct-estimation.qmd)** | Estimate area-level indicators directly from the survey and assess their precision. |
-| 3 |**[Frequentist Area-Level SAE](pages/freq-area-sae.qmd)** | Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates. |
-| 4 |**[Bayesian Area-Level SAE (+Spatial)](pages/bayesian-area-sae.qmd)** | Reframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas. |
+| 3a |**[Frequentist Area-Level SAE](pages/freq-area-sae.qmd)** | Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates. |
+| 3b |**[Bayesian Area-Level SAE (+Spatial)](pages/bayesian-area-sae.qmd)** | Reframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas. |
+| 4 |**[Unit-Level SAE](pages/unit-level-sae.qmd)** | A bottom-up approach to SAE using individual person/household records instead of area-level estimates. |
 | 5 |**[Diagnose and Report](pages/diagnostics.qmd)** | Check model performance, report uncertainty, and present estimates. |
 
 ## Resources

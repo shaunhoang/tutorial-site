@@ -61,52 +61,16 @@ In case **Model-based SAE** is necessary, the output needed will be:
 - `Direct`, the survey-only estimate
 - `Variance`, the estimated sampling variance of `Direct`
 
-## Implementation in R
-### Functions
+## Code Implementation
+
+:::{.callout-tip}
 Use [`sae::direct()`](https://search.r-project.org/CRAN/refmans/sae/html/direct.html) to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (`SampSize`), direct estimate (`Direct`), estimated standard deviation (`SD`), and coefficient of variation (`CV`). Square `SD` to obtain the `Variance`.
 
-```{r}
-library(sae)
-
-direct_fit <- sae::direct(
-  y = survey_indicator$indicator,
-  dom = survey_indicator$domain_id,
-  sweight = survey_indicator$weight,
-  domsize = domain_sizes, 
-  replace = FALSE, # without replacement (i.e., no duplicate respondents)
-)
-
-direct_results <- direct_fit |>
-  dplyr::rename(domain_id = Domain) |>
-  dplyr::mutate(Variance = SD^2)
-```
-::::{.callout-note}
 In `sae::direct()`, if `domsize` is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.
-::::
 
 If the survey includes more detailed design information, use the [`survey`](https://cran.r-project.org/package=survey) package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.
+:::
 
-```{r}
-library(survey)
+### Worked Example
 
-design <- survey::svydesign(
-  ids = ~psu,                 # primary sampling unit
-  strata = ~stratum,          # survey stratum ID
-  weights = ~weight,          # survey weight
-  data = survey_indicator,    # survey indicator file
-)
-
-direct_design_fit <- survey::svyby(
-  formula = ~indicator,       
-  by = ~domain_id,            
-  design = design,            
-  FUN = svymean,  # other values: svytotal, svyratio, etc.
-  vartype = c("se", "ci"),    # output SE, CI, CV
-  na.rm = TRUE
-)
-```
-
-### Worked example
-
-Lorem Ipsum - share real example
-National Survey of Wales
+Lorem Ipsum - share real example National Survey of Wales
