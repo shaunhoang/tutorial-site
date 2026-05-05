@@ -1,4 +1,0 @@
-indicator,estimand,target_population,weight,domain_size_file,preparation_note
-commute_distance,Mean commute distance among workers,Workers aged 16+,SampleAdultWeight,NA,Uses adult analysis weight; no compatible worker domain size is prepared.
-poor_bus_satisfaction,Share of adults dissatisfied with bus services,Adults aged 16+,WalesAdultWeight,adult_domain_sizes.csv,Uses adult weight and adult domain size.
-walk_weekly,Share of adults who walk for transport at least weekly,Adults aged 16+,WalesTravelWeight,adult_domain_sizes.csv,Uses active-travel module weight scaled to adult domain size.
