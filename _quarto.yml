@@ -3,11 +3,10 @@ project:
   output-dir: docs
   resources:
     - "scripts/"
-    - "data/"
   render:
     - "index.qmd"
     - "pages/*.qmd"
-
+  
 website:
   title: "Small Area Estimation for Urban Analytics"
   page-navigation: true
