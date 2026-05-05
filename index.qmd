@@ -39,5 +39,5 @@ Use these pages to understand the concepts and decisions behind the workflow.
 
 Supporting materials for adapting the workflow:
 
--   **[SAE Toolkit](pages/sae-toolkit.qmd)** collects reusable input formats and helper scripts.
+-   **[SAE Toolkit](pages/sae-toolkit.qmd)** provides guidance on reusable input formats and shares helper scripts.
 -   **[Troubleshooting](pages/troubleshooting.qmd)** lists common data, estimation, and reporting problems.

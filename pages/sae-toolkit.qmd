@@ -90,7 +90,6 @@ For diagnostics, each estimation script should end with a domain-level results t
 | `se` | Standard error or posterior standard deviation, where available. |
 | `lower` | Lower confidence or credible interval bound. |
 | `upper` | Upper confidence or credible interval bound. |
-| `uncertainty_type` | Type of interval, such as `confidence_interval` or `credible_interval`. |
 
 ## Downloadable scripts
 
