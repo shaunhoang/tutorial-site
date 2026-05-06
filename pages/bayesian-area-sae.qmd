@@ -1,5 +1,5 @@
 ---
-title: "Area-Level Estimation (Bayesian) + Spatial"
+title: "[WIP] Area-Level Estimation (Bayesian) + Spatial"
 ---
 
 This notebook extends the area-level Fay-Herriot workflow. It first reframes area-level SAE in Bayesian terms, then shows why spatial structure may be useful when neighbouring domains share unexplained patterns.

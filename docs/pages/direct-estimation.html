@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Direct Estimation</title>
+<title>Small Area Estimation for Urban Analytics - [WIP] Direct Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Direct Estimation</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">[WIP] Direct Estimation</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -254,19 +254,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Direct Estimation</span></a>
+ <span class="menu-text">[WIP] Direct Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level Estimation (Frequentist)</span></a>
+ <span class="menu-text">[WIP] Area-Level Estimation (Frequentist)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level Estimation (Bayesian) + Spatial</span></a>
+ <span class="menu-text">[WIP] Area-Level Estimation (Bayesian) + Spatial</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -289,7 +289,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Diagnostics, Reporting, and Benchmarking</span></a>
+ <span class="menu-text">[WIP] Diagnostics, Reporting, and Benchmarking</span></a>
   </div>
 </li>
       </ul>
@@ -314,7 +314,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Troubleshooting</span></a>
+ <span class="menu-text">[WIP] Troubleshooting</span></a>
   </div>
 </li>
       </ul>
@@ -329,13 +329,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#inputs" id="toc-inputs" class="nav-link active" data-scroll-target="#inputs"><span class="header-section-number">1</span> Inputs</a></li>
-  <li><a href="#direct-estimator-and-sampling-variances" id="toc-direct-estimator-and-sampling-variances" class="nav-link" data-scroll-target="#direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</a></li>
-  <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step"><span class="header-section-number">3</span> Next Step</a></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">4</span> Code Implementation</a>
-  <ul class="collapse">
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.1</span> Worked Example</a></li>
-  </ul></li>
+  <li><a href="#direct-estimator-and-sampling-variances" id="toc-direct-estimator-and-sampling-variances" class="nav-link active" data-scroll-target="#direct-estimator-and-sampling-variances"><span class="header-section-number">1</span> Direct Estimator and Sampling Variances</a></li>
+  <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step"><span class="header-section-number">2</span> Next Step</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a></li>
   </ul>
 </nav>
     </div>
@@ -344,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Direct Estimation</h1>
+<h1 class="title">[WIP] Direct Estimation</h1>
 </div>
 
 
@@ -359,36 +355,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say before borrowing strength from covariates or spatial structure.</p>
-<section id="inputs" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="inputs"><span class="header-section-number">1</span> Inputs</h2>
-<p>The direct-estimation step uses the standard files prepared earlier:</p>
-<table class="table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>File</th>
-<th>Required fields</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Survey indicator file</td>
-<td><code>unit_id</code>, <code>domain_id</code>, <code>indicator</code>, <code>weight</code></td>
-</tr>
-<tr class="even">
-<td>Domain-size file</td>
-<td><code>domain_id</code>, <code>domain_size</code></td>
-</tr>
-</tbody>
-</table>
-<p>The <code>indicator</code> column can be binary, such as <code>1</code> for adults who walk weekly and <code>0</code> otherwise, or numeric for a continuous outcome.</p>
-</section>
-<section id="direct-estimator-and-sampling-variances" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</h2>
+<p>Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say and how precisely, before applying any model-based estimation, i.e., borrowing strength from covariates or spatial structure.</p>
+<section id="direct-estimator-and-sampling-variances" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="direct-estimator-and-sampling-variances"><span class="header-section-number">1</span> Direct Estimator and Sampling Variances</h2>
 <p>The estimator should match the information available in the survey file and the estimand definition.</p>
 <table class="table">
 <colgroup>
@@ -421,7 +390,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 \hat{\theta}_d^{DIR} =
 \frac{\sum_{i \in s_d} w_{di} y_{di}}{N_d}
 \]</span></p>
-<p>The <strong>Hájek Estimator</strong> calculates the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> in domain (<span class="math inline">\(d\)</span>) as:</p>
+<p>The <strong>Hájek Estimator</strong> (or ratio estimator) calculates the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> in domain (<span class="math inline">\(d\)</span>) as:</p>
 <p><span class="math display">\[
 \hat{\theta}_d^{DIR} =
 \frac{\sum_{i \in s_d} w_{di} y_{di}}
@@ -430,8 +399,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>where <span class="math inline">\(N_d\)</span> is <code>domain_size</code>, <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>.</p>
 <p>Direct estimates are paired with estimated <strong>sampling variances</strong>, telling us how much uncertainty comes from observing only a sample within each domain. In practice, the variance depends on the estimator, weight scale, and survey design information available.</p>
 </section>
-<section id="next-step" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="next-step"><span class="header-section-number">3</span> Next Step</h2>
+<section id="next-step" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="next-step"><span class="header-section-number">2</span> Next Step</h2>
 <p>Use the direct estimates and sampling variances to decide whether direct reporting is enough, or whether model-based SAE is needed.</p>
 <table class="table">
 <thead>
@@ -460,8 +429,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="code-implementation" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">4</span> Code Implementation</h2>
+<section id="code-implementation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -474,15 +443,54 @@ Tip
 <div class="callout-body-container callout-body">
 <p>Use <a href="https://search.r-project.org/CRAN/refmans/sae/html/direct.html"><code>sae::direct()</code></a> to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (<code>SampSize</code>), direct estimate (<code>Direct</code>), estimated standard deviation (<code>SD</code>), and coefficient of variation (<code>CV</code>). Square <code>SD</code> to obtain the <code>Variance</code>.</p>
 <p>In <code>sae::direct()</code>, if <code>domsize</code> is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.</p>
-<p>If the survey includes more detailed design information, use the <a href="https://cran.r-project.org/package=survey"><code>survey</code></a> package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.</p>
 </div>
 </div>
-<section id="worked-example" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.1</span> Worked Example</h3>
-<p>For the worked example, we use the pre-generated SAE-ready files created from the data-preparation stage.</p>
+<p>It’s worth reminding ourselves of the estimands of interest defined at the start first</p>
+<table class="table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Indicator</th>
+<th>Target domain</th>
+<th>Domain size</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>commute_distance</code></td>
+<td>MSOA</td>
+<td>Worker population by MSOA</td>
+<td><code>SampleAdultWeight</code>, analysis weight</td>
+</tr>
+<tr class="even">
+<td><code>poor_bus_satisfaction</code></td>
+<td>MSOA</td>
+<td>Adult population by MSOA</td>
+<td><code>WalesAdultWeight</code> grossing weight</td>
+</tr>
+<tr class="odd">
+<td><code>walk_weekly</code></td>
+<td>Local Authority</td>
+<td>Total population by Local Authority</td>
+<td><code>WalesTravelWeight</code>, grossing weight</td>
+</tr>
+</tbody>
+</table>
+<p>We will perform Direct Estimation for each of them differently according to the estimands and data availability (weight and domain size)</p>
+<ul>
+<li><code>commute_distance</code> -&gt; no domain sizes / only analysis weights -&gt; Hajék ratio estimator</li>
+<li><code>poor_bus_satisfaction</code> -&gt; domain sizes / grossing weights -&gt; Hórvitz-Thompson estimator</li>
+<li><code>walk_weekly</code> -&gt; domain sizes / grossing weights -&gt; Hórvitz-Thompson estimator</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For this tutorial, we use the pre-generated analysis-ready files.  </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sae_ready_url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sae_ready_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"sae-ready-inputs"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sae_ready_zip <span class="ot">&lt;-</span> <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs.zip"</span>)</span>
@@ -491,7 +499,9 @@ Tip
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(sae_ready_url, sae_ready_zip, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(sae_ready_zip, <span class="at">exdir =</span> sae_ready_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Load the <code>poor_bus_satisfaction</code> survey indicator and its matching adult MSOA domain-size file.</p>
+<section id="mean-commute-distance" class="level4" data-number="3.0.1">
+<h4 data-number="3.0.1" class="anchored" data-anchor-id="mean-commute-distance"><span class="header-section-number">3.0.1</span> Mean Commute Distance</h4>
+<p>Load the <code>commute_distance</code> survey indicator. It has no matching domain size file.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>survey_indicator <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs"</span>, <span class="st">"ind_weight_poor_bus_satisfaction.csv"</span>)</span>
@@ -501,7 +511,14 @@ Tip
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs"</span>, <span class="st">"domain_sizes_adult_msoa.csv"</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Lorem Ipsum - share real example National Survey of Wales</p>
+</section>
+<section id="dissatisfaction-with-bus-service" class="level4" data-number="3.0.2">
+<h4 data-number="3.0.2" class="anchored" data-anchor-id="dissatisfaction-with-bus-service"><span class="header-section-number">3.0.2</span> Dissatisfaction with bus service</h4>
+<p>Load the <code>poor_bus_satisfaction</code> survey indicator and its matching adult MSOA domain-size file.</p>
+</section>
+<section id="walking" class="level4" data-number="3.0.3">
+<h4 data-number="3.0.3" class="anchored" data-anchor-id="walking"><span class="header-section-number">3.0.3</span> Walking</h4>
+<p>Load the <code>walk_weekly</code> survey indicator and its matching total population LA domain-size file.</p>
 
 
 </section>
@@ -763,7 +780,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="../pages/freq-area-sae.html" class="pagination-link">
-        <span class="nav-page-text">Area-Level Estimation (Frequentist)</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">[WIP] Area-Level Estimation (Frequentist)</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

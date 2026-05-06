@@ -1,19 +1,8 @@
 ---
-title: "Direct Estimation"
+title: "[WIP] Direct Estimation"
 ---
 
-Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say before borrowing strength from covariates or spatial structure.
-
-## Inputs
-
-The direct-estimation step uses the standard files prepared earlier:
-
-| File | Required fields |
-|---|---|
-| Survey indicator file | `unit_id`, `domain_id`, `indicator`, `weight` |
-| Domain-size file | `domain_id`, `domain_size` |
-
-The `indicator` column can be binary, such as `1` for adults who walk weekly and `0` otherwise, or numeric for a continuous outcome.
+Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say and how precisely, before applying any model-based estimation, i.e., borrowing strength from covariates or spatial structure.
 
 ## Direct Estimator and Sampling Variances
 
@@ -31,7 +20,7 @@ $$
 \frac{\sum_{i \in s_d} w_{di} y_{di}}{N_d}
 $$
 
-The **Hájek Estimator** calculates the direct estimate $\hat{\theta}_d$ in domain ($d$) as:
+The **Hájek Estimator** (or ratio estimator) calculates the direct estimate $\hat{\theta}_d$ in domain ($d$) as:
 
 $$
 \hat{\theta}_d^{DIR} =
@@ -60,17 +49,25 @@ Use the direct estimates and sampling variances to decide whether direct reporti
 Use [`sae::direct()`](https://search.r-project.org/CRAN/refmans/sae/html/direct.html) to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (`SampSize`), direct estimate (`Direct`), estimated standard deviation (`SD`), and coefficient of variation (`CV`). Square `SD` to obtain the `Variance`.
 
 In `sae::direct()`, if `domsize` is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.
-
-If the survey includes more detailed design information, use the [`survey`](https://cran.r-project.org/package=survey) package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.
 :::
 
-### Worked Example
+It's worth reminding ourselves of the estimands of interest defined at the start first
 
-For the worked example, we use the pre-generated SAE-ready files created from the data-preparation stage. 
+| Indicator |  Target domain | Domain size | Weight |
+|---|---|---|---|
+| `commute_distance` |  MSOA |  Worker population by MSOA |`SampleAdultWeight`, analysis weight |
+| `poor_bus_satisfaction` |  MSOA | Adult population by MSOA | `WalesAdultWeight` grossing weight |
+| `walk_weekly` |  Local Authority |  Total population by Local Authority |`WalesTravelWeight`, grossing weight |
+
+We will perform Direct Estimation for each of them differently according to the estimands and data availability (weight and domain size)
+
+- `commute_distance` -> no domain sizes / only analysis weights -> Hajék ratio estimator
+- `poor_bus_satisfaction` -> domain sizes / grossing weights -> Hórvitz-Thompson estimator
+- `walk_weekly` -> domain sizes / grossing weights -> Hórvitz-Thompson estimator
 
 ```{r}
+# For this tutorial, we use the pre-generated analysis-ready files.  
 library(readr)
-
 sae_ready_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"
 sae_ready_dir <- file.path(tempdir(), "sae-ready-inputs")
 sae_ready_zip <- file.path(sae_ready_dir, "sae-ready-inputs.zip")
@@ -80,8 +77,8 @@ download.file(sae_ready_url, sae_ready_zip, mode = "wb")
 unzip(sae_ready_zip, exdir = sae_ready_dir)
 ```
 
-Load the `poor_bus_satisfaction` survey indicator and its matching adult MSOA domain-size file.
-
+#### Mean Commute Distance
+Load the `commute_distance` survey indicator. It has no matching domain size file.
 ```{r}
 survey_indicator <- read_csv(
   file.path(sae_ready_dir, "sae-ready-inputs", "ind_weight_poor_bus_satisfaction.csv")
@@ -92,4 +89,9 @@ domain_sizes <- read_csv(
 )
 ```
 
-Lorem Ipsum - share real example National Survey of Wales
+#### Dissatisfaction with bus service
+Load the `poor_bus_satisfaction` survey indicator and its matching adult MSOA domain-size file.
+
+
+#### Walking
+Load the `walk_weekly` survey indicator and its matching total population LA domain-size file.

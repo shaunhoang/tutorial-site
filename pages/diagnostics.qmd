@@ -1,5 +1,5 @@
 ---
-title: "Diagnostics, Reporting, and Benchmarking"
+title: "[WIP] Diagnostics, Reporting, and Benchmarking"
 ---
 
 SAE methods is best visualised as a pipeline and their outputs should be evaluated at each step to decide whether estimates and uncertainties are good enough to report.

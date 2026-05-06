@@ -1,5 +1,5 @@
 ---
-title: "Area-Level Estimation (Frequentist)"
+title: "[WIP] Area-Level Estimation (Frequentist)"
 ---
 
 Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct estimates with domain-level covariates to improve precision.
