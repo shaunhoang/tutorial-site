@@ -135,30 +135,30 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
+    "title": "[WIP] An Urban Researcher’s Guide to Small Area Estimation",
     "section": "",
-    "text": "Beginner-friendly Small Area Estimation (SAE) for researchers estimating survey-derived metrics across a whole country or region at fine geographic resolution.\nThe site has two tracks: a theory track that explains the SAE workflow, and a practical tutorial track that applies the workflow to a dataset. It uses the National Survey for Wales as the first worked survey.\nThe main practical uses R, Quarto, and SAE packages such as survey, sae, and SUMMER. Make sure you have latest R version installed."
+    "text": "[draft] Beginner-friendly Small Area Estimation (SAE) for researchers estimating survey-derived metrics across a whole country or region at fine geographic resolution.\nThe site has two tracks: a theory track that explains the SAE workflow, and a practical tutorial track that applies the workflow to a dataset. It uses the National Survey for Wales as the first worked survey.\nThe main practical uses R, Quarto, and SAE packages such as survey, sae, and SUMMER. Make sure you have latest R version installed."
   },
   {
     "objectID": "index.html#why-small-area-estimation",
     "href": "index.html#why-small-area-estimation",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
+    "title": "[WIP] An Urban Researcher’s Guide to Small Area Estimation",
     "section": "1 Why Small Area Estimation?",
     "text": "1 Why Small Area Estimation?\n[draft] Survey are often not precise enough for fine geographies such as Local Authorities, MSOAs, or LSOAs. Some areas have very few/no respondents, unequal weights Taking weighted meands can be unstable. Also out of domain sample\nSAE is useful when direct estimates are too noisy or incomplete. Area-level SAE use direct estimates and their sampling variances, borrow strength across areas using covariates and random effects.\nSAE can be further improved with bayesian statistics (to smooth out area) and add spatial structure (spatial autocorrelation)\nSAE combines survey data, population estimates, auxiliary data, modelling to estimate the unsurveyed in an informed way.\n[ADD IMAGE]"
   },
   {
     "objectID": "index.html#methods",
     "href": "index.html#methods",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
+    "title": "[WIP] An Urban Researcher’s Guide to Small Area Estimation",
     "section": "2 Methods",
-    "text": "2 Methods\nUse these pages to understand the concepts and decisions behind the workflow.\n\n\n\nNo.\nStep\nObjective\n\n\n\n\n1\nPreparing the Inputs\nDefine what is being estimated, for whom, and at what geographical scale.\n\n\n2\nDirect estimation\nEstimate area-level indicators directly from the survey and assess their precision.\n\n\n3a\nArea-Level SAE (Frequentist)\nFit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates (Frequentist approach).\n\n\n3b\nArea-Level SAE (Bayesian) with Spatial\nReframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas.\n\n\n4\nUnit-Level SAE\nA bottom-up approach to SAE using individual person/household records instead of area-level estimates.\n\n\n5\nDiagnose and Report\nCheck model performance, report uncertainty, and present estimates."
+    "text": "2 Methods\n[draft] Use these pages to understand the concepts and decisions behind the workflow.\n\n\n\nNo.\nStep\nObjective\n\n\n\n\n1\nPreparing the Inputs\nDefine what is being estimated, for whom, and at what geographical scale.\n\n\n2\nDirect estimation\nEstimate area-level indicators directly from the survey and assess their precision.\n\n\n3a\nArea-Level SAE (Frequentist)\nFit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates (Frequentist approach).\n\n\n3b\nArea-Level SAE (Bayesian) with Spatial\nReframe the area-level model with posterior uncertainty, then add spatial structure to borrow strength from neighbouring areas.\n\n\n4\nUnit-Level SAE\nA bottom-up approach to SAE using individual person/household records instead of area-level estimates.\n\n\n5\nDiagnose and Report\nCheck model performance, report uncertainty, and present estimates."
   },
   {
     "objectID": "index.html#resources",
     "href": "index.html#resources",
-    "title": "An Urban Researcher’s Guide to Small Area Estimation",
+    "title": "[WIP] An Urban Researcher’s Guide to Small Area Estimation",
     "section": "3 Resources",
-    "text": "3 Resources\nSupporting materials for adapting the workflow:\n\nSAE Toolkit provides guidance on reusable input formats and shares helper scripts.\nTroubleshooting lists common data, estimation, and reporting problems."
+    "text": "3 Resources\n[draft] Supporting materials for adapting the workflow:\n\nSAE Toolkit provides guidance on reusable input formats and shares helper scripts.\nTroubleshooting lists common data, estimation, and reporting problems."
   },
   {
     "objectID": "pages/about.html",

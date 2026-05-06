@@ -73,8 +73,6 @@ format:
     code-overflow: wrap
     link-external-newwindow: true
     fig-cap-location: bottom
-    filters:
-      - scripts/page-title.lua
 
 execute:
   eval: false

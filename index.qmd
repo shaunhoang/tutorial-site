@@ -1,8 +1,8 @@
 ---
-title: "An Urban Researcher's Guide to Small Area Estimation"
+title: "[WIP] An Urban Researcher's Guide to Small Area Estimation"
 subtitle: "Estimating survey-based indicators at chosen spatial resolutions"
 ---
-
+\[draft\] 
 Beginner-friendly Small Area Estimation (SAE) for researchers estimating survey-derived metrics across a whole country or region at fine geographic resolution.
 
 The site has two tracks: a theory track that explains the SAE workflow, and a practical tutorial track that applies the workflow to a dataset. It uses the National Survey for Wales as the first worked survey.
@@ -23,7 +23,7 @@ SAE combines survey data, population estimates, auxiliary data, modelling to est
 [ADD IMAGE]
 
 ## Methods
-
+\[draft\] 
 Use these pages to understand the concepts and decisions behind the workflow.
 
 | No. | Step | Objective |
@@ -36,7 +36,7 @@ Use these pages to understand the concepts and decisions behind the workflow.
 | 5 |**[Diagnose and Report](pages/diagnostics.qmd)** | Check model performance, report uncertainty, and present estimates. |
 
 ## Resources
-
+\[draft\] 
 Supporting materials for adapting the workflow:
 
 -   **[SAE Toolkit](pages/sae-toolkit.qmd)** provides guidance on reusable input formats and shares helper scripts.
