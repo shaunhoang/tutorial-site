@@ -365,13 +365,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) workflow. In the process, we will also address the various decisions that researchers need to make.</p>
+<p>This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) methods to follow. In the process, we will also address the various decisions that researchers need to make.</p>
 <section id="preparation" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="preparation"><span class="header-section-number">1</span> Preparation</h2>
 <section id="understanding-the-dataset" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="understanding-the-dataset"><span class="header-section-number">1.1</span> Understanding the dataset</h3>
-<p>The survey dataset used is created based on the <a href="https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details"><em>National Survey for Wales 2022-23</em></a>. The National Survey for Wales is a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language.</p>
-<p>The survey dataset used is treated with <em>stratified randomisation</em> and <em>randomised upsampling</em> to both ensure data privacy and simluate a higher spatial resolution.</p>
+<p>The <a href="https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details"><em>National Survey for Wales 2022-23</em></a> is a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language.</p>
+<p>The survey dataset used in this tutorial simulates the NSW respondent microdata, by treating it with <em>stratified randomisation</em> and <em>randomised upsampling</em> to both ensure data privacy and simulate a more granular saptial identifier for education purposes.</p>
+<p><img src="../assets/la_msoa_n.png" class="img-fluid"></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -387,10 +388,9 @@ Note
 <li><strong>Stratified randomisation:</strong> Survey responses are first split by Local Authority and their variables randomised column-wise to preserve variable totals by Local Authority.</li>
 <li><strong>Randomised upsampling:</strong> Survey responses are assigned a random MSOA that intersects with their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes.</li>
 </ul>
-<p><img src="../assets/la_msoa_n.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Finally, population-level data aggregated at MSOA and LA levels come from <a href="https://www.nomisweb.co.uk/sources/census_2021_bulk"><em>the UK Census 2021 datasets</em></a>, made available to download on the NOMIS UK website.</p>
+<p>Finally, auxiliary data aggregated at MSOA and LA levels come from <a href="https://www.nomisweb.co.uk/sources/census_2021_bulk"><em>the UK Census 2021 datasets</em></a>, made available to download on the NOMIS UK website.</p>
 </section>
 <section id="from-survey-indicators-to-estimands" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="from-survey-indicators-to-estimands"><span class="header-section-number">1.2</span> From Survey Indicators to Estimands</h3>

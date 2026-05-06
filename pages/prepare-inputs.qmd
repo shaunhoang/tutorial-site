@@ -2,12 +2,12 @@
 title: "Conceptual Overview"
 ---
 
-A raw survey dataset becomes cleaned microdata input ready for small area estimation through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. 
+A raw survey dataset becomes analysis-ready microdata input through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. The data preparation pipeline can be summarised as follows:
 
 ![Preparation pipeline for analysis-ready inputs](../assets/dataprep_summary.png)
 
 :::{.callout-note}
-**Covariates selection and preparation** from auxiliary datasets will be covered in subsequent chapters on model-based area-level estimation.
+**Covariates preparation** from auxiliary datasets will be covered in subsequent chapters on model-based area-level estimation.
 :::
 
 ## Definie the Estimands
@@ -87,4 +87,4 @@ By the end, each estimand should have enough information to create:
 1.  a survey indicator file with one row per sampled unit and the fields `unit_id`, `domain_id`, `indicator`, and `weight`;
 2.  a domain-size file with one row per target domain and the fields `domain_id`, `domain_size` (optionally, `domain_name`);
 
-The next workbook will demonstrate a worked exampe of Small-Area Estimation data preparation using a modified National Survey for Wales 2022-2023 respondent dataset.
+The next workbook will demonstrate a worked example using a simulated National Survey for Wales 2022-2023 respondent microdata.
