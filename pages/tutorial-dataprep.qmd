@@ -292,7 +292,7 @@ On the other hand, the number of non-missing observations reflects both survey r
 - `poor_bus_satisfaction` is a routed variable asked only to bus users. However, it maintains near-full population coverage by coding non-users as 0 rather than null. Used together with the `WalesAdultWeight` variable, it approach is consistent with the estimand definition: the share of all adults dissatisfied with bus services.
 - `walk_weekly` comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of non-null values. However, it has a companion `WalesTravelWeight` scaled to total population, making it more suitable for population-level estimation at LA scale.
 
-## Optional: Export SAE-ready inputs
+## Export SAE-ready inputs
 
 The objects created above are enough to continue within this workbook. If you want local copies of the SAE-ready inputs, you can export a survey input file for each estimand and its associated weight variable.
 
