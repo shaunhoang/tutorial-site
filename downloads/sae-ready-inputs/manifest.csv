@@ -1,0 +1,6 @@
+"file","description"
+"domain_sizes_adult_msoa.csv","Adult population aged 16+ by MSOA"
+"domain_sizes_population_la.csv","Total resident population by Local Authority"
+"ind_weight_commute_distance.csv","Survey indicator and weight file for commute distance by MSOA"
+"ind_weight_poor_bus_satisfaction.csv","Survey indicator and weight file for poor bus satisfaction by MSOA"
+"ind_weight_walk_weekly.csv","Survey indicator and weight file for weekly walking by Local Authority"
