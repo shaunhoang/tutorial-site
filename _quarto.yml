@@ -3,13 +3,13 @@ project:
   output-dir: docs
   resources:
     - "scripts/"
-    - "downloads/"
   render:
     - "index.qmd"
     - "pages/*.qmd"
   
 website:
   title: "Small Area Estimation for Urban Analytics"
+  favicon: assets/favicon.svg
   page-navigation: true
   navbar:
     background: "#1f4e5f"
@@ -73,6 +73,8 @@ format:
     code-overflow: wrap
     link-external-newwindow: true
     fig-cap-location: bottom
+    filters:
+      - scripts/page-title.lua
 
 execute:
   eval: false

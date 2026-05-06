@@ -32,6 +32,7 @@ ul.task-list li input[type="checkbox"] {
 <meta name="quarto:offset" content="../">
 <link href="../pages/tutorial-dataprep.html" rel="next">
 <link href="../index.html" rel="prev">
+<link href="../assets/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -301,7 +302,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#domain-size" id="toc-domain-size" class="nav-link" data-scroll-target="#domain-size"><span class="header-section-number">3.1</span> Domain size</a></li>
   <li><a href="#survey-weight" id="toc-survey-weight" class="nav-link" data-scroll-target="#survey-weight"><span class="header-section-number">3.2</span> Survey weight</a></li>
   </ul></li>
-  <li><a href="#preparing-sae-inputs" id="toc-preparing-sae-inputs" class="nav-link" data-scroll-target="#preparing-sae-inputs"><span class="header-section-number">4</span> Preparing SAE inputs</a></li>
+  <li><a href="#preparing-sae-ready-inputs" id="toc-preparing-sae-ready-inputs" class="nav-link" data-scroll-target="#preparing-sae-ready-inputs"><span class="header-section-number">4</span> Preparing SAE-ready inputs</a></li>
   </ul>
 </nav>
     </div>
@@ -328,14 +329,14 @@ ul.task-list li input[type="checkbox"] {
 <p>A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to <a href="../pages/tutorial-dataprep.html">Tutorial: Data Preparation</a>.</p>
 <section id="defining-the-estimand" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="defining-the-estimand"><span class="header-section-number">1</span> Defining the Estimand</h2>
-<p>Before fitting any SAE model, define exactly what the survey estimate should represent. This so-called <strong>estimand</strong> determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:</p>
+<p>Before fitting any SAE model, define exactly what the survey estimate should represent. This <strong>estimand</strong> determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:</p>
 <blockquote class="blockquote">
 <p>Estimate the <strong>measure</strong> of <strong>what outcome</strong>, among <strong>which population</strong>, across <strong>which geographic domains</strong>.</p>
 </blockquote>
 <p>E.g.,</p>
 <ol type="1">
-<li>Share of adults who use the bus weekly across MSOA</li>
-<li>Mean commute distance among workers across Wards</li>
+<li>Share of adults who use the train weekly across MSOA</li>
+<li>Mean leisure travel distance among retirees across Wards</li>
 </ol>
 </section>
 <section id="constructing-the-indicator" class="level2" data-number="2">
@@ -358,12 +359,12 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td>Binary</td>
 <td>What is <code>1</code>, <code>0</code>, missing, and out of scope. Also suitable for categorical variables</td>
-<td><strong>Estimand:</strong> Share of adults who use the bus weekly<br><strong>Indicator:</strong> Uses bus weekly: yes/no</td>
+<td><strong>Estimand:</strong> Share of adults who use the train weekly<br><strong>Indicator:</strong> Uses train weekly: yes/no</td>
 </tr>
 <tr class="even">
 <td>Continuous</td>
 <td>The numeric value and unit</td>
-<td><strong>Estimand:</strong> Mean commute distance among workers <br><strong>Indicator:</strong> Commute distance in miles</td>
+<td><strong>Estimand:</strong> Mean leisure travel distance among retirees <br><strong>Indicator:</strong> Leisure travel distance in miles</td>
 </tr>
 </tbody>
 </table>
@@ -373,16 +374,12 @@ ul.task-list li input[type="checkbox"] {
 <h2 data-number="3" class="anchored" data-anchor-id="choosing-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choosing Domain Sizes and Survey Weights</h2>
 <section id="domain-size" class="level3" data-number="3.1">
 <h3 data-number="3.1" class="anchored" data-anchor-id="domain-size"><span class="header-section-number">3.1</span> Domain size</h3>
-<p>The <strong>domain size</strong> <span class="math inline">\(N_d\)</span> is the size of the target population in each domain <span class="math inline">\(d\)</span>. It is the denominator for domain means and proportions, and is essential for the SAE pipeline. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.</p>
+<p>The <strong>domain size</strong> <span class="math inline">\(N_d\)</span> is the size of the target population in each domain <span class="math inline">\(d\)</span>. It is the denominator for domain means and proportions, and is essential for the SAE workflow. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.</p>
 <ul>
-<li>The <strong>target population</strong> is the group the estimate is about, such as <em>all adults, households, workers, commuters, or public transport users</em>, etc.</li>
+<li>The <strong>target population</strong> is the group the estimate is about, such as <em>all adults, households, retirees, or public transport users</em>, etc.</li>
 <li>The <strong>target domain</strong> is the geographic area for which estimates will be produced, such as <em>Local Authority, Ward, LSOA, or MSOA</em>, etc.</li>
 </ul>
-<p>The choice of target domain, besides being shaped by the estimand definition, should also be informed by data availability. For example,</p>
-<ul>
-<li>if survey respondent records are only identified at the Local Authority level and no finer, then Local Authority is the most granular target domain for SAE</li>
-<li>if the domain sizes are only available at the Ward level and no finer (e.g., total worker population by Ward), then it is recommended to use Ward as the most granular target domain for SAE</li>
-</ul>
+<p>The choice of the scale of the target domains should be informed by data availability. For example, if survey respondent records are only identified at the Local Authority level and not a finer level, then Local Authority is the most granular target domain for SAE. Secured survey datasets with respondents identified at the post codes level, therefore, have a more flexible choice of target domains for small area estimation.</p>
 <p>[ADD IMAGE]</p>
 </section>
 <section id="survey-weight" class="level3" data-number="3.2">
@@ -401,13 +398,13 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>If analysis weights are provided and the domain sizes <span class="math inline">\(N_d\)</span> are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula <span class="math inline">\(w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}\)</span> if required.</p>
 <p>[ADD IMAGE]</p>
-<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -417,61 +414,59 @@ Note
 </div>
 </section>
 </section>
-<section id="preparing-sae-inputs" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="preparing-sae-inputs"><span class="header-section-number">4</span> Preparing SAE inputs</h2>
-<p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:</p>
+<section id="preparing-sae-ready-inputs" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="preparing-sae-ready-inputs"><span class="header-section-number">4</span> Preparing SAE-ready inputs</h2>
+<p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow.</p>
+<p>For example, a compact record could be written as:</p>
 <table class="table">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>#</th>
 <th>Estimand</th>
 <th>Indicator</th>
-<th>Indicator construction</th>
+<th>Coding rule</th>
 <th>Target domain</th>
 <th>Domain size</th>
-<th>Weight variable</th>
-<th>Other remarks</th>
+<th>Weight</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>1</td>
-<td>Share of adults who use the bus weekly across MSOAs</td>
-<td><code>is_freq_bus_user</code></td>
-<td>Binary: <code>1</code> if <code>BusUseFreq = 1</code>; <code>0</code> if adult does not use the bus weekly; <code>null</code> for invalid or refused responses</td>
+<td>Share of adults who use the train weekly across MSOAs</td>
+<td><code>is_freq_train_user</code></td>
+<td>Binary: <code>1</code> if <code>TrainUseFreq = 1</code>; <code>0</code> if adult does not use the train weekly; <code>null</code> for invalid or refused responses</td>
 <td>MSOA</td>
 <td>Adult population aged 16+ by MSOA</td>
 <td><code>AdultWeight</code>; applies to all adult respondents; grossing weight</td>
-<td>Stratified by <code>age_group</code></td>
 </tr>
 <tr class="even">
 <td>2</td>
-<td>Mean commute distance among workers across Wards</td>
-<td><code>commute_distance</code></td>
-<td>Continuous: numeric miles from <code>TravelWorkDistance</code>; only workers with valid commute distance are in scope</td>
+<td>Mean leisure travel distance among retirees across Wards</td>
+<td><code>leisure_travel_distance</code></td>
+<td>Continuous: numeric miles from <code>TravelWorkDistance</code>; only retirees with valid leisure travel distance are in scope</td>
 <td>Ward</td>
 <td>Worker population by Ward</td>
-<td><code>CommuteModuleWeight</code>; applies to commute module respondents (a subsample)</td>
-<td>—</td>
+<td><code>LeisureTravelModuleWeight</code>; applies to leisure travel module respondents (a subsample)</td>
 </tr>
 </tbody>
 </table>
-<p>Finally, each estimand should have enough information to create:</p>
+<p>By the end, each estimand should have enough information to create:</p>
 <ol type="1">
 <li>a survey indicator file with one row per sampled unit and the fields <code>unit_id</code>, <code>domain_id</code>, <code>indicator</code>, and <code>weight</code>;</li>
 <li>a domain-size file with one row per target domain and the fields <code>domain_id</code>, <code>domain_size</code> (optionally, <code>domain_name</code>);</li>
 </ol>
 <p>[ADD IMAGE SUMMARY OF PROCESS]</p>
+<p>The next workbook will demonstrate a worked exampe of Small-Area Estimation data preparation using a modified National Survey for Wales 2022-2023 respondent dataset.</p>
 
 
 </section>
