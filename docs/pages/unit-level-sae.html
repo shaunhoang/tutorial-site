@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Direct Estimation</title>
+<title>Small Area Estimation for Urban Analytics - Unit-Level Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -64,8 +30,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/freq-area-sae.html" rel="next">
-<link href="../pages/tutorial-dataprep.html" rel="prev">
+<link href="../pages/diagnostics.html" rel="next">
+<link href="../pages/bayesian-area-sae.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -172,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Direct Estimation</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/unit-level-sae.html">Unit-Level Estimation</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -252,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link active">
+  <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Direct Estimation</span></a>
   </div>
 </li>
@@ -270,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
+  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
@@ -328,13 +294,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#inputs" id="toc-inputs" class="nav-link active" data-scroll-target="#inputs"><span class="header-section-number">1</span> Inputs</a></li>
-  <li><a href="#direct-estimator-and-sampling-variances" id="toc-direct-estimator-and-sampling-variances" class="nav-link" data-scroll-target="#direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</a></li>
-  <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step"><span class="header-section-number">3</span> Next Step</a></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">4</span> Code Implementation</a>
-  <ul class="collapse">
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.1</span> Worked Example</a></li>
-  </ul></li>
+  <li><a href="#understanding-unit-level-estimation" id="toc-understanding-unit-level-estimation" class="nav-link active" data-scroll-target="#understanding-unit-level-estimation"><span class="header-section-number">1</span> Understanding Unit-Level Estimation</a></li>
+  <li><a href="#caveats-with-unit-level-estimation" id="toc-caveats-with-unit-level-estimation" class="nav-link" data-scroll-target="#caveats-with-unit-level-estimation"><span class="header-section-number">2</span> Caveats with Unit-Level Estimation</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a></li>
   </ul>
 </nav>
     </div>
@@ -343,7 +305,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Direct Estimation</h1>
+<h1 class="title">Unit-Level Estimation</h1>
 </div>
 
 
@@ -358,109 +320,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say before borrowing strength from covariates or spatial structure.</p>
-<section id="inputs" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="inputs"><span class="header-section-number">1</span> Inputs</h2>
-<p>The direct-estimation step uses the standard files prepared earlier:</p>
-<table class="table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>File</th>
-<th>Required fields</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Survey indicator file</td>
-<td><code>unit_id</code>, <code>domain_id</code>, <code>indicator</code>, <code>weight</code></td>
-</tr>
-<tr class="even">
-<td>Domain-size file</td>
-<td><code>domain_id</code>, <code>domain_size</code></td>
-</tr>
-</tbody>
-</table>
-<p>The <code>indicator</code> column can be binary, such as <code>1</code> for adults who walk weekly and <code>0</code> otherwise, or numeric for a continuous outcome.</p>
-</section>
-<section id="direct-estimator-and-sampling-variances" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="direct-estimator-and-sampling-variances"><span class="header-section-number">2</span> Direct Estimator and Sampling Variances</h2>
-<p>The estimator should match the information available in the survey file and the estimand definition.</p>
-<table class="table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Situation</th>
-<th>Estimator</th>
-<th>When to use</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Domain size is known and grossing weight is available</td>
-<td>Horvitz-Thompson estimator</td>
-<td>Anchors estimates to true domain size and gives design-unbiased levels; required for estimating <em>counts or totals</em></td>
-</tr>
-<tr class="even">
-<td>Domain size is unknown and/or only analysis weights are available</td>
-<td>Hájek estimator</td>
-<td>Preferred for <em>means or proportions</em> when using normalised analysis weights and no reliable domain size is available</td>
-</tr>
-</tbody>
-</table>
-<p>The <strong>Horvitz-Thompson estimator</strong> calculates the direct estimate <span class="math inline">\(\hat{\theta}_d^{DIR}\)</span> in domain (<span class="math inline">\(d\)</span>) as:</p>
+<p>Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models.</p>
+<section id="understanding-unit-level-estimation" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="understanding-unit-level-estimation"><span class="header-section-number">1</span> Understanding Unit-Level Estimation</h2>
+<p>In area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:</p>
 <p><span class="math display">\[
-\hat{\theta}_d^{DIR} =
-\frac{\sum_{i \in s_d} w_{di} y_{di}}{N_d}
+y_{di} =
+x_{di}^{\top}\beta + u_d + e_{di},
 \]</span></p>
-<p>The <strong>Hájek Estimator</strong> calculates the direct estimate <span class="math inline">\(\hat{\theta}_d\)</span> in domain (<span class="math inline">\(d\)</span>) as:</p>
+<p>where <span class="math inline">\(y_{di}\)</span> is the outcome for unit <span class="math inline">\(i\)</span> in domain <span class="math inline">\(d\)</span>, <span class="math inline">\(x_{di}\)</span> is a vector of unit-level covariates, <span class="math inline">\(u_d\)</span> is the area effect, and <span class="math inline">\(e_{di}\)</span> is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.</p>
+<p>The domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:</p>
 <p><span class="math display">\[
-\hat{\theta}_d^{DIR} =
-\frac{\sum_{i \in s_d} w_{di} y_{di}}
-{\sum_{i \in s_d} w_{di}}.
+\theta_d =
+\frac{1}{N_d}
+\sum_{i \in U_d} y_{di}.
 \]</span></p>
-<p>where <span class="math inline">\(N_d\)</span> is <code>domain_size</code>, <span class="math inline">\(w_{di}\)</span> is <code>weight</code>, and <span class="math inline">\(y_{di}\)</span> is <code>indicator</code>.</p>
-<p>Direct estimates are paired with estimated <strong>sampling variances</strong>, telling us how much uncertainty comes from observing only a sample within each domain. In practice, the variance depends on the estimator, weight scale, and survey design information available.</p>
+<p>This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.</p>
+<p>[ADD IMAGE]</p>
 </section>
-<section id="next-step" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="next-step"><span class="header-section-number">3</span> Next Step</h2>
-<p>Use the direct estimates and sampling variances to decide whether direct reporting is enough, or whether model-based SAE is needed.</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th>Scenario</th>
-<th>Next step</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Most domains have usable sample sizes and acceptable uncertainty</td>
-<td>Direct estimates may be enough for reporting.</td>
-</tr>
-<tr class="even">
-<td>Many domains have no sample, or sampling variances are missing, zero, or unreasonable</td>
-<td>Revisit the domain choice, estimand, or input data before modelling.</td>
-</tr>
-<tr class="odd">
-<td>Direct estimates are imprecise and a quick model-based approach is enough</td>
-<td>Fit a <a href="../pages/freq-area-sae.html">Frequentist Area-Level SAE</a> model to borrow strength from covariates.</td>
-</tr>
-<tr class="even">
-<td>Direct estimates are imprecise, spatial effects matter, or uncertainty needs to be reported as probabilities</td>
-<td>Fit a <a href="../pages/bayesian-area-sae.html">Bayesian Area-Level SAE with Spatial</a> model to borrow strength from covariates and neighbouring areas.</td>
-</tr>
-</tbody>
-</table>
+<section id="caveats-with-unit-level-estimation" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="caveats-with-unit-level-estimation"><span class="header-section-number">2</span> Caveats with Unit-Level Estimation</h2>
+<p>Unit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.</p>
+<div class="callout callout-style-simple callout-none no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Uses individual or household covariates directly, rather than area averages</li>
+<li>Can aggregate to several geographic scales<br></li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Survey and population datasets need to be harmonised and include the same covariates</li>
+<li>More sensitive estimates because predictions are made for many non-sampled units and scaled up to population level</li>
+<li>More technically demanding, especially in terms of privacy/access</li>
+</ul>
+</div>
+</div>
+</div>
+<p>In general, prefer <strong>Area-level SAE</strong> when only domain-level covariates are available. <strong>Unit-level SAE</strong> is more realistic when suitable population microdata, or a validated <strong>synthetic population</strong> can provide the prediction population.</p>
 </section>
-<section id="code-implementation" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">4</span> Code Implementation</h2>
+<section id="code-implementation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -471,39 +375,11 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Use <a href="https://search.r-project.org/CRAN/refmans/sae/html/direct.html"><code>sae::direct()</code></a> to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (<code>SampSize</code>), direct estimate (<code>Direct</code>), estimated standard deviation (<code>SD</code>), and coefficient of variation (<code>CV</code>). Square <code>SD</code> to obtain the <code>Variance</code>.</p>
-<p>In <code>sae::direct()</code>, if <code>domsize</code> is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.</p>
-<p>If the survey includes more detailed design information, use the <a href="https://cran.r-project.org/package=survey"><code>survey</code></a> package for the direct-estimation step. This gives design-aware domain estimates and uncertainty summaries.</p>
+<p>Use <a href="https://rdrr.io/cran/SUMMER/man/smoothUnit.html"><code>SUMMER::smoothUnit()</code></a> to fit a basic unit-level SAE model from a <code>survey::svydesign()</code> object and population unit-level covariates. It supports using an adjacency matrix for spatial structure.</p>
 </div>
 </div>
-<section id="worked-example" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.1</span> Worked Example</h3>
-<p>For the worked example, we use the pre-generated SAE-ready files created from the data-preparation stage.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sae_ready_url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sae_ready_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"sae-ready-inputs"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sae_ready_zip <span class="ot">&lt;-</span> <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs.zip"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(sae_ready_dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(sae_ready_url, sae_ready_zip, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(sae_ready_zip, <span class="at">exdir =</span> sae_ready_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Load the <code>poor_bus_satisfaction</code> survey indicator and its matching adult MSOA domain-size file.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>survey_indicator <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs"</span>, <span class="st">"ind_weight_poor_bus_satisfaction.csv"</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>domain_sizes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs"</span>, <span class="st">"domain_sizes_adult_msoa.csv"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Lorem Ipsum - share real example National Survey of Wales</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -756,13 +632,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/tutorial-dataprep.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Worked Example</span>
+      <a href="../pages/bayesian-area-sae.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Area-Level Estimation (Bayesian) + Spatial</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/freq-area-sae.html" class="pagination-link">
-        <span class="nav-page-text">Area-Level Estimation (Frequentist)</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/diagnostics.html" class="pagination-link">
+        <span class="nav-page-text">Diagnostics, Reporting, and Benchmarking</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

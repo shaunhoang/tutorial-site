@@ -71,7 +71,7 @@ To produce population-level estimates, grossing weights are preferred whenever m
 With this information we proceed to process the survey to produce inputs necessary for the SAE workflow.
 
 ## Implemetation: Data Processing
-The tutorial raw data are stored online as a single zip file. We download it into R's temporary folder, unzip it there, and then read the CSV files as usual. The LA population-size file is also loaded from the hosted SAE-ready bundle because it is used as a supporting denominator in this example.
+The tutorial raw data are stored online as a single zip file. We download it into R's temporary folder, unzip it there, and then read the CSV files as usual.
 ```{r}
 library(dplyr)
 library(readr)
@@ -86,18 +86,23 @@ dir.create(raw_data_dir, showWarnings = FALSE)
 download.file(raw_data_url, raw_data_zip, mode = "wb")
 unzip(raw_data_zip, exdir = raw_data_dir)
 
-sae_ready_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"
-sae_ready_dir <- file.path(tempdir(), "sae-ready-inputs")
-sae_ready_zip <- file.path(sae_ready_dir, "sae-ready-inputs.zip")
-
-dir.create(sae_ready_dir, showWarnings = FALSE)
-download.file(sae_ready_url, sae_ready_zip, mode = "wb")
-unzip(sae_ready_zip, exdir = sae_ready_dir)
+find_data_file <- function(filename) {
+  matches <- list.files(
+    raw_data_dir,
+    pattern = paste0("^", filename, "$"),
+    recursive = TRUE,
+    full.names = TRUE
+  )
+  if (length(matches) == 0) {
+    stop("Could not find ", filename, " in the downloaded tutorial data.")
+  }
+  matches[[1]]
+}
 ```
 ### Load survey data 
 ```{r}
 nsw_raw <- read_csv(
-  file.path(raw_data_dir, "nsw_2223_msoa_la.csv")
+  find_data_file("nsw_2223_msoa_la.csv")
 ) |>
   rename(unit_id = CaseNo)     # rename unique respondent ID for consistency downstream
 ```
@@ -121,8 +126,8 @@ In this exercise, assume we only have general and adult population totals from t
 
 - Adult population by MSOA
 ```{r}
-adult_domain_sizes_msoa <- read_csv(
-  file.path(raw_data_dir, "census2021-ts007-msoa.csv"),
+domain_sizes_adult_msoa <- read_csv(
+  find_data_file("census2021-ts007-msoa.csv"),
   show_col_types = FALSE
 ) |>
   filter(str_starts(`geography code`, "W")) |>
@@ -136,17 +141,23 @@ adult_domain_sizes_msoa <- read_csv(
       `Age: Aged 10 to 15 years; measures: Value`
   )
   
-head(adult_domain_sizes_msoa)
+head(domain_sizes_adult_msoa)
 ```
 
 - Total population by LA
 ```{r}
-population_domain_sizes_la <- read_csv(
-  file.path(sae_ready_dir, "sae-ready-inputs", "domain_sizes_population_la.csv"),
+domain_sizes_population_la <- read_csv(
+  find_data_file("census2021-ts007-ltla.csv"),
   show_col_types = FALSE
+) |>
+  filter(str_starts(`geography code`, "W")) |>
+  transmute(
+    domain_id = `geography code`,
+    domain_name = geography,
+    domain_size = `Age: Total; measures: Value`
 )
 
-head(population_domain_sizes_la)
+head(domain_sizes_population_la)
 ```
 ### Building Indicators
 
@@ -200,7 +211,7 @@ survey_weights <- nsw_raw |>
 survey_weights <- survey_weights |>
   # Attach LA IDs and Census population sizes
   left_join(select(survey_domains, unit_id, la_domain_id), by = "unit_id") |>
-  left_join(select(population_domain_sizes_la, la_domain_id = domain_id, domain_size), by = "la_domain_id") |>
+  left_join(select(domain_sizes_population_la, la_domain_id = domain_id, domain_size), by = "la_domain_id") |>
   
   # Calculate the grossing weight within each LA
   group_by(la_domain_id) |>
@@ -232,8 +243,8 @@ indicator_map <- tibble::tribble(
 
 # Prepare list of all MSOA and LAs from census datasets
 all_target_domains <- bind_rows(
-  adult_domain_sizes_msoa |> mutate(target_domain = "MSOA"),
-  population_domain_sizes_la |> mutate(target_domain = "LA")
+  domain_sizes_adult_msoa |> mutate(target_domain = "MSOA"),
+  domain_sizes_population_la |> mutate(target_domain = "LA")
 ) |> select(domain_id, domain_name, target_domain)
 
 # Calculate non-nulls and spatial coverage
@@ -323,8 +334,8 @@ for (i in seq_len(nrow(indicator_map))) {
 Also export the domain sizes used by the estimand-specific input files.
 ```{r}
 #| eval: false
-write_csv(adult_domain_sizes_msoa, file.path(output_dir, "domain_sizes_adult_msoa.csv"))
-write_csv(population_domain_sizes_la, file.path(output_dir, "domain_sizes_population_la.csv"))
+write_csv(domain_sizes_adult_msoa, file.path(output_dir, "domain_sizes_adult_msoa.csv"))
+write_csv(domain_sizes_population_la, file.path(output_dir, "domain_sizes_population_la.csv"))
 ```
 This optional export would produce:
 
