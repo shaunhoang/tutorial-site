@@ -302,7 +302,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#domain-sizes" id="toc-domain-sizes" class="nav-link" data-scroll-target="#domain-sizes"><span class="header-section-number">3.1</span> Domain sizes</a></li>
   <li><a href="#survey-weight" id="toc-survey-weight" class="nav-link" data-scroll-target="#survey-weight"><span class="header-section-number">3.2</span> Survey weight</a></li>
   </ul></li>
-  <li><a href="#generate-sae-ready-inputs" id="toc-generate-sae-ready-inputs" class="nav-link" data-scroll-target="#generate-sae-ready-inputs"><span class="header-section-number">4</span> Generate SAE-ready inputs</a></li>
+  <li><a href="#generate-analysis-ready-inputs" id="toc-generate-analysis-ready-inputs" class="nav-link" data-scroll-target="#generate-analysis-ready-inputs"><span class="header-section-number">4</span> Generate analysis-ready inputs</a></li>
   </ul>
 </nav>
     </div>
@@ -326,10 +326,29 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to <a href="../pages/tutorial-dataprep.html">Tutorial: Data Preparation</a>.</p>
+<p>A raw survey dataset becomes cleaned microdata input ready for small area estimation through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/dataprep_summary.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Preparation pipeline for analysis-ready inputs</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Covariates selection and preparation</strong> from auxiliary datasets will be covered in subsequent chapters on model-based area-level estimation.</p>
+</div>
+</div>
 <section id="definie-the-estimands" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="definie-the-estimands"><span class="header-section-number">1</span> Definie the Estimands</h2>
-<p>Before fitting any SAE model, define exactly what the survey estimate should represent. This <strong>estimand</strong> determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:</p>
+<p>Before fitting any SAE model, define exactly what the survey estimate should represent. This <strong>estimand</strong> determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:</p>
 <blockquote class="blockquote">
 <p>Estimate the <strong>measure</strong> of <strong>what outcome</strong>, among <strong>which population</strong>, across <strong>which geographic domains</strong>.</p>
 </blockquote>
@@ -379,25 +398,32 @@ ul.task-list li input[type="checkbox"] {
 <li>The <strong>target population</strong> is the group the estimate is about, such as <em>all adults, households, retirees, or public transport users</em>, etc.</li>
 <li>The <strong>target domain</strong> is the geographic area for which estimates will be produced, such as <em>Local Authority, Ward, LSOA, or MSOA</em>, etc.</li>
 </ul>
-<p>The choice of the scale of the target domains should be informed by data availability. For example, if survey respondent records are only identified at the Local Authority level and not a finer level, then Local Authority is the most granular target domain for SAE. Secured survey datasets with respondents identified at the post codes level, therefore, have a more flexible choice of target domains for small area estimation.</p>
-<p>[ADD IMAGE]</p>
+<p>The choice of the scale of the target domains should be informed by data availability. E.g., if survey respondent records are only identified at the Local Authority level, then that is the most granular scale for SAE.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../assets/maps_geography_types.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Census Geography hierarchy going from Country to LA to MSOA to LSOA to OA (<a href="https://ukdataservice.ac.uk/learning-hub/census/other-information/census-boundary-data/">Source</a>)</figcaption>
+</figure>
+</div>
 </section>
 <section id="survey-weight" class="level3" data-number="3.2">
 <h3 data-number="3.2" class="anchored" data-anchor-id="survey-weight"><span class="header-section-number">3.2</span> Survey weight</h3>
-<p>Survey weights connect the sample back to the population to ensure the survey sample can <strong>best represent real-world proportions</strong>. The Survey User Guide is the go-to resource to understand which weight variables are available, how they are derived, and which survey modules/questions they apply to. In general, weight variables are derived to adjust for one or more aspects, such as:</p>
+<p>Survey weights connect the sample back to the population to ensure the survey sample can <strong>best represent real-world proportions</strong>. Here is a <a href="https://sampleweighting.com/how-to-weight-data/">visual refresher guide</a> to weighting.</p>
+<p>The Survey User Guide is the go-to resource to understand which weight variables are available, how they are derived, and which survey modules/questions they apply to. In general, weight variables are derived to adjust for one or more aspects, such as:</p>
 <ol type="1">
 <li><strong>Selection adjustment</strong>: accounts for unequal probabilities of selection.</li>
 <li><strong>Non-response adjustment</strong>: compensates for differences between respondents and non-respondents.</li>
 <li><strong>Calibration adjustment</strong>: aligns the weighted sample with known population totals, such as age, sex, region, Local Authority, tenure, or household structure.</li>
 <li><strong>Subsample adjustment</strong>: accounts for cases where only part of the sample was asked a module or completed a diary.</li>
 </ol>
-<p>For a SAE workflow, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. Moreover, it is also important to distinguish the <strong>scale</strong> of the weight variable, as it implies different estimation approaches.</p>
+<p>For SAE, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. Moreover, it is also important to distinguish the <strong>scale</strong> of the weight variable, as it implies different estimation approaches.</p>
 <ul>
-<li>Some weights are <strong>grossing weights</strong> <span class="math inline">\(w^{G}\)</span>. They make proportions representative of the target population and sum to a population total or domain size <span class="math inline">\(N_d\)</span>.</li>
-<li>Other weights are <strong>analysis weights</strong> <span class="math inline">\(w^{A}\)</span>. They make proportions representative of the target population, but often sum to the achieved sample size <span class="math inline">\(n_d\)</span>.</li>
+<li>Survey weights are most commonly provided as <strong>analysis weights</strong> <span class="math inline">\(w^{A}\)</span>. They make <em>proportions</em> representative of the target population, but only sum to the achieved sample size <span class="math inline">\(n_d\)</span>.</li>
+<li>In certain cases <strong>grossing weights</strong> <span class="math inline">\(w^{G}\)</span> are provided. They not only make proportions representative of the target population but also sum to the population total <span class="math inline">\(N_d\)</span>.</li>
 </ul>
-<p>If analysis weights are provided and the domain sizes <span class="math inline">\(N_d\)</span> are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula <span class="math inline">\(w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}\)</span> if required.</p>
-<p>[ADD IMAGE]</p>
+<p>If analysis weights are provided and the domain sizes <span class="math inline">\(N_d\)</span> are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula <span class="math display">\[
+w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}
+\]</span></p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -414,8 +440,8 @@ Warning
 </div>
 </section>
 </section>
-<section id="generate-sae-ready-inputs" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="generate-sae-ready-inputs"><span class="header-section-number">4</span> Generate SAE-ready inputs</h2>
+<section id="generate-analysis-ready-inputs" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="generate-analysis-ready-inputs"><span class="header-section-number">4</span> Generate analysis-ready inputs</h2>
 <p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow.</p>
 <p>For example, a compact record could be written as:</p>
 <table class="table">
@@ -465,7 +491,6 @@ Warning
 <li>a survey indicator file with one row per sampled unit and the fields <code>unit_id</code>, <code>domain_id</code>, <code>indicator</code>, and <code>weight</code>;</li>
 <li>a domain-size file with one row per target domain and the fields <code>domain_id</code>, <code>domain_size</code> (optionally, <code>domain_name</code>);</li>
 </ol>
-<p>[ADD IMAGE SUMMARY OF PROCESS]</p>
 <p>The next workbook will demonstrate a worked exampe of Small-Area Estimation data preparation using a modified National Survey for Wales 2022-2023 respondent dataset.</p>
 
 

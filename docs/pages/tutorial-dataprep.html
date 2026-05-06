@@ -340,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#building-indicators" id="toc-building-indicators" class="nav-link" data-scroll-target="#building-indicators"><span class="header-section-number">2.3</span> Building Indicators</a></li>
   <li><a href="#selecting-and-building-weight-variables" id="toc-selecting-and-building-weight-variables" class="nav-link" data-scroll-target="#selecting-and-building-weight-variables"><span class="header-section-number">2.4</span> Selecting and building weight variables</a></li>
   <li><a href="#putting-it-together-and-missingness-check" id="toc-putting-it-together-and-missingness-check" class="nav-link" data-scroll-target="#putting-it-together-and-missingness-check"><span class="header-section-number">2.5</span> Putting it together and missingness check</a></li>
-  <li><a href="#export-sae-ready-inputs" id="toc-export-sae-ready-inputs" class="nav-link" data-scroll-target="#export-sae-ready-inputs"><span class="header-section-number">2.6</span> Export SAE-ready inputs</a></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export"><span class="header-section-number">2.6</span> Export</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -384,8 +384,8 @@ Note
 <div class="callout-body-container callout-body">
 <p>In the original dataset, the Local Authority (LA) is the sole spatial identifier and the survey’s stratification variable. The example simulated dataset was created using:</p>
 <ul>
-<li><strong>Stratified randomisation:</strong> Survey responses are first split by LA and their variables randomised column-wise to preserve variable totals by LA</li>
-<li><strong>Randomised upsampling:</strong> Survey responses are randomly assigned to a MSOA within their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes. In practice, disaggregating survey data is <strong>not recommended</strong>.</li>
+<li><strong>Stratified randomisation:</strong> Survey responses are first split by Local Authority and their variables randomised column-wise to preserve variable totals by Local Authority.</li>
+<li><strong>Randomised upsampling:</strong> Survey responses are assigned a random MSOA that intersects with their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes.</li>
 </ul>
 <p><img src="../assets/la_msoa_n.png" class="img-fluid"></p>
 </div>
@@ -789,9 +789,9 @@ Tip
 <li><code>walk_weekly</code> comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion <code>WalesTravelWeight</code> scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.</li>
 </ul>
 </section>
-<section id="export-sae-ready-inputs" class="level3" data-number="2.6">
-<h3 data-number="2.6" class="anchored" data-anchor-id="export-sae-ready-inputs"><span class="header-section-number">2.6</span> Export SAE-ready inputs</h3>
-<p>It is good practice to export the SAE-ready inputs. This export should produce:</p>
+<section id="export" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="export"><span class="header-section-number">2.6</span> Export</h3>
+<p>At this stage, the cleaned survey microdata and domain sizes files should look like this:</p>
 <ul>
 <li><code>domain_sizes_adult_msoa.csv</code>, for adult population by MSOA (from Census 2021);</li>
 <li><code>domain_sizes_population_la.csv</code>, for total resident population by LA (from Census 2021);</li>
