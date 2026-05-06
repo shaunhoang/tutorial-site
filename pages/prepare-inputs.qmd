@@ -1,11 +1,11 @@
 ---
-title: "Preparing SAE Inputs"
+title: "Conceptual Overview"
 ---
 
 A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to [Tutorial: Data Preparation](tutorial-dataprep.qmd).
 
 
-## Defining the Estimand
+## Definie the Estimands
 
 Before fitting any SAE model, define exactly what the survey estimate should represent. This **estimand** determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:
 
@@ -16,7 +16,7 @@ E.g.,
 1. Share of adults who use the train weekly across MSOA
 2. Mean leisure travel distance among retirees across Wards
 
-## Constructing the Indicator
+## Construct the Indicators
 
 After defining the estimand, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:
 
@@ -27,14 +27,14 @@ After defining the estimand, identify or create the survey indicator that measur
 
 Use the survey questionnaire, response codes, and routing rules to guide indicator construction. Some indicators are direct recodes of one survey question; others need to combine several variables. The same raw survey variable can support different estimands.
 
-## Choosing Domain Sizes and Survey Weights
-### Domain size
+## Choose Domain Sizes and Survey Weights
+### Domain sizes
 The **domain size** $N_d$ is the size of the target population in each domain $d$. It is the denominator for domain means and proportions, and is essential for the SAE workflow. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.
 
 -   The **target population** is the group the estimate is about, such as *all adults, households, retirees, or public transport users*, etc.
 -   The **target domain** is the geographic area for which estimates will be produced, such as *Local Authority, Ward, LSOA, or MSOA*, etc. 
 
-The choice of the scale of the target domains should be informed by data availability. For example, if survey respondent records are only identified at the Local Authority level and not a finer level, then Local Authority is the most granular target domain for SAE. Secured survey datasets with respondents identified at the post codes level, therefore, have a more flexible choice of target domains for small area estimation.
+The choice of the scale of the target domains should be informed by data availability. E.g., if survey respondent records are only identified at the Local Authority level, then that is the most granular scale for SAE.
 
 \[ADD IMAGE\]
 
@@ -62,7 +62,7 @@ For the SAE workflow, the preferred setup is one where **grossing weights** are 
 If the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, [alternative direct estimation methods](direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
 :::
 
-## Preparing SAE-ready inputs
+## Generate SAE-ready inputs
 
 Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow.
 

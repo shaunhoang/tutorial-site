@@ -229,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Preparing SAE Inputs</span></a>
+ <span class="menu-text">Conceptual Overview</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -327,18 +327,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#understanding-the-dataset" id="toc-understanding-the-dataset" class="nav-link active" data-scroll-target="#understanding-the-dataset"><span class="header-section-number">1</span> Understanding the dataset</a></li>
-  <li><a href="#from-survey-indicators-to-estimands" id="toc-from-survey-indicators-to-estimands" class="nav-link" data-scroll-target="#from-survey-indicators-to-estimands"><span class="header-section-number">2</span> From Survey Indicators to Estimands</a></li>
-  <li><a href="#from-estimands-to-sae-inputs" id="toc-from-estimands-to-sae-inputs" class="nav-link" data-scroll-target="#from-estimands-to-sae-inputs"><span class="header-section-number">3</span> From Estimands to SAE Inputs</a></li>
-  <li><a href="#implemetation-data-processing" id="toc-implemetation-data-processing" class="nav-link" data-scroll-target="#implemetation-data-processing"><span class="header-section-number">4</span> Implemetation: Data Processing</a>
+  <li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation"><span class="header-section-number">1</span> Preparation</a>
   <ul class="collapse">
-  <li><a href="#load-survey-data" id="toc-load-survey-data" class="nav-link" data-scroll-target="#load-survey-data"><span class="header-section-number">4.1</span> Load survey data</a></li>
-  <li><a href="#aggregating-domain-size" id="toc-aggregating-domain-size" class="nav-link" data-scroll-target="#aggregating-domain-size"><span class="header-section-number">4.2</span> Aggregating Domain Size</a></li>
-  <li><a href="#building-indicators" id="toc-building-indicators" class="nav-link" data-scroll-target="#building-indicators"><span class="header-section-number">4.3</span> Building Indicators</a></li>
-  <li><a href="#selecting-and-building-weight-variables" id="toc-selecting-and-building-weight-variables" class="nav-link" data-scroll-target="#selecting-and-building-weight-variables"><span class="header-section-number">4.4</span> Selecting and building weight variables</a></li>
-  <li><a href="#putting-it-together-and-missingness-check" id="toc-putting-it-together-and-missingness-check" class="nav-link" data-scroll-target="#putting-it-together-and-missingness-check"><span class="header-section-number">4.5</span> Putting it together and missingness check</a></li>
+  <li><a href="#understanding-the-dataset" id="toc-understanding-the-dataset" class="nav-link" data-scroll-target="#understanding-the-dataset"><span class="header-section-number">1.1</span> Understanding the dataset</a></li>
+  <li><a href="#from-survey-indicators-to-estimands" id="toc-from-survey-indicators-to-estimands" class="nav-link" data-scroll-target="#from-survey-indicators-to-estimands"><span class="header-section-number">1.2</span> From Survey Indicators to Estimands</a></li>
+  <li><a href="#from-estimands-to-sae-inputs" id="toc-from-estimands-to-sae-inputs" class="nav-link" data-scroll-target="#from-estimands-to-sae-inputs"><span class="header-section-number">1.3</span> From Estimands to SAE Inputs</a></li>
   </ul></li>
-  <li><a href="#export-sae-ready-inputs" id="toc-export-sae-ready-inputs" class="nav-link" data-scroll-target="#export-sae-ready-inputs"><span class="header-section-number">5</span> Export SAE-ready inputs</a></li>
+  <li><a href="#implemetation" id="toc-implemetation" class="nav-link" data-scroll-target="#implemetation"><span class="header-section-number">2</span> Implemetation</a>
+  <ul class="collapse">
+  <li><a href="#load-survey-data" id="toc-load-survey-data" class="nav-link" data-scroll-target="#load-survey-data"><span class="header-section-number">2.1</span> Load survey data</a></li>
+  <li><a href="#aggregating-domain-size" id="toc-aggregating-domain-size" class="nav-link" data-scroll-target="#aggregating-domain-size"><span class="header-section-number">2.2</span> Aggregating Domain Size</a></li>
+  <li><a href="#building-indicators" id="toc-building-indicators" class="nav-link" data-scroll-target="#building-indicators"><span class="header-section-number">2.3</span> Building Indicators</a></li>
+  <li><a href="#selecting-and-building-weight-variables" id="toc-selecting-and-building-weight-variables" class="nav-link" data-scroll-target="#selecting-and-building-weight-variables"><span class="header-section-number">2.4</span> Selecting and building weight variables</a></li>
+  <li><a href="#putting-it-together-and-missingness-check" id="toc-putting-it-together-and-missingness-check" class="nav-link" data-scroll-target="#putting-it-together-and-missingness-check"><span class="header-section-number">2.5</span> Putting it together and missingness check</a></li>
+  <li><a href="#export-sae-ready-inputs" id="toc-export-sae-ready-inputs" class="nav-link" data-scroll-target="#export-sae-ready-inputs"><span class="header-section-number">2.6</span> Export SAE-ready inputs</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -363,8 +366,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) workflow. In the process, we will also address the various decisions that researchers need to make.</p>
-<section id="understanding-the-dataset" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="understanding-the-dataset"><span class="header-section-number">1</span> Understanding the dataset</h2>
+<section id="preparation" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="preparation"><span class="header-section-number">1</span> Preparation</h2>
+<section id="understanding-the-dataset" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="understanding-the-dataset"><span class="header-section-number">1.1</span> Understanding the dataset</h3>
 <p>The survey dataset used is created based on the <a href="https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details"><em>National Survey for Wales 2022-23</em></a>. The National Survey for Wales is a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language.</p>
 <p>The survey dataset used is treated with <em>stratified randomisation</em> and <em>randomised upsampling</em> to both ensure data privacy and simluate a higher spatial resolution.</p>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -387,8 +392,8 @@ Note
 </div>
 <p>Finally, population-level data aggregated at MSOA and LA levels come from <a href="https://www.nomisweb.co.uk/sources/census_2021_bulk"><em>the UK Census 2021 datasets</em></a>, made available to download on the NOMIS UK website.</p>
 </section>
-<section id="from-survey-indicators-to-estimands" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="from-survey-indicators-to-estimands"><span class="header-section-number">2</span> From Survey Indicators to Estimands</h2>
+<section id="from-survey-indicators-to-estimands" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="from-survey-indicators-to-estimands"><span class="header-section-number">1.2</span> From Survey Indicators to Estimands</h3>
 <p>The first step in SAE is defining specific research questions that we hope to address using available survey data. For this tutorial with a transport analysis lens, we specifically want to estimate survey indicators related to <em>commuting, bus usage, and active travel behaviour in Wales</em>.</p>
 <p>Then comes the formulation of the these survey indicators into <strong>estimands</strong>, depending on the target population, spatial (and temporal) scale of interest.</p>
 <p>It could look something like this:</p>
@@ -443,8 +448,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="from-estimands-to-sae-inputs" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="from-estimands-to-sae-inputs"><span class="header-section-number">3</span> From Estimands to SAE Inputs</h2>
+<section id="from-estimands-to-sae-inputs" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="from-estimands-to-sae-inputs"><span class="header-section-number">1.3</span> From Estimands to SAE Inputs</h3>
 <p>The next stage involves preparing the indicator variables and aligning them with the appropriate weights and domain sizes (i.e., target population totals in the small area scale of choice), as defined by the estimand.</p>
 <table class="table">
 <colgroup>
@@ -500,8 +505,9 @@ Tip
 </ul>
 <p>With this information we can proceed to process the survey dataset to produce inputs necessary for the SAE workflow.</p>
 </section>
-<section id="implemetation-data-processing" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="implemetation-data-processing"><span class="header-section-number">4</span> Implemetation: Data Processing</h2>
+</section>
+<section id="implemetation" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="implemetation"><span class="header-section-number">2</span> Implemetation</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
@@ -517,8 +523,8 @@ Tip
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(raw_data_zip, <span class="at">exdir =</span> raw_data_dir)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>raw_folder <span class="ot">&lt;-</span> <span class="fu">file.path</span>(raw_data_dir, <span class="st">"raw"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="load-survey-data" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="load-survey-data"><span class="header-section-number">4.1</span> Load survey data</h3>
+<section id="load-survey-data" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="load-survey-data"><span class="header-section-number">2.1</span> Load survey data</h3>
 <p>Load the survey datasets and identify the unique identifier of survey respondents, and recode it as <code>unit_id</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nsw_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
@@ -549,8 +555,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="aggregating-domain-size" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="aggregating-domain-size"><span class="header-section-number">4.2</span> Aggregating Domain Size</h3>
+<section id="aggregating-domain-size" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="aggregating-domain-size"><span class="header-section-number">2.2</span> Aggregating Domain Size</h3>
 <p>In this exercise, assume we only have general and adult population totals, obtained from the UK Census 2021, and not worker population totals.</p>
 <ul>
 <li>Adult population by MSOA</li>
@@ -613,8 +619,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="building-indicators" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="building-indicators"><span class="header-section-number">4.3</span> Building Indicators</h3>
+<section id="building-indicators" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="building-indicators"><span class="header-section-number">2.3</span> Building Indicators</h3>
 <p>Define the missing-value rules used when constructing survey indicators, and calculate the indicators based on the rules set out above.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a helper to handle the NSW specific missing codes</span></span>
@@ -654,8 +660,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="selecting-and-building-weight-variables" class="level3" data-number="4.4">
-<h3 data-number="4.4" class="anchored" data-anchor-id="selecting-and-building-weight-variables"><span class="header-section-number">4.4</span> Selecting and building weight variables</h3>
+<section id="selecting-and-building-weight-variables" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="selecting-and-building-weight-variables"><span class="header-section-number">2.4</span> Selecting and building weight variables</h3>
 <p>Filter for the relevant weight variables from the survey.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>survey_weights <span class="ot">&lt;-</span> nsw_raw <span class="sc">|&gt;</span></span>
@@ -696,8 +702,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="putting-it-together-and-missingness-check" class="level3" data-number="4.5">
-<h3 data-number="4.5" class="anchored" data-anchor-id="putting-it-together-and-missingness-check"><span class="header-section-number">4.5</span> Putting it together and missingness check</h3>
+<section id="putting-it-together-and-missingness-check" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="putting-it-together-and-missingness-check"><span class="header-section-number">2.5</span> Putting it together and missingness check</h3>
 <p>Join the coded indicators and calculated weights together for easy handling. Create a mapping object to link the indicator to its appropriate ‘companions’.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>survey_inputs <span class="ot">&lt;-</span> survey_domains <span class="sc">|&gt;</span></span>
@@ -783,9 +789,8 @@ Tip
 <li><code>walk_weekly</code> comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion <code>WalesTravelWeight</code> scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.</li>
 </ul>
 </section>
-</section>
-<section id="export-sae-ready-inputs" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="export-sae-ready-inputs"><span class="header-section-number">5</span> Export SAE-ready inputs</h2>
+<section id="export-sae-ready-inputs" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="export-sae-ready-inputs"><span class="header-section-number">2.6</span> Export SAE-ready inputs</h3>
 <p>It is good practice to export the SAE-ready inputs. This export should produce:</p>
 <ul>
 <li><code>domain_sizes_adult_msoa.csv</code>, for adult population by MSOA (from Census 2021);</li>
@@ -835,6 +840,7 @@ Tip
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1088,7 +1094,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../pages/prepare-inputs.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preparing SAE Inputs</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Conceptual Overview</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Preparing SAE Inputs</title>
+<title>Small Area Estimation for Urban Analytics - Conceptual Overview</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -139,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/prepare-inputs.html">Part 1: Preparation</a></li><li class="breadcrumb-item"><a href="../pages/prepare-inputs.html">Preparing SAE Inputs</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/prepare-inputs.html">Part 1: Preparation</a></li><li class="breadcrumb-item"><a href="../pages/prepare-inputs.html">Conceptual Overview</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -197,7 +197,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Preparing SAE Inputs</span></a>
+ <span class="menu-text">Conceptual Overview</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -295,14 +295,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#defining-the-estimand" id="toc-defining-the-estimand" class="nav-link active" data-scroll-target="#defining-the-estimand"><span class="header-section-number">1</span> Defining the Estimand</a></li>
-  <li><a href="#constructing-the-indicator" id="toc-constructing-the-indicator" class="nav-link" data-scroll-target="#constructing-the-indicator"><span class="header-section-number">2</span> Constructing the Indicator</a></li>
-  <li><a href="#choosing-domain-sizes-and-survey-weights" id="toc-choosing-domain-sizes-and-survey-weights" class="nav-link" data-scroll-target="#choosing-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choosing Domain Sizes and Survey Weights</a>
+  <li><a href="#definie-the-estimands" id="toc-definie-the-estimands" class="nav-link active" data-scroll-target="#definie-the-estimands"><span class="header-section-number">1</span> Definie the Estimands</a></li>
+  <li><a href="#construct-the-indicators" id="toc-construct-the-indicators" class="nav-link" data-scroll-target="#construct-the-indicators"><span class="header-section-number">2</span> Construct the Indicators</a></li>
+  <li><a href="#choose-domain-sizes-and-survey-weights" id="toc-choose-domain-sizes-and-survey-weights" class="nav-link" data-scroll-target="#choose-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choose Domain Sizes and Survey Weights</a>
   <ul class="collapse">
-  <li><a href="#domain-size" id="toc-domain-size" class="nav-link" data-scroll-target="#domain-size"><span class="header-section-number">3.1</span> Domain size</a></li>
+  <li><a href="#domain-sizes" id="toc-domain-sizes" class="nav-link" data-scroll-target="#domain-sizes"><span class="header-section-number">3.1</span> Domain sizes</a></li>
   <li><a href="#survey-weight" id="toc-survey-weight" class="nav-link" data-scroll-target="#survey-weight"><span class="header-section-number">3.2</span> Survey weight</a></li>
   </ul></li>
-  <li><a href="#preparing-sae-ready-inputs" id="toc-preparing-sae-ready-inputs" class="nav-link" data-scroll-target="#preparing-sae-ready-inputs"><span class="header-section-number">4</span> Preparing SAE-ready inputs</a></li>
+  <li><a href="#generate-sae-ready-inputs" id="toc-generate-sae-ready-inputs" class="nav-link" data-scroll-target="#generate-sae-ready-inputs"><span class="header-section-number">4</span> Generate SAE-ready inputs</a></li>
   </ul>
 </nav>
     </div>
@@ -311,7 +311,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Preparing SAE Inputs</h1>
+<h1 class="title">Conceptual Overview</h1>
 </div>
 
 
@@ -327,8 +327,8 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 <p>A survey outcome becomes SAE-ready through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. To see this workflow in action, go to <a href="../pages/tutorial-dataprep.html">Tutorial: Data Preparation</a>.</p>
-<section id="defining-the-estimand" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="defining-the-estimand"><span class="header-section-number">1</span> Defining the Estimand</h2>
+<section id="definie-the-estimands" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="definie-the-estimands"><span class="header-section-number">1</span> Definie the Estimands</h2>
 <p>Before fitting any SAE model, define exactly what the survey estimate should represent. This <strong>estimand</strong> determines how SAE-ready inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:</p>
 <blockquote class="blockquote">
 <p>Estimate the <strong>measure</strong> of <strong>what outcome</strong>, among <strong>which population</strong>, across <strong>which geographic domains</strong>.</p>
@@ -339,8 +339,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Mean leisure travel distance among retirees across Wards</li>
 </ol>
 </section>
-<section id="constructing-the-indicator" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="constructing-the-indicator"><span class="header-section-number">2</span> Constructing the Indicator</h2>
+<section id="construct-the-indicators" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="construct-the-indicators"><span class="header-section-number">2</span> Construct the Indicators</h2>
 <p>After defining the estimand, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:</p>
 <table class="table">
 <colgroup>
@@ -370,10 +370,10 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>Use the survey questionnaire, response codes, and routing rules to guide indicator construction. Some indicators are direct recodes of one survey question; others need to combine several variables. The same raw survey variable can support different estimands.</p>
 </section>
-<section id="choosing-domain-sizes-and-survey-weights" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="choosing-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choosing Domain Sizes and Survey Weights</h2>
-<section id="domain-size" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="domain-size"><span class="header-section-number">3.1</span> Domain size</h3>
+<section id="choose-domain-sizes-and-survey-weights" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="choose-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choose Domain Sizes and Survey Weights</h2>
+<section id="domain-sizes" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="domain-sizes"><span class="header-section-number">3.1</span> Domain sizes</h3>
 <p>The <strong>domain size</strong> <span class="math inline">\(N_d\)</span> is the size of the target population in each domain <span class="math inline">\(d\)</span>. It is the denominator for domain means and proportions, and is essential for the SAE workflow. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.</p>
 <ul>
 <li>The <strong>target population</strong> is the group the estimate is about, such as <em>all adults, households, retirees, or public transport users</em>, etc.</li>
@@ -414,8 +414,8 @@ Warning
 </div>
 </section>
 </section>
-<section id="preparing-sae-ready-inputs" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="preparing-sae-ready-inputs"><span class="header-section-number">4</span> Preparing SAE-ready inputs</h2>
+<section id="generate-sae-ready-inputs" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="generate-sae-ready-inputs"><span class="header-section-number">4</span> Generate SAE-ready inputs</h2>
 <p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow.</p>
 <p>For example, a compact record could be written as:</p>
 <table class="table">

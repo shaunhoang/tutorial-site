@@ -6,7 +6,9 @@ execute:
 
 This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) workflow. In the process, we will also address the various decisions that researchers need to make.
 
-## Understanding the dataset
+## Preparation
+
+### Understanding the dataset
 
 The survey dataset used is created based on the [*National Survey for Wales 2022-23*](https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details). The National Survey for Wales is a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language. 
 
@@ -15,15 +17,15 @@ The survey dataset used is treated with *stratified randomisation* and *randomis
 :::{.callout-note}
 In the original dataset, the Local Authority (LA) is the sole spatial identifier and the survey's stratification variable. The example simulated dataset was created using:
 
-- **Stratified randomisation:** Survey responses are first split by LA and their variables randomised column-wise to preserve variable totals by LA
-- **Randomised upsampling:** Survey responses are randomly assigned to a MSOA within their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes. In practice, disaggregating survey data is **not recommended**.
+- **Stratified randomisation:** Survey responses are first split by Local Authority and their variables randomised column-wise to preserve variable totals by Local Authority.
+- **Randomised upsampling:** Survey responses are assigned a random MSOA that intersects with their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes.
 
 ![](../assets/la_msoa_n.png)
 ::: 
 
 Finally, population-level data aggregated at MSOA and LA levels come from [*the UK Census 2021 datasets*](https://www.nomisweb.co.uk/sources/census_2021_bulk), made available to download on the NOMIS UK website.   
 
-## From Survey Indicators to Estimands
+### From Survey Indicators to Estimands
 
 The first step in SAE is defining specific research questions that we hope to address using available survey data. For this tutorial with a transport analysis lens, we specifically want to estimate survey indicators related to *commuting, bus usage, and active travel behaviour in Wales*.
 
@@ -47,7 +49,7 @@ Specifying these elements early is critical as they dictate the technical requir
 In practice, this step is reiterative, based on data availability and other restrictions. It is worth starting out with the most relevant estimands and refining them further after diagnosing the estimation results' precision.
 :::
 
-## From Estimands to SAE Inputs
+### From Estimands to SAE Inputs
 
 The next stage involves preparing the indicator variables and aligning them with the appropriate weights and domain sizes (i.e., target population totals in the small area scale of choice), as defined by the estimand.
 
@@ -65,7 +67,7 @@ In this dataset, weight variables are chosen based on the availability of auxili
 
 With this information we can proceed to process the survey dataset to produce inputs necessary for the SAE workflow.
 
-## Implemetation: Data Processing
+## Implemetation
 
 ```{r}
 library(dplyr)
@@ -287,7 +289,7 @@ On the other hand, the number of non-missing observations reflects both survey r
 - `poor_bus_satisfaction` is a routed variable asked only to bus users. However, it maintains near-full population coverage by coding non-users as 0 rather than null. Used together with the `WalesAdultWeight` variable, this approach is consistent with the estimand definition: the share of all adults dissatisfied with bus services.
 - `walk_weekly` comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion `WalesTravelWeight` scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.
 
-## Export SAE-ready inputs
+### Export SAE-ready inputs
 
 It is good practice to export the SAE-ready inputs. This export should produce:
 
