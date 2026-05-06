@@ -4,23 +4,6 @@ title: "SAE Toolkit Lite"
 
 SAE Toolkit Lite is meant for quick adaptation of the materials to another survey, geography, or indicator. It assumes an area-level SAE workflow and a Bayesian modelling approach.
 
-## Tutorial data helpers
-
-The worked example supports two routes:
-
-- Use `get_tutorial_data()` to download the hosted raw-data zip into `data/raw/`, then run the full data-preparation workbook.
-- Use `get_sae_ready_inputs()` to copy the pre-generated SAE-ready CSVs from `downloads/sae-ready-inputs/` into `data/clean/`, then start directly from the methods workbooks.
-
-```r
-source("scripts/setup_data.R")
-
-# Route 1: full data preparation
-get_tutorial_data()
-
-# Route 2: skip directly to SAE-ready inputs
-get_sae_ready_inputs()
-```
-
 ## Minimum inputs and recommended schema
 
 A SAE workflow usually needs:
@@ -114,20 +97,7 @@ Reusable scripts can be adapted once the input files follow the schema above.
 
 | Script | Purpose |
 |---|---|
-| [setup_data.R](../scripts/setup_data.R) | Download hosted raw tutorial data or copy pre-generated SAE-ready inputs into the local project. |
 | [direct_estimates.R](../scripts/direct_estimates.R) | Calculate direct estimates by domain, sampling variances, and confidence intervals. |
 | [area_level_sae.R](../scripts/area_level_sae.R) | Fit Bayesian area-level model with covariates and spatial structure derived from boundary geometry, if relevant. |
 | [unit_level_sae.R](../scripts/unit_level_sae.R) | Fit Bayesian unit-level model using survey microdata and population or synthetic-population covariates. |
 | [diagnostics.R](../scripts/diagnostics.R) | Create comparison tables and plots for checking estimates, uncertainty, and model outputs. |
-
-## Pre-generated SAE-ready inputs
-
-These files are included with the site for learners who want to skip the data-preparation page:
-
-| File | Purpose |
-|---|---|
-| [domain_sizes_adult_msoa.csv](../downloads/sae-ready-inputs/domain_sizes_adult_msoa.csv) | Adult population aged 16+ by MSOA. |
-| [domain_sizes_population_la.csv](../downloads/sae-ready-inputs/domain_sizes_population_la.csv) | Total resident population by Local Authority. |
-| [ind_weight_commute_distance.csv](../downloads/sae-ready-inputs/ind_weight_commute_distance.csv) | Survey indicator and weight file for commute distance by MSOA. |
-| [ind_weight_poor_bus_satisfaction.csv](../downloads/sae-ready-inputs/ind_weight_poor_bus_satisfaction.csv) | Survey indicator and weight file for poor bus satisfaction by MSOA. |
-| [ind_weight_walk_weekly.csv](../downloads/sae-ready-inputs/ind_weight_walk_weekly.csv) | Survey indicator and weight file for weekly walking by Local Authority. |

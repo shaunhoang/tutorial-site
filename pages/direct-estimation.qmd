@@ -13,13 +13,6 @@ The direct-estimation step uses the standard files prepared earlier:
 | Survey indicator file | `unit_id`, `domain_id`, `indicator`, `weight` |
 | Domain-size file | `domain_id`, `domain_size` |
 
-If you completed the worked data-preparation page, these files should already be in `data/clean/`. If you want to start directly from the methods pages, use the pre-generated SAE-ready inputs:
-
-```{r}
-source("scripts/setup_data.R")
-get_sae_ready_inputs()
-```
-
 The `indicator` column can be binary, such as `1` for adults who walk weekly and `0` otherwise, or numeric for a continuous outcome.
 
 ## Direct Estimator and Sampling Variances
@@ -72,5 +65,27 @@ If the survey includes more detailed design information, use the [`survey`](http
 :::
 
 ### Worked Example
+
+For the worked example, we use the pre-generated SAE-ready files created from the data-preparation stage. 
+
+```{r}
+library(readr)
+
+sae_ready_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"
+sae_ready_zip <- tempfile(fileext = ".zip")
+download.file(sae_ready_url, sae_ready_zip, mode = "wb")
+```
+
+Load the `poor_bus_satisfaction` survey indicator and its matching adult MSOA domain-size file.
+
+```{r}
+survey_indicator <- read_csv(
+  unz(sae_ready_zip, "ind_weight_poor_bus_satisfaction.csv")
+)
+
+domain_sizes <- read_csv(
+  unz(sae_ready_zip, "domain_sizes_adult_msoa.csv")
+)
+```
 
 Lorem Ipsum - share real example National Survey of Wales

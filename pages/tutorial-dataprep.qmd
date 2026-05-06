@@ -71,28 +71,21 @@ To produce population-level estimates, grossing weights are preferred whenever m
 With this information we proceed to process the survey to produce inputs necessary for the SAE workflow.
 
 ## Data Processing
+The tutorial raw data are stored online as a single zip file. The zip contains the survey file and the census files used below. We download the zip, then read each CSV directly from inside it.
 ```{r}
 library(dplyr)
 library(readr)
 library(stringr)
 library(tidyr)
+
+raw_data_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/tutorial-raw-data.zip"
+raw_data_zip <- tempfile(fileext = ".zip")
+download.file(raw_data_url, raw_data_zip, mode = "wb")
 ```
-### Load data
-
-The raw tutorial data are downloaded into your local project from a hosted zip file. The helper below creates the expected `data/raw/` folder structure if it is not already present.
-
+### Load survey data 
 ```{r}
-project_root <- if (dir.exists("pages")) "." else ".."
-source(file.path(project_root, "scripts", "setup_data.R"))
-
-get_tutorial_data()
-
-input_dir <- file.path(project_root, "data", "raw")
-output_dir <- file.path(project_root, "data", "clean")
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE) # create output directory if it doesn't exist
-
 nsw_raw <- read_csv(
-  file.path(input_dir, "nsw_2223_msoa_la.csv")
+  unz(raw_data_zip, "nsw_2223_msoa_la.csv")
 ) |>
   rename(unit_id = CaseNo)     # rename for consistency
 ```
@@ -117,7 +110,7 @@ In this exercise, assume we only have general and adult population totals from t
 - Adult population by MSOA
 ```{r}
 adult_domain_sizes_msoa <- read_csv(
-  file.path(input_dir, "census2021-ts007-msoa.csv"),
+  unz(raw_data_zip, "census2021-ts007-msoa.csv"),
   show_col_types = FALSE
 ) |>
   filter(str_starts(`geography code`, "W")) |>
@@ -137,7 +130,7 @@ head(adult_domain_sizes_msoa)
 - Total population by LA
 ```{r}
 population_domain_sizes_la <- read_csv(
-  file.path(input_dir, "census2021-ts007-ltla.csv"),
+  unz(raw_data_zip, "census2021-ts007-ltla.csv"),
   show_col_types = FALSE
 ) |>
   filter(str_starts(`geography code`, "W")) |>
@@ -294,11 +287,15 @@ On the other hand, the number of non-missing observations reflects both survey r
 - `poor_bus_satisfaction` is a routed variable asked only to bus users. However, it maintains near-full population coverage by coding non-users as 0 rather than null. Used together with the `WalesAdultWeight` variable, it approach is consistent with the estimand definition: the share of all adults dissatisfied with bus services.
 - `walk_weekly` comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of non-null values. However, it has a companion `WalesTravelWeight` scaled to total population, making it more suitable for population-level estimation at LA scale.
 
-## Export SAE-ready inputs
+## Optional: Export SAE-ready inputs
 
-Write a survey input file for each estimand and its associated weight variable. These files are saved locally in `data/clean/` so later workbooks can load the outputs from this data-preparation stage.
+The objects created above are enough to continue within this workbook. If you want local copies of the SAE-ready inputs, you can export a survey input file for each estimand and its associated weight variable.
 
 ```{r}
+#| eval: false
+output_dir <- "data/clean"
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+
 # Create an input file for each
 for (i in seq_len(nrow(indicator_map))) {
   spec <- indicator_map[i, ]
@@ -319,10 +316,11 @@ for (i in seq_len(nrow(indicator_map))) {
 ```
 Also export the domain sizes used by the estimand-specific input files.
 ```{r}
+#| eval: false
 write_csv(adult_domain_sizes_msoa, file.path(output_dir, "domain_sizes_adult_msoa.csv"))
 write_csv(population_domain_sizes_la, file.path(output_dir, "domain_sizes_population_la.csv"))
 ```
-So far, we have produced:
+This optional export would produce:
 
 - `domain_sizes_adult_msoa.csv`, for adult population by MSOA (from Census 2021);
 - `domain_sizes_population_la.csv`, for total resident population by LA (from Census 2021);
@@ -331,12 +329,5 @@ So far, we have produced:
 - `ind_weight_walk_weekly.csv`, with active-travel module weight scaled to LA total population;
 
 :::{.callout-tip}
-If you want to skip this data-preparation stage, the same SAE-ready files are pre-generated under `downloads/sae-ready-inputs/`. In later workbooks, run:
-
-```r
-source("scripts/setup_data.R")
-get_sae_ready_inputs()
-```
-
-This copies the prepared files into `data/clean/`, matching the output location used above.
+The next workbooks do not depend on these local exports. They load the same pre-generated SAE-ready files directly from hosted URLs.
 :::
