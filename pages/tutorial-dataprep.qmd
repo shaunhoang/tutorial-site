@@ -70,8 +70,8 @@ To produce population-level estimates, grossing weights are preferred whenever m
 
 With this information we proceed to process the survey to produce inputs necessary for the SAE workflow.
 
-## Data Processing
-The tutorial raw data are stored online as a single zip file. The zip contains the survey file and the census files used below. We download the zip, then read each CSV directly from inside it.
+## Implemetation: Data Processing
+The tutorial raw data are stored online as a single zip file. We download it into R's temporary folder, unzip it there, and then read the CSV files as usual. The LA population-size file is also loaded from the hosted SAE-ready bundle because it is used as a supporting denominator in this example.
 ```{r}
 library(dplyr)
 library(readr)
@@ -79,15 +79,27 @@ library(stringr)
 library(tidyr)
 
 raw_data_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/tutorial-raw-data.zip"
-raw_data_zip <- tempfile(fileext = ".zip")
+raw_data_dir <- file.path(tempdir(), "tutorial-raw-data")
+raw_data_zip <- file.path(raw_data_dir, "tutorial-raw-data.zip")
+
+dir.create(raw_data_dir, showWarnings = FALSE)
 download.file(raw_data_url, raw_data_zip, mode = "wb")
+unzip(raw_data_zip, exdir = raw_data_dir)
+
+sae_ready_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"
+sae_ready_dir <- file.path(tempdir(), "sae-ready-inputs")
+sae_ready_zip <- file.path(sae_ready_dir, "sae-ready-inputs.zip")
+
+dir.create(sae_ready_dir, showWarnings = FALSE)
+download.file(sae_ready_url, sae_ready_zip, mode = "wb")
+unzip(sae_ready_zip, exdir = sae_ready_dir)
 ```
 ### Load survey data 
 ```{r}
 nsw_raw <- read_csv(
-  unz(raw_data_zip, "nsw_2223_msoa_la.csv")
+  file.path(raw_data_dir, "nsw_2223_msoa_la.csv")
 ) |>
-  rename(unit_id = CaseNo)     # rename for consistency
+  rename(unit_id = CaseNo)     # rename unique respondent ID for consistency downstream
 ```
 
 For each respondent, the survey provides two spatial identifiers: Local Authority and MSOA. They are coded as `la_code` and `msoa_code`, and are kept as separate domain fields.
@@ -110,7 +122,7 @@ In this exercise, assume we only have general and adult population totals from t
 - Adult population by MSOA
 ```{r}
 adult_domain_sizes_msoa <- read_csv(
-  unz(raw_data_zip, "census2021-ts007-msoa.csv"),
+  file.path(raw_data_dir, "census2021-ts007-msoa.csv"),
   show_col_types = FALSE
 ) |>
   filter(str_starts(`geography code`, "W")) |>
@@ -130,15 +142,9 @@ head(adult_domain_sizes_msoa)
 - Total population by LA
 ```{r}
 population_domain_sizes_la <- read_csv(
-  unz(raw_data_zip, "census2021-ts007-ltla.csv"),
+  file.path(sae_ready_dir, "sae-ready-inputs", "domain_sizes_population_la.csv"),
   show_col_types = FALSE
-) |>
-  filter(str_starts(`geography code`, "W")) |>
-  transmute(
-    domain_id = `geography code`,
-    domain_name = geography,
-    domain_size = `Age: Total; measures: Value`
-  )
+)
 
 head(population_domain_sizes_la)
 ```

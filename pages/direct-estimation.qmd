@@ -72,19 +72,23 @@ For the worked example, we use the pre-generated SAE-ready files created from th
 library(readr)
 
 sae_ready_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"
-sae_ready_zip <- tempfile(fileext = ".zip")
+sae_ready_dir <- file.path(tempdir(), "sae-ready-inputs")
+sae_ready_zip <- file.path(sae_ready_dir, "sae-ready-inputs.zip")
+
+dir.create(sae_ready_dir, showWarnings = FALSE)
 download.file(sae_ready_url, sae_ready_zip, mode = "wb")
+unzip(sae_ready_zip, exdir = sae_ready_dir)
 ```
 
 Load the `poor_bus_satisfaction` survey indicator and its matching adult MSOA domain-size file.
 
 ```{r}
 survey_indicator <- read_csv(
-  unz(sae_ready_zip, "ind_weight_poor_bus_satisfaction.csv")
+  file.path(sae_ready_dir, "sae-ready-inputs", "ind_weight_poor_bus_satisfaction.csv")
 )
 
 domain_sizes <- read_csv(
-  unz(sae_ready_zip, "domain_sizes_adult_msoa.csv")
+  file.path(sae_ready_dir, "sae-ready-inputs", "domain_sizes_adult_msoa.csv")
 )
 ```
 
