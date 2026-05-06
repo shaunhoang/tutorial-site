@@ -340,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#building-indicators" id="toc-building-indicators" class="nav-link" data-scroll-target="#building-indicators"><span class="header-section-number">2.3</span> Building Indicators</a></li>
   <li><a href="#selecting-and-building-weight-variables" id="toc-selecting-and-building-weight-variables" class="nav-link" data-scroll-target="#selecting-and-building-weight-variables"><span class="header-section-number">2.4</span> Selecting and building weight variables</a></li>
   <li><a href="#putting-it-together-and-missingness-check" id="toc-putting-it-together-and-missingness-check" class="nav-link" data-scroll-target="#putting-it-together-and-missingness-check"><span class="header-section-number">2.5</span> Putting it together and missingness check</a></li>
-  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export"><span class="header-section-number">2.6</span> Export</a></li>
+  <li><a href="#export-optional" id="toc-export-optional" class="nav-link" data-scroll-target="#export-optional"><span class="header-section-number">2.6</span> Export (optional)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -789,55 +789,16 @@ Tip
 <li><code>walk_weekly</code> comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion <code>WalesTravelWeight</code> scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.</li>
 </ul>
 </section>
-<section id="export" class="level3" data-number="2.6">
-<h3 data-number="2.6" class="anchored" data-anchor-id="export"><span class="header-section-number">2.6</span> Export</h3>
-<p>At this stage, the cleaned survey microdata and domain sizes files should look like this:</p>
+<section id="export-optional" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="export-optional"><span class="header-section-number">2.6</span> Export (optional)</h3>
+<p>The next workbooks do not depend on local exports from this workbook. However, if preferred, export into your <code>data/clean/</code> folder the following components:</p>
 <ul>
 <li><code>domain_sizes_adult_msoa.csv</code>, for adult population by MSOA (from Census 2021);</li>
 <li><code>domain_sizes_population_la.csv</code>, for total resident population by LA (from Census 2021);</li>
 <li><code>ind_weight_commute_distance.csv</code>, with analysis adult weight;</li>
 <li><code>ind_weight_poor_bus_satisfaction.csv</code>, with grossing adult weight;</li>
-<li><code>ind_weight_walk_weekly.csv</code>, with active-travel module weight scaled to LA total population;</li>
+<li><code>ind_weight_walk_weekly.csv</code>, with active-travel module weight scaled to LA total population.</li>
 </ul>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The next workbooks do not depend on local exports. However, if local exports are preferred, use the code block below to generate the input files into <code>data/clean/</code> folder</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>output_dir <span class="ot">&lt;-</span> <span class="st">"data/clean"</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(output_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an input file for each indicator</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(indicator_map))) {</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  spec <span class="ot">&lt;-</span> indicator_map[i, ]</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  indicator_file <span class="ot">&lt;-</span> survey_inputs <span class="sc">|&gt;</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>      unit_id,</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain_id =</span> .data[[spec<span class="sc">$</span>id_col]],</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">indicator =</span> .data[[spec<span class="sc">$</span>indicator]],</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> .data[[spec<span class="sc">$</span>weight]]</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    indicator_file,</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">file.path</span>(output_dir, <span class="fu">str_c</span>(<span class="st">"ind_weight_"</span>, spec<span class="sc">$</span>indicator, <span class="st">".csv"</span>))</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Domain sizes used by the estimand-specific input files.</span></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(domain_sizes_adult_msoa, <span class="fu">file.path</span>(output_dir, <span class="st">"domain_sizes_adult_msoa.csv"</span>))</span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(domain_sizes_population_la, <span class="fu">file.path</span>(output_dir, <span class="st">"domain_sizes_population_la.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</div>
 
 
 </section>

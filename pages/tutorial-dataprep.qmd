@@ -289,45 +289,13 @@ On the other hand, the number of non-missing observations reflects both survey r
 - `poor_bus_satisfaction` is a routed variable asked only to bus users. However, it maintains near-full population coverage by coding non-users as 0 rather than null. Used together with the `WalesAdultWeight` variable, this approach is consistent with the estimand definition: the share of all adults dissatisfied with bus services.
 - `walk_weekly` comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion `WalesTravelWeight` scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.
 
-### Export 
+### Export (optional)
 
-At this stage, the cleaned survey microdata and domain sizes files should look like this:
+The next workbooks do not depend on local exports from this workbook. However, if preferred, export into your `data/clean/` folder the following components:
 
 - `domain_sizes_adult_msoa.csv`, for adult population by MSOA (from Census 2021);
 - `domain_sizes_population_la.csv`, for total resident population by LA (from Census 2021);
 - `ind_weight_commute_distance.csv`, with analysis adult weight;
 - `ind_weight_poor_bus_satisfaction.csv`, with grossing adult weight;
-- `ind_weight_walk_weekly.csv`, with active-travel module weight scaled to LA total population;
-
-:::{.callout-tip}
-The next workbooks do not depend on local exports. However, if local exports are preferred, use the code block below to generate the input files into `data/clean/` folder
-
-```{r}
-#| eval: false
-output_dir <- "data/clean"
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
-
-# Create an input file for each indicator
-for (i in seq_len(nrow(indicator_map))) {
-  spec <- indicator_map[i, ]
-
-  indicator_file <- survey_inputs |>
-    transmute(
-      unit_id,
-      domain_id = .data[[spec$id_col]],
-      indicator = .data[[spec$indicator]],
-      weight = .data[[spec$weight]]
-    )
-
-  write_csv(
-    indicator_file,
-    file.path(output_dir, str_c("ind_weight_", spec$indicator, ".csv"))
-  )
-}
-
-# Domain sizes used by the estimand-specific input files.
-write_csv(domain_sizes_adult_msoa, file.path(output_dir, "domain_sizes_adult_msoa.csv"))
-write_csv(domain_sizes_population_la, file.path(output_dir, "domain_sizes_population_la.csv"))
-```
-:::
+- `ind_weight_walk_weekly.csv`, with active-travel module weight scaled to LA total population.
 
