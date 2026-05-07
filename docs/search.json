@@ -39,7 +39,7 @@
     "href": "pages/prepare-inputs.html",
     "title": "Conceptual Overview",
     "section": "",
-    "text": "A raw survey dataset becomes analysis-ready microdata input through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. The data preparation pipeline can be summarised as follows:"
+    "text": "Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the target domain, and a compatible survey weight.\nThe data preparation pipeline can be summarised as follows:"
   },
   {
     "objectID": "pages/prepare-inputs.html#definie-the-estimands",
@@ -278,5 +278,12 @@
     "title": "Conceptual Overview",
     "section": "4 Select covariates",
     "text": "4 Select covariates\nSAE improves precision by “borrowing strength” from auxiliary variables (i.e., covariates). This is critical for domains with sparse or non-existent survey data. For area-level models, these covariates must be aggregated for every target domain. For unit-level modesl, these covariates must exist at the population unit level. Aim for around 5 covariates per indicator. Overloading covariate selection may cause overfitting and multicollinearity.\nSome selection rules of thumb are:\n\nHigh Correlation: Select variables with a strong, logical link to the indicator (e.g., car ownership as a predictor of travel distance).\nAlignment: Ensure definitions are identical across both the survey and the population frame (e.g., the exact age range defining an “adult”, work-from-home thresholds).\nTemporal Stability: Opt for variables that remain stable over time. Because population frames (like the Census) often lag behind current survey data in question, stable covariates minimise errors caused by this time gap."
+  },
+  {
+    "objectID": "pages/prepare-inputs.html#define-the-estimands",
+    "href": "pages/prepare-inputs.html#define-the-estimands",
+    "title": "Conceptual Overview",
+    "section": "1 Define the Estimands",
+    "text": "1 Define the Estimands\nBefore fitting any SAE model, define exactly what the survey estimate should represent. This estimand determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:\n\nEstimate the measure of what outcome, among which population, across which geographic domains.\n\nE.g.,\n\nShare of adults who use the train weekly across MSOA\nMean leisure travel distance among retirees across Wards"
   }
 ]

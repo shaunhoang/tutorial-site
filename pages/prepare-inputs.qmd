@@ -2,15 +2,13 @@
 title: "Conceptual Overview"
 ---
 
-A raw survey dataset becomes analysis-ready microdata input through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. The data preparation pipeline can be summarised as follows:
+Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the target domain, and a compatible survey weight.
+
+The data preparation pipeline can be summarised as follows:
 
 ![Preparation pipeline for analysis-ready inputs](../assets/dataprep_summary.png)
 
-:::{.callout-note}
-**Covariates preparation** from auxiliary datasets will be covered in subsequent chapters on model-based area-level estimation.
-:::
-
-## Definie the Estimands
+## Define the Estimands
 
 Before fitting any SAE model, define exactly what the survey estimate should represent. This **estimand** determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:
 

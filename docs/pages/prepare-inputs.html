@@ -295,7 +295,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#definie-the-estimands" id="toc-definie-the-estimands" class="nav-link active" data-scroll-target="#definie-the-estimands"><span class="header-section-number">1</span> Definie the Estimands</a></li>
+  <li><a href="#define-the-estimands" id="toc-define-the-estimands" class="nav-link active" data-scroll-target="#define-the-estimands"><span class="header-section-number">1</span> Define the Estimands</a></li>
   <li><a href="#construct-the-indicators" id="toc-construct-the-indicators" class="nav-link" data-scroll-target="#construct-the-indicators"><span class="header-section-number">2</span> Construct the Indicators</a></li>
   <li><a href="#choose-domain-sizes-and-survey-weights" id="toc-choose-domain-sizes-and-survey-weights" class="nav-link" data-scroll-target="#choose-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choose Domain Sizes and Survey Weights</a>
   <ul class="collapse">
@@ -327,28 +327,16 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>A raw survey dataset becomes analysis-ready microdata input through a clear estimand, a coded indicator, a target domain, a domain size, and a compatible survey weight. The data preparation pipeline can be summarised as follows:</p>
+<p>Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the target domain, and a compatible survey weight.</p>
+<p>The data preparation pipeline can be summarised as follows:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../assets/dataprep_summary.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Preparation pipeline for analysis-ready inputs</figcaption>
 </figure>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Covariates preparation</strong> from auxiliary datasets will be covered in subsequent chapters on model-based area-level estimation.</p>
-</div>
-</div>
-<section id="definie-the-estimands" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="definie-the-estimands"><span class="header-section-number">1</span> Definie the Estimands</h2>
+<section id="define-the-estimands" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="define-the-estimands"><span class="header-section-number">1</span> Define the Estimands</h2>
 <p>Before fitting any SAE model, define exactly what the survey estimate should represent. This <strong>estimand</strong> determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:</p>
 <blockquote class="blockquote">
 <p>Estimate the <strong>measure</strong> of <strong>what outcome</strong>, among <strong>which population</strong>, across <strong>which geographic domains</strong>.</p>
