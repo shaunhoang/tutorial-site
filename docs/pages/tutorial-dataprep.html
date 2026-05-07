@@ -373,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="understanding-the-dataset" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="understanding-the-dataset"><span class="header-section-number">1.1</span> Understanding the dataset</h3>
 <p>The <a href="https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details"><em>National Survey for Wales 2022-23</em></a> is a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language.</p>
-<p>The survey dataset used in this tutorial simulates the NSW respondent microdata, by treating it with <em>stratified randomisation</em> and <em>randomised upsampling</em> to both ensure data privacy and simulate a more granular saptial identifier for education purposes.</p>
+<p>The survey dataset used in this tutorial simulates the NSW respondent microdata, by treating it with <em>stratified randomisation</em> and <em>randomised upsampling</em> to both ensure data privacy and simulate a more granular spatial identifier for education purposes.</p>
 <p><img src="../assets/la_msoa_n.png" class="img-fluid"></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -387,8 +387,8 @@ Note
 <div class="callout-body-container callout-body">
 <p>In the original dataset, the Local Authority (LA) is the sole spatial identifier and the survey’s stratification variable. The example simulated dataset was created using:</p>
 <ul>
-<li><strong>Stratified randomisation:</strong> Survey responses are first split by Local Authority and their variables randomised column-wise to preserve variable totals by Local Authority.</li>
-<li><strong>Randomised upsampling:</strong> Survey responses are assigned a random MSOA that intersects with their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes.</li>
+<li><strong>Stratified randomisation:</strong> Survey responses were first split by Local Authority and their variables were randomised column-wise to preserve variable totals by Local Authority.</li>
+<li><strong>Randomised upsampling:</strong> Survey responses were assigned a random MSOA that intersects with their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes.</li>
 </ul>
 </div>
 </div>
@@ -985,57 +985,6 @@ Tip
 <li><code>ind_weight_poor_bus_satisfaction.csv</code>, with grossing adult weight;</li>
 <li><code>ind_weight_walk_weekly.csv</code>, with active-travel module weight scaled to LA total population.</li>
 </ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>export_analysis_ready_files <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">output_dir =</span> <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"clean"</span>)) {</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(output_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  files_to_export <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain_sizes_adult_msoa =</span> domain_sizes_adult_msoa,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain_sizes_population_la =</span> domain_sizes_population_la,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">covariates_msoa =</span> covariates_msoa,</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">covariates_la =</span> covariates_la,</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ind_weight_commute_distance =</span> survey_inputs <span class="sc">|&gt;</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        unit_id,</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">domain_id =</span> msoa_domain_id,</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">indicator =</span> commute_distance,</span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight =</span> SampleAdultWeight</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">ind_weight_poor_bus_satisfaction =</span> survey_inputs <span class="sc">|&gt;</span></span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        unit_id,</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">domain_id =</span> msoa_domain_id,</span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">indicator =</span> poor_bus_satisfaction,</span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight =</span> WalesAdultWeight</span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">ind_weight_walk_weekly =</span> survey_inputs <span class="sc">|&gt;</span></span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>        unit_id,</span>
-<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">domain_id =</span> la_domain_id,</span>
-<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">indicator =</span> walk_weekly,</span>
-<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight =</span> WalesTravelWeight</span>
-<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">iwalk</span>(</span>
-<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    files_to_export,</span>
-<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(data, name) <span class="fu">write_csv</span>(data, <span class="fu">file.path</span>(output_dir, <span class="fu">paste0</span>(name, <span class="st">".csv"</span>)))</span>
-<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(output_dir, <span class="fu">paste0</span>(<span class="fu">names</span>(files_to_export), <span class="st">".csv"</span>))</span>
-<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a><span class="fu">export_analysis_ready_files</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "data/clean/domain_sizes_adult_msoa.csv"         
-[2] "data/clean/domain_sizes_population_la.csv"      
-[3] "data/clean/covariates_msoa.csv"                 
-[4] "data/clean/covariates_la.csv"                   
-[5] "data/clean/ind_weight_commute_distance.csv"     
-[6] "data/clean/ind_weight_poor_bus_satisfaction.csv"
-[7] "data/clean/ind_weight_walk_weekly.csv"          </code></pre>
-</div>
-</div>
 
 
 </section>
