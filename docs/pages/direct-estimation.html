@@ -389,7 +389,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td>Unknown Domain Sizes; only analysis weights</td>
 <td>Hájek estimator</td>
-<td><span class="math inline">\(\hat{\theta}_d^{DIR}=\frac{\sum_{i \in s_d}w_{di}y_{di}}{\sum_{i \in s_d}w^A_{di}}\)</span></td>
+<td><span class="math inline">\(\hat{\theta}_d^{DIR}=\frac{\sum_{i \in s_d}w_{di}^Ay_{di}}{\sum_{i \in s_d}w^A_{di}}\)</span></td>
 <td>Can only be used for estimating <em>means or proportions</em> when only using analysis weights and no reliable domain size is available</td>
 </tr>
 <tr class="odd">
@@ -733,8 +733,8 @@ Tip
 <h3 data-number="3.3" class="anchored" data-anchor-id="final-thoughts"><span class="header-section-number">3.3</span> Final thoughts</h3>
 <p>Overall, the direct estimates are useful as inputs, but model-based estimation is likely needed to produce more stable small-area estimates.</p>
 <p>That said, since model-based estimation methods work on these direct estimates and variances, having a solid base is essential before moving forward.</p>
-<p>The Horvitz-Thompson estimates are generally more precise, with median CVs below 100%, because they use known domain sizes alongside grossing weights. By contrast, the Hájek estimate for <code>commute_distance</code> relies only on analysis weights and has much higher relative uncertainty. This illustrates why suitable domain-size information is valuable in SAE.</p>
-<p>Another remedy is to redefine the estimand associated with <code>commute_distance</code> so that it applies to a population with known domain sizes, such as all adults, rather than a subgroup whose MSOA totals may be unavailable. However, this would essentially change what is being measured.</p>
+<p>In general, the high the sample size per domain, the more stable the estimates. Moreover, when domain sizes are known, the precision is also higher (<code>walk-weekly</code> and <code>poor_bus_satisfaction</code>’s median CVs are below 100%). By contrast, the estimates for <code>commute_distance</code> rely only on weights and has much higher relative uncertainty. This illustrates why suitable domain-size information is valuable in SAE.</p>
+<p>In the last scenario, another remedy is to redefine the estimand associated with <code>commute_distance</code> so that it applies to a population with known domain sizes, such as all adults, rather than a subgroup whose MSOA totals may be unavailable. However, this would essentially change what is being measured.</p>
 
 
 </section>
