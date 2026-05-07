@@ -69,14 +69,14 @@ $$
 For the SAE workflow, the preferred setup is one where **grossing weights** are provided for each survey respondent record and **domain sizes** are available, because it gives a direct link between the survey respondent records and the population totals in each domain. If the domain size is unknown, [alternative direct estimation methods](direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
 :::
 
-## Select preliminary covariates
-SAE improves precision by "borrowing strength" from auxiliary variables (i.e., covariates). This is critical for domains with sparse or non-existent survey data. For area-level models, these covariates must be aggregated for every target domain. For unit-level modesl, these covariates must exist at the population unit level.
+## Select covariates
+SAE improves precision by "borrowing strength" from auxiliary variables (i.e., covariates). This is critical for domains with sparse or non-existent survey data. For area-level models, these covariates must be aggregated for every target domain. For unit-level modesl, these covariates must exist at the population unit level. Aim for **around 5 covariates per indicator**. Overloading covariate selection may cause overfitting and multicollinearity. 
 
-Aim for **under 10 preliminary covariates per indicator**. While formal filtering happens later, limiting the initial pool reduces the risk of overfitting and multicollinearity. Some selection rules of thumb are:
+Some selection rules of thumb are:
 
 - **High Correlation:** Select variables with a strong, logical link to the indicator (e.g., car ownership as a predictor of travel distance).
-- **Alignment:** Ensure definitions are identical across both the survey and the population frame (e.g., the exact age range defining an "adult").
-- **Temporal Stability:** Opt for variables that remain stable over time. Because population frames (like the Census) often lag behind current survey data, stable covariates minimise errors caused by this time gap.
+- **Alignment:** Ensure definitions are identical across both the survey and the population frame (e.g., the exact age range defining an "adult", work-from-home thresholds).
+- **Temporal Stability:** Opt for variables that remain stable over time. Because population frames (like the Census) often lag behind current survey data in question, stable covariates minimise errors caused by this time gap.
 
 ## Generate analysis-ready inputs
 

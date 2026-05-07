@@ -302,7 +302,8 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#domain-sizes" id="toc-domain-sizes" class="nav-link" data-scroll-target="#domain-sizes"><span class="header-section-number">3.1</span> Domain sizes</a></li>
   <li><a href="#survey-weight" id="toc-survey-weight" class="nav-link" data-scroll-target="#survey-weight"><span class="header-section-number">3.2</span> Survey weight</a></li>
   </ul></li>
-  <li><a href="#generate-analysis-ready-inputs" id="toc-generate-analysis-ready-inputs" class="nav-link" data-scroll-target="#generate-analysis-ready-inputs"><span class="header-section-number">4</span> Generate analysis-ready inputs</a></li>
+  <li><a href="#select-covariates" id="toc-select-covariates" class="nav-link" data-scroll-target="#select-covariates"><span class="header-section-number">4</span> Select covariates</a></li>
+  <li><a href="#generate-analysis-ready-inputs" id="toc-generate-analysis-ready-inputs" class="nav-link" data-scroll-target="#generate-analysis-ready-inputs"><span class="header-section-number">5</span> Generate analysis-ready inputs</a></li>
   </ul>
 </nav>
     </div>
@@ -434,25 +435,34 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For the SAE workflow, the preferred setup is one where <strong>grossing weights</strong> are provided for each survey respondent record and <strong>domain sizes</strong> are available, because it gives a direct link between the survey respondent records and the population count in each domain.</p>
-<p>If the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, <a href="../pages/direct-estimation.html">alternative direct estimation methods</a> may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).</p>
+<p>For the SAE workflow, the preferred setup is one where <strong>grossing weights</strong> are provided for each survey respondent record and <strong>domain sizes</strong> are available, because it gives a direct link between the survey respondent records and the population totals in each domain. If the domain size is unknown, <a href="../pages/direct-estimation.html">alternative direct estimation methods</a> may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).</p>
 </div>
 </div>
 </section>
 </section>
-<section id="generate-analysis-ready-inputs" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="generate-analysis-ready-inputs"><span class="header-section-number">4</span> Generate analysis-ready inputs</h2>
-<p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow.</p>
-<p>For example, a compact record could be written as:</p>
+<section id="select-covariates" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="select-covariates"><span class="header-section-number">4</span> Select covariates</h2>
+<p>SAE improves precision by “borrowing strength” from auxiliary variables (i.e., covariates). This is critical for domains with sparse or non-existent survey data. For area-level models, these covariates must be aggregated for every target domain. For unit-level modesl, these covariates must exist at the population unit level. Aim for <strong>around 5 covariates per indicator</strong>. Overloading covariate selection may cause overfitting and multicollinearity.</p>
+<p>Some selection rules of thumb are:</p>
+<ul>
+<li><strong>High Correlation:</strong> Select variables with a strong, logical link to the indicator (e.g., car ownership as a predictor of travel distance).</li>
+<li><strong>Alignment:</strong> Ensure definitions are identical across both the survey and the population frame (e.g., the exact age range defining an “adult”, work-from-home thresholds).</li>
+<li><strong>Temporal Stability:</strong> Opt for variables that remain stable over time. Because population frames (like the Census) often lag behind current survey data in question, stable covariates minimise errors caused by this time gap.</li>
+</ul>
+</section>
+<section id="generate-analysis-ready-inputs" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="generate-analysis-ready-inputs"><span class="header-section-number">5</span> Generate analysis-ready inputs</h2>
+<p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:</p>
 <table class="table">
 <colgroup>
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
-<col style="width: 14%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -463,6 +473,7 @@ Warning
 <th>Target domain</th>
 <th>Domain size</th>
 <th>Weight</th>
+<th>Prelim. Covariates</th>
 </tr>
 </thead>
 <tbody>
@@ -474,6 +485,7 @@ Warning
 <td>MSOA</td>
 <td>Adult population aged 16+ by MSOA</td>
 <td><code>AdultWeight</code>; applies to all adult respondents; grossing weight</td>
+<td><code>age</code>,<code>income</code>,<code>own_carvan</code>, etc.</td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -483,15 +495,17 @@ Warning
 <td>Ward</td>
 <td>Worker population by Ward</td>
 <td><code>LeisureTravelModuleWeight</code>; applies to leisure travel module respondents (a subsample)</td>
+<td><code>income</code>,<code>own_home</code>,<code>own_carvan</code>, etc.</td>
 </tr>
 </tbody>
 </table>
 <p>By the end, each estimand should have enough information to create:</p>
 <ol type="1">
-<li>a survey indicator file with one row per sampled unit and the fields <code>unit_id</code>, <code>domain_id</code>, <code>indicator</code>, and <code>weight</code>;</li>
-<li>a domain-size file with one row per target domain and the fields <code>domain_id</code>, <code>domain_size</code> (optionally, <code>domain_name</code>);</li>
+<li>a survey indicator file with <em>one row per sampled unit</em>;</li>
+<li>a covariate file with <em>one row per domain (area-level SAE)</em> or <em>per population unit (unit-level SAE)</em>, aggregating all the preliminary covariates chosen;</li>
+<li>a domain size file with <em>one row per domain</em>, only required if estimands have known domain sizes;</li>
 </ol>
-<p>The next workbook will demonstrate a worked example using a simulated National Survey for Wales 2022-2023 respondent microdata.</p>
+<p>The next workbook will demonstrate a worked example using a <strong>simulated National Survey for Wales 2022-2023</strong> respondent microdata.</p>
 
 
 </section>

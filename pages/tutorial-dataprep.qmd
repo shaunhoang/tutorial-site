@@ -69,9 +69,9 @@ In this dataset, weight variables are chosen based on the availability of auxili
 
 Preliminary covariates should be available for every target domain and should have a clear relationship to the indicator. The [Census 2021 bulk downloads](https://www.nomisweb.co.uk/sources/census_2021_bulk) are a practical starting point because they provide consistent tables for many geographies.
 
-For this worked example, each indicator has at its disposal covariates that are its most logical predictors, as follows: 
+For this worked example, each indicator will have at its disposal covariates that are its most logical predictors, as follows: 
 
-| Indicator | Target domain | Covariates from Census 2021 |
+| Indicator | Target domain | Covariates from Census |
 |---|---|---|
 | `commute_distance` | MSOA | - Population density (`TS006`)<br>- Share of commute by car/van (`TS061`)<br>- Share of households with car/van (`TS045`)  |
 | `poor_bus_satisfaction` | MSOA | - Population density (`TS006`)<br>- Share of commute by bus/minibus (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of households deprived in 2+ dimensions (`TS011`) |
@@ -304,7 +304,110 @@ On the other hand, the number of non-missing observations reflects both survey r
 - `walk_weekly` comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion `WalesTravelWeight` scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.
 
 ### Aggregate covariates by domain 
-[WIP - one idea is to select and aggregate covariates at this stage to complete the analysis-ready datapack]
+
+The final preparation step is to assemble the Census covariates into domain-level covariate files. Because `commute_distance` and `poor_bus_satisfaction` are both MSOA indicators, their covariates can be combined into one MSOA file. `walk_weekly` is a Local Authority indicator, so it gets a separate LA file.
+
+```{r}
+# Function to reads raw census aggregate files, filters for Wales ("W")
+read_census <- function(topic_code, geo_level) {
+  file_path <- file.path(base_path, paste0("census2021-", topic_code, "-", geo_level, ".csv"))
+  
+  read_csv(file_path, show_col_types = FALSE) |>
+    filter(str_starts(`geography code`, "W")) |>
+    rename(domain_id = `geography code`, domain_name = geography)
+}
+```
+`commute_distance` and `poor_bus_satisfaction` are estimated at the MSOA level. Therefore, MSOA-aggregated covariates are necessary.
+
+```{r}
+# --- MSOA-Level Covariates ---
+# Population Density (ts006)
+msoa_density <- read_census("ts006", "msoa") |>
+  transmute(domain_id, domain_name, 
+            cov_pop_density = `Population Density: Persons per square kilometre; measures: Value`)
+
+# Travel to Work (ts061)
+msoa_travel <- read_census("ts061", "msoa") |>
+  transmute(domain_id,
+            total = `Method of travel to workplace: Total: All usual residents aged 16 years and over in employment the week before the census`,
+            cov_share_car_commute = if_else(total > 0, 
+                                            (`Method of travel to workplace: Driving a car or van` + 
+                                               `Method of travel to workplace: Passenger in a car or van`) / total, 
+                                            NA_real_),
+            cov_share_bus_commute = if_else(total > 0, 
+                                            `Method of travel to workplace: Bus, minibus or coach` / total, 
+                                            NA_real_)) |>
+  select(domain_id, cov_share_car_commute, cov_share_bus_commute)
+
+# Car Availability (ts045)
+msoa_cars <- read_census("ts045", "msoa") |>
+  transmute(domain_id,
+            total = `Number of cars or vans: Total: All households`,
+            no_car = `Number of cars or vans: No cars or vans in household`,
+            cov_share_hh_nocar = if_else(total > 0, no_car / total, NA_real_),
+            cov_share_hh_withcar = if_else(total > 0, (total - no_car) / total, NA_real_)) |>
+  select(domain_id, cov_share_hh_nocar, cov_share_hh_withcar)
+
+# Deprivation (ts011)
+msoa_deprivation <- read_census("ts011", "msoa") |>
+  transmute(domain_id,
+            total = `Household deprivation: Total: All households; measures: Value`,
+            cov_share_hh_deprived = if_else(total > 0,
+                                            (`Household deprivation: Household is deprived in two dimensions; measures: Value` +
+                                               `Household deprivation: Household is deprived in three dimensions; measures: Value` +
+                                               `Household deprivation: Household is deprived in four dimensions; measures: Value`) / total,
+                                            NA_real_)) |>
+  select(domain_id, cov_share_hh_deprived)
+
+covariates_msoa <- list(msoa_density, msoa_travel, msoa_cars, msoa_deprivation) |>
+  purrr::reduce(left_join, by = "domain_id")
+covariates_msoa
+```
+`walk-weekly` is estimated at the LA level. Therefore, LA-aggregated covariates are necessary.
+```{r}
+# --- LA-Level Covariates ---
+# Travel to Work (ts061)
+la_density <- read_census("ts006", "ltla") |>
+  transmute(domain_id, domain_name, 
+            cov_pop_density = `Population Density: Persons per square kilometre; measures: Value`)
+
+la_travel <- read_census("ts061", "ltla") |>
+  transmute(domain_id,
+            total = `Method of travel to workplace: Total: All usual residents aged 16 years and over in employment the week before the census`,
+            cov_share_commute_bikewalk = if_else(total > 0,
+                                                 (`Method of travel to workplace: Bicycle` + 
+                                                    `Method of travel to workplace: On foot`) / total,
+                                                 NA_real_)) |>
+  select(domain_id, cov_share_commute_bikewalk)
+
+# Car Availability (ts045)
+la_cars <- read_census("ts045", "ltla") |>
+  transmute(domain_id,
+            total = `Number of cars or vans: Total: All households`,
+            cov_share_hh_nocar = if_else(total > 0,
+                                         `Number of cars or vans: No cars or vans in household` / total,
+                                         NA_real_)) |>
+  select(domain_id, cov_share_hh_nocar)
+
+# Health (ts037)
+la_health <- read_census("ts037", "ltla") |>
+  transmute(domain_id,
+            total = `General health: Total: All usual residents`,
+            cov_share_good_health = if_else(total > 0,
+                                            (`General health: Very good health` + `General health: Good health`) / total,
+                                            NA_real_)) |>
+  select(domain_id, cov_share_good_health)
+
+covariates_la <- list(la_density, la_travel, la_cars, la_health) |>
+  purrr::reduce(left_join, by = "domain_id")
+
+covariates_la
+```
+
+The resulting objects are:
+
+- `covariates_msoa`: one row per Welsh MSOA, containing the covariates needed for `commute_distance` and `poor_bus_satisfaction`;
+- `covariates_la`: one row per Welsh LA, containing the covariates needed for `walk_weekly`.
 
 ### Export
 
@@ -312,7 +415,52 @@ The next workbooks do not depend on local exports from this workbook. However, i
 
 - `domain_sizes_adult_msoa.csv`, for adult population by MSOA (from Census 2021);
 - `domain_sizes_population_la.csv`, for total resident population by LA (from Census 2021);
+- `covariates_msoa.csv`, with MSOA-level preliminary covariates for `commute_distance` and `poor_bus_satisfaction`;
+- `covariates_la.csv`, with LA-level preliminary covariates for `walk_weekly`;
 - `ind_weight_commute_distance.csv`, with analysis adult weight;
 - `ind_weight_poor_bus_satisfaction.csv`, with grossing adult weight;
 - `ind_weight_walk_weekly.csv`, with active-travel module weight scaled to LA total population.
+
+```{r, eval=FALSE, include=FALSE}
+export_analysis_ready_files <- function(output_dir = file.path("..","data", "clean")) {
+  dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+  
+  files_to_export <- list(
+    domain_sizes_adult_msoa = domain_sizes_adult_msoa,
+    domain_sizes_population_la = domain_sizes_population_la,
+    covariates_msoa = covariates_msoa,
+    covariates_la = covariates_la,
+    ind_weight_commute_distance = survey_inputs |>
+      transmute(
+        unit_id,
+        domain_id = msoa_domain_id,
+        indicator = commute_distance,
+        weight = SampleAdultWeight
+      ),
+    ind_weight_poor_bus_satisfaction = survey_inputs |>
+      transmute(
+        unit_id,
+        domain_id = msoa_domain_id,
+        indicator = poor_bus_satisfaction,
+        weight = WalesAdultWeight
+      ),
+    ind_weight_walk_weekly = survey_inputs |>
+      transmute(
+        unit_id,
+        domain_id = la_domain_id,
+        indicator = walk_weekly,
+        weight = WalesTravelWeight
+      )
+  )
+  
+  purrr::iwalk(
+    files_to_export,
+    function(data, name) write_csv(data, file.path(output_dir, paste0(name, ".csv")))
+  )
+  
+  file.path(output_dir, paste0(names(files_to_export), ".csv"))
+}
+
+export_analysis_ready_files()
+```
 

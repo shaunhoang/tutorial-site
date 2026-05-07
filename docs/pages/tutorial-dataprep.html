@@ -509,7 +509,7 @@ Tip
 <section id="select-covariates" class="level3" data-number="1.4">
 <h3 data-number="1.4" class="anchored" data-anchor-id="select-covariates"><span class="header-section-number">1.4</span> Select covariates</h3>
 <p>Preliminary covariates should be available for every target domain and should have a clear relationship to the indicator. The <a href="https://www.nomisweb.co.uk/sources/census_2021_bulk">Census 2021 bulk downloads</a> are a practical starting point because they provide consistent tables for many geographies.</p>
-<p>For this worked example, each indicator has at its disposal covariates that are its most logical predictors, as follows:</p>
+<p>For this worked example, each indicator will have at its disposal covariates that are its most logical predictors, as follows:</p>
 <table class="table">
 <colgroup>
 <col style="width: 33%">
@@ -520,7 +520,7 @@ Tip
 <tr class="header">
 <th>Indicator</th>
 <th>Target domain</th>
-<th>Covariates from Census 2021</th>
+<th>Covariates from Census</th>
 </tr>
 </thead>
 <tbody>
@@ -836,7 +836,142 @@ Tip
 </section>
 <section id="aggregate-covariates-by-domain" class="level3" data-number="2.6">
 <h3 data-number="2.6" class="anchored" data-anchor-id="aggregate-covariates-by-domain"><span class="header-section-number">2.6</span> Aggregate covariates by domain</h3>
-<p>[WIP - one idea is to select and aggregate covariates at this stage to complete the analysis-ready datapack]</p>
+<p>The final preparation step is to assemble the Census covariates into domain-level covariate files. Because <code>commute_distance</code> and <code>poor_bus_satisfaction</code> are both MSOA indicators, their covariates can be combined into one MSOA file. <code>walk_weekly</code> is a Local Authority indicator, so it gets a separate LA file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to reads raw census aggregate files, filters for Wales ("W")</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>read_census <span class="ot">&lt;-</span> <span class="cf">function</span>(topic_code, geo_level) {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  file_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(base_path, <span class="fu">paste0</span>(<span class="st">"census2021-"</span>, topic_code, <span class="st">"-"</span>, geo_level, <span class="st">".csv"</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(file_path, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="fu">str_starts</span>(<span class="st">`</span><span class="at">geography code</span><span class="st">`</span>, <span class="st">"W"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">domain_id =</span> <span class="st">`</span><span class="at">geography code</span><span class="st">`</span>, <span class="at">domain_name =</span> geography)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>commute_distance</code> and <code>poor_bus_satisfaction</code> are estimated at the MSOA level. Therefore, MSOA-aggregated covariates are necessary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- MSOA-Level Covariates ---</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Population Density (ts006)</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>msoa_density <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts006"</span>, <span class="st">"msoa"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id, domain_name, </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_pop_density =</span> <span class="st">`</span><span class="at">Population Density: Persons per square kilometre; measures: Value</span><span class="st">`</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Travel to Work (ts061)</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>msoa_travel <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts061"</span>, <span class="st">"msoa"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">total =</span> <span class="st">`</span><span class="at">Method of travel to workplace: Total: All usual residents aged 16 years and over in employment the week before the census</span><span class="st">`</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_car_commute =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>, </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                                            (<span class="st">`</span><span class="at">Method of travel to workplace: Driving a car or van</span><span class="st">`</span> <span class="sc">+</span> </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>                                               <span class="st">`</span><span class="at">Method of travel to workplace: Passenger in a car or van</span><span class="st">`</span>) <span class="sc">/</span> total, </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                                            <span class="cn">NA_real_</span>),</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_bus_commute =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>, </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                                            <span class="st">`</span><span class="at">Method of travel to workplace: Bus, minibus or coach</span><span class="st">`</span> <span class="sc">/</span> total, </span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>                                            <span class="cn">NA_real_</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id, cov_share_car_commute, cov_share_bus_commute)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Car Availability (ts045)</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>msoa_cars <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts045"</span>, <span class="st">"msoa"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id,</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">total =</span> <span class="st">`</span><span class="at">Number of cars or vans: Total: All households</span><span class="st">`</span>,</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">no_car =</span> <span class="st">`</span><span class="at">Number of cars or vans: No cars or vans in household</span><span class="st">`</span>,</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_hh_nocar =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>, no_car <span class="sc">/</span> total, <span class="cn">NA_real_</span>),</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_hh_withcar =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>, (total <span class="sc">-</span> no_car) <span class="sc">/</span> total, <span class="cn">NA_real_</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id, cov_share_hh_nocar, cov_share_hh_withcar)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Deprivation (ts011)</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>msoa_deprivation <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts011"</span>, <span class="st">"msoa"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id,</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>            <span class="at">total =</span> <span class="st">`</span><span class="at">Household deprivation: Total: All households; measures: Value</span><span class="st">`</span>,</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_hh_deprived =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>                                            (<span class="st">`</span><span class="at">Household deprivation: Household is deprived in two dimensions; measures: Value</span><span class="st">`</span> <span class="sc">+</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>                                               <span class="st">`</span><span class="at">Household deprivation: Household is deprived in three dimensions; measures: Value</span><span class="st">`</span> <span class="sc">+</span></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>                                               <span class="st">`</span><span class="at">Household deprivation: Household is deprived in four dimensions; measures: Value</span><span class="st">`</span>) <span class="sc">/</span> total,</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>                                            <span class="cn">NA_real_</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id, cov_share_hh_deprived)</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>covariates_msoa <span class="ot">&lt;-</span> <span class="fu">list</span>(msoa_density, msoa_travel, msoa_cars, msoa_deprivation) <span class="sc">|&gt;</span></span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">reduce</span>(left_join, <span class="at">by =</span> <span class="st">"domain_id"</span>)</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>covariates_msoa</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 408 × 8
+   domain_id domain_name          cov_pop_density cov_share_car_commute
+   &lt;chr&gt;     &lt;chr&gt;                          &lt;dbl&gt;                 &lt;dbl&gt;
+ 1 W02000001 Isle of Anglesey 001            62.8                 0.692
+ 2 W02000002 Isle of Anglesey 002            53.1                 0.628
+ 3 W02000003 Isle of Anglesey 003          2298.                  0.625
+ 4 W02000004 Isle of Anglesey 004            99.2                 0.670
+ 5 W02000005 Isle of Anglesey 005           100                   0.616
+ 6 W02000006 Isle of Anglesey 006           152.                  0.709
+ 7 W02000007 Isle of Anglesey 007            68.5                 0.675
+ 8 W02000008 Isle of Anglesey 008           831.                  0.649
+ 9 W02000009 Isle of Anglesey 009            55.9                 0.677
+10 W02000010 Gwynedd 001                   3112.                  0.462
+# ℹ 398 more rows
+# ℹ 4 more variables: cov_share_bus_commute &lt;dbl&gt;, cov_share_hh_nocar &lt;dbl&gt;,
+#   cov_share_hh_withcar &lt;dbl&gt;, cov_share_hh_deprived &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p><code>walk-weekly</code> is estimated at the LA level. Therefore, LA-aggregated covariates are necessary.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- LA-Level Covariates ---</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Travel to Work (ts061)</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>la_density <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts006"</span>, <span class="st">"ltla"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id, domain_name, </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_pop_density =</span> <span class="st">`</span><span class="at">Population Density: Persons per square kilometre; measures: Value</span><span class="st">`</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>la_travel <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts061"</span>, <span class="st">"ltla"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">total =</span> <span class="st">`</span><span class="at">Method of travel to workplace: Total: All usual residents aged 16 years and over in employment the week before the census</span><span class="st">`</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_commute_bikewalk =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                                                 (<span class="st">`</span><span class="at">Method of travel to workplace: Bicycle</span><span class="st">`</span> <span class="sc">+</span> </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>                                                    <span class="st">`</span><span class="at">Method of travel to workplace: On foot</span><span class="st">`</span>) <span class="sc">/</span> total,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                                                 <span class="cn">NA_real_</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id, cov_share_commute_bikewalk)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Car Availability (ts045)</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>la_cars <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts045"</span>, <span class="st">"ltla"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id,</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">total =</span> <span class="st">`</span><span class="at">Number of cars or vans: Total: All households</span><span class="st">`</span>,</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_hh_nocar =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">`</span><span class="at">Number of cars or vans: No cars or vans in household</span><span class="st">`</span> <span class="sc">/</span> total,</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>                                         <span class="cn">NA_real_</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id, cov_share_hh_nocar)</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Health (ts037)</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>la_health <span class="ot">&lt;-</span> <span class="fu">read_census</span>(<span class="st">"ts037"</span>, <span class="st">"ltla"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(domain_id,</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>            <span class="at">total =</span> <span class="st">`</span><span class="at">General health: Total: All usual residents</span><span class="st">`</span>,</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">cov_share_good_health =</span> <span class="fu">if_else</span>(total <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>                                            (<span class="st">`</span><span class="at">General health: Very good health</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">General health: Good health</span><span class="st">`</span>) <span class="sc">/</span> total,</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>                                            <span class="cn">NA_real_</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id, cov_share_good_health)</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>covariates_la <span class="ot">&lt;-</span> <span class="fu">list</span>(la_density, la_travel, la_cars, la_health) <span class="sc">|&gt;</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">reduce</span>(left_join, <span class="at">by =</span> <span class="st">"domain_id"</span>)</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>covariates_la</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 22 × 6
+   domain_id domain_name      cov_pop_density cov_share_commute_bikewalk
+   &lt;chr&gt;     &lt;chr&gt;                      &lt;dbl&gt;                      &lt;dbl&gt;
+ 1 W06000001 Isle of Anglesey            96.7                     0.0782
+ 2 W06000002 Gwynedd                     46.3                     0.112 
+ 3 W06000003 Conwy                      102.                      0.0910
+ 4 W06000004 Denbighshire               114.                      0.0943
+ 5 W06000005 Flintshire                 352.                      0.0694
+ 6 W06000006 Wrexham                    268.                      0.0797
+ 7 W06000008 Ceredigion                  40                       0.109 
+ 8 W06000009 Pembrokeshire               76.2                     0.0821
+ 9 W06000010 Carmarthenshire             79.3                     0.0683
+10 W06000011 Swansea                    632.                      0.0804
+# ℹ 12 more rows
+# ℹ 2 more variables: cov_share_hh_nocar &lt;dbl&gt;, cov_share_good_health &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>The resulting objects are:</p>
+<ul>
+<li><code>covariates_msoa</code>: one row per Welsh MSOA, containing the covariates needed for <code>commute_distance</code> and <code>poor_bus_satisfaction</code>;</li>
+<li><code>covariates_la</code>: one row per Welsh LA, containing the covariates needed for <code>walk_weekly</code>.</li>
+</ul>
 </section>
 <section id="export" class="level3" data-number="2.7">
 <h3 data-number="2.7" class="anchored" data-anchor-id="export"><span class="header-section-number">2.7</span> Export</h3>
@@ -844,10 +979,63 @@ Tip
 <ul>
 <li><code>domain_sizes_adult_msoa.csv</code>, for adult population by MSOA (from Census 2021);</li>
 <li><code>domain_sizes_population_la.csv</code>, for total resident population by LA (from Census 2021);</li>
+<li><code>covariates_msoa.csv</code>, with MSOA-level preliminary covariates for <code>commute_distance</code> and <code>poor_bus_satisfaction</code>;</li>
+<li><code>covariates_la.csv</code>, with LA-level preliminary covariates for <code>walk_weekly</code>;</li>
 <li><code>ind_weight_commute_distance.csv</code>, with analysis adult weight;</li>
 <li><code>ind_weight_poor_bus_satisfaction.csv</code>, with grossing adult weight;</li>
 <li><code>ind_weight_walk_weekly.csv</code>, with active-travel module weight scaled to LA total population.</li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>export_analysis_ready_files <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">output_dir =</span> <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"clean"</span>)) {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dir.create</span>(output_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  files_to_export <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain_sizes_adult_msoa =</span> domain_sizes_adult_msoa,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain_sizes_population_la =</span> domain_sizes_population_la,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">covariates_msoa =</span> covariates_msoa,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">covariates_la =</span> covariates_la,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ind_weight_commute_distance =</span> survey_inputs <span class="sc">|&gt;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        unit_id,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">domain_id =</span> msoa_domain_id,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">indicator =</span> commute_distance,</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight =</span> SampleAdultWeight</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">ind_weight_poor_bus_satisfaction =</span> survey_inputs <span class="sc">|&gt;</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        unit_id,</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">domain_id =</span> msoa_domain_id,</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">indicator =</span> poor_bus_satisfaction,</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight =</span> WalesAdultWeight</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">ind_weight_walk_weekly =</span> survey_inputs <span class="sc">|&gt;</span></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">transmute</span>(</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>        unit_id,</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">domain_id =</span> la_domain_id,</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">indicator =</span> walk_weekly,</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">weight =</span> WalesTravelWeight</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">iwalk</span>(</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    files_to_export,</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(data, name) <span class="fu">write_csv</span>(data, <span class="fu">file.path</span>(output_dir, <span class="fu">paste0</span>(name, <span class="st">".csv"</span>)))</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(output_dir, <span class="fu">paste0</span>(<span class="fu">names</span>(files_to_export), <span class="st">".csv"</span>))</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a><span class="fu">export_analysis_ready_files</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data/clean/domain_sizes_adult_msoa.csv"         
+[2] "data/clean/domain_sizes_population_la.csv"      
+[3] "data/clean/covariates_msoa.csv"                 
+[4] "data/clean/covariates_la.csv"                   
+[5] "data/clean/ind_weight_commute_distance.csv"     
+[6] "data/clean/ind_weight_poor_bus_satisfaction.csv"
+[7] "data/clean/ind_weight_walk_weekly.csv"          </code></pre>
+</div>
+</div>
 
 
 </section>
