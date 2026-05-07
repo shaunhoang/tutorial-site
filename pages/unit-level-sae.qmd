@@ -1,5 +1,5 @@
 ---
-title: "Unit-Level Estimation"
+title: "Bonus: Unit-Level Estimation"
 ---
 
 Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models. 

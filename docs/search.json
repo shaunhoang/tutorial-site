@@ -2,28 +2,28 @@
   {
     "objectID": "pages/unit-level-sae.html",
     "href": "pages/unit-level-sae.html",
-    "title": "Unit-Level Estimation",
+    "title": "Bonus: Unit-Level Estimation",
     "section": "",
     "text": "Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models."
   },
   {
     "objectID": "pages/unit-level-sae.html#understanding-unit-level-estimation",
     "href": "pages/unit-level-sae.html#understanding-unit-level-estimation",
-    "title": "Unit-Level Estimation",
+    "title": "Bonus: Unit-Level Estimation",
     "section": "1 Understanding Unit-Level Estimation",
     "text": "1 Understanding Unit-Level Estimation\nIn area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:\n\\[\ny_{di} =\nx_{di}^{\\top}\\beta + u_d + e_{di},\n\\]\nwhere \\(y_{di}\\) is the outcome for unit \\(i\\) in domain \\(d\\), \\(x_{di}\\) is a vector of unit-level covariates, \\(u_d\\) is the area effect, and \\(e_{di}\\) is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.\nThe domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:\n\\[\n\\theta_d =\n\\frac{1}{N_d}\n\\sum_{i \\in U_d} y_{di}.\n\\]\nThis makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.\n[ADD IMAGE]"
   },
   {
     "objectID": "pages/unit-level-sae.html#caveats-with-unit-level-estimation",
     "href": "pages/unit-level-sae.html#caveats-with-unit-level-estimation",
-    "title": "Unit-Level Estimation",
+    "title": "Bonus: Unit-Level Estimation",
     "section": "2 Caveats with Unit-Level Estimation",
     "text": "2 Caveats with Unit-Level Estimation\nUnit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.\n\n\n\n\n\n\nPros:\n\nUses individual or household covariates directly, rather than area averages\nCan aggregate to several geographic scales\n\nCons:\n\nSurvey and population datasets need to be harmonised and include the same covariates\nMore sensitive estimates because predictions are made for many non-sampled units and scaled up to population level\nMore technically demanding, especially in terms of privacy/access\n\n\n\n\nIn general, prefer Area-level SAE when only domain-level covariates are available. Unit-level SAE is more realistic when suitable population microdata, or a validated synthetic population can provide the prediction population."
   },
   {
     "objectID": "pages/unit-level-sae.html#code-implementation",
     "href": "pages/unit-level-sae.html#code-implementation",
-    "title": "Unit-Level Estimation",
+    "title": "Bonus: Unit-Level Estimation",
     "section": "3 Code Implementation",
     "text": "3 Code Implementation\n\n\n\n\n\n\nTip\n\n\n\nUse SUMMER::smoothUnit() to fit a basic unit-level SAE model from a survey::svydesign() object and population unit-level covariates. It supports using an adjacency matrix for spatial structure."
   },
