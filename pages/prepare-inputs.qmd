@@ -66,25 +66,31 @@ w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}
 $$
 
 ::: {.callout-warning}
-For the SAE workflow, the preferred setup is one where **grossing weights** are provided for each survey respondent record and **domain sizes** are available, because it gives a direct link between the survey respondent records and the population count in each domain.
-
-If the domain size is unknown and/or no compatible weight variables are provided for the estimand of interest, [alternative direct estimation methods](direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
+For the SAE workflow, the preferred setup is one where **grossing weights** are provided for each survey respondent record and **domain sizes** are available, because it gives a direct link between the survey respondent records and the population totals in each domain. If the domain size is unknown, [alternative direct estimation methods](direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
 :::
+
+## Select preliminary covariates
+SAE improves precision by "borrowing strength" from auxiliary variables (i.e., covariates). This is critical for domains with sparse or non-existent survey data. For area-level models, these covariates must be aggregated for every target domain. For unit-level modesl, these covariates must exist at the population unit level.
+
+Aim for **under 10 preliminary covariates per indicator**. While formal filtering happens later, limiting the initial pool reduces the risk of overfitting and multicollinearity. Some selection rules of thumb are:
+
+- **High Correlation:** Select variables with a strong, logical link to the indicator (e.g., car ownership as a predictor of travel distance).
+- **Alignment:** Ensure definitions are identical across both the survey and the population frame (e.g., the exact age range defining an "adult").
+- **Temporal Stability:** Opt for variables that remain stable over time. Because population frames (like the Census) often lag behind current survey data, stable covariates minimise errors caused by this time gap.
 
 ## Generate analysis-ready inputs
 
-Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow.
+Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:
 
-For example, a compact record could be written as:
-
-| # | Estimand | Indicator | Coding rule | Target domain | Domain size | Weight |
-|---|---|---|---|---|---|---|
-| 1 | Share of adults who use the train weekly across MSOAs | `is_freq_train_user` | Binary: `1` if `TrainUseFreq = 1`; `0` if adult does not use the train weekly; `null` for invalid or refused responses | MSOA | Adult population aged 16+ by MSOA | `AdultWeight`; applies to all adult respondents; grossing weight |
-| 2 | Mean leisure travel distance among retirees across Wards | `leisure_travel_distance` | Continuous: numeric miles from `TravelWorkDistance`; only retirees with valid leisure travel distance are in scope | Ward | Worker population by Ward | `LeisureTravelModuleWeight`; applies to leisure travel module respondents (a subsample) |
+| # | Estimand | Indicator | Coding rule | Target domain | Domain size | Weight | Prelim. Covariates |
+|---|---|---|---|---|---|---|---|
+| 1 | Share of adults who use the train weekly across MSOAs | `is_freq_train_user` | Binary: `1` if `TrainUseFreq = 1`; `0` if adult does not use the train weekly; `null` for invalid or refused responses | MSOA | Adult population aged 16+ by MSOA | `AdultWeight`; applies to all adult respondents; grossing weight | `age`,`income`,`own_carvan`, etc. |
+| 2 | Mean leisure travel distance among retirees across Wards | `leisure_travel_distance` | Continuous: numeric miles from `TravelWorkDistance`; only retirees with valid leisure travel distance are in scope | Ward | Worker population by Ward | `LeisureTravelModuleWeight`; applies to leisure travel module respondents (a subsample) |`income`,`own_home`,`own_carvan`, etc. |
 
 By the end, each estimand should have enough information to create:
 
-1.  a survey indicator file with one row per sampled unit and the fields `unit_id`, `domain_id`, `indicator`, and `weight`;
-2.  a domain-size file with one row per target domain and the fields `domain_id`, `domain_size` (optionally, `domain_name`);
+1.  a survey indicator file with *one row per sampled unit*;
+2. a covariate file with *one row per domain (area-level SAE)* or *per population unit (unit-level SAE)*, aggregating all the preliminary covariates chosen; 
+3. a domain size file with *one row per domain*, only required if estimands have known domain sizes;
 
-The next workbook will demonstrate a worked example using a simulated National Survey for Wales 2022-2023 respondent microdata.
+The next workbook will demonstrate a worked example using a **simulated National Survey for Wales 2022-2023** respondent microdata.

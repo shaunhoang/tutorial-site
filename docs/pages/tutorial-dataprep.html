@@ -270,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level Estimation</span></a>
+ <span class="menu-text">Bonus: Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -327,20 +327,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#preparation" id="toc-preparation" class="nav-link active" data-scroll-target="#preparation"><span class="header-section-number">1</span> Preparation</a>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">1</span> Setup</a>
   <ul class="collapse">
   <li><a href="#understanding-the-dataset" id="toc-understanding-the-dataset" class="nav-link" data-scroll-target="#understanding-the-dataset"><span class="header-section-number">1.1</span> Understanding the dataset</a></li>
-  <li><a href="#from-survey-indicators-to-estimands" id="toc-from-survey-indicators-to-estimands" class="nav-link" data-scroll-target="#from-survey-indicators-to-estimands"><span class="header-section-number">1.2</span> From Survey Indicators to Estimands</a></li>
-  <li><a href="#from-estimands-to-sae-inputs" id="toc-from-estimands-to-sae-inputs" class="nav-link" data-scroll-target="#from-estimands-to-sae-inputs"><span class="header-section-number">1.3</span> From Estimands to SAE Inputs</a></li>
+  <li><a href="#formulating-estimands" id="toc-formulating-estimands" class="nav-link" data-scroll-target="#formulating-estimands"><span class="header-section-number">1.2</span> Formulating Estimands</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">1.3</span> Summary</a></li>
+  <li><a href="#select-covariates" id="toc-select-covariates" class="nav-link" data-scroll-target="#select-covariates"><span class="header-section-number">1.4</span> Select covariates</a></li>
   </ul></li>
-  <li><a href="#implemetation" id="toc-implemetation" class="nav-link" data-scroll-target="#implemetation"><span class="header-section-number">2</span> Implemetation</a>
+  <li><a href="#processing" id="toc-processing" class="nav-link" data-scroll-target="#processing"><span class="header-section-number">2</span> Processing</a>
   <ul class="collapse">
   <li><a href="#load-survey-data" id="toc-load-survey-data" class="nav-link" data-scroll-target="#load-survey-data"><span class="header-section-number">2.1</span> Load survey data</a></li>
-  <li><a href="#aggregating-domain-size" id="toc-aggregating-domain-size" class="nav-link" data-scroll-target="#aggregating-domain-size"><span class="header-section-number">2.2</span> Aggregating Domain Size</a></li>
-  <li><a href="#building-indicators" id="toc-building-indicators" class="nav-link" data-scroll-target="#building-indicators"><span class="header-section-number">2.3</span> Building Indicators</a></li>
-  <li><a href="#selecting-and-building-weight-variables" id="toc-selecting-and-building-weight-variables" class="nav-link" data-scroll-target="#selecting-and-building-weight-variables"><span class="header-section-number">2.4</span> Selecting and building weight variables</a></li>
-  <li><a href="#putting-it-together-and-missingness-check" id="toc-putting-it-together-and-missingness-check" class="nav-link" data-scroll-target="#putting-it-together-and-missingness-check"><span class="header-section-number">2.5</span> Putting it together and missingness check</a></li>
-  <li><a href="#export-optional" id="toc-export-optional" class="nav-link" data-scroll-target="#export-optional"><span class="header-section-number">2.6</span> Export (optional)</a></li>
+  <li><a href="#aggregate-domain-size" id="toc-aggregate-domain-size" class="nav-link" data-scroll-target="#aggregate-domain-size"><span class="header-section-number">2.2</span> Aggregate Domain Size</a></li>
+  <li><a href="#construct-indicators" id="toc-construct-indicators" class="nav-link" data-scroll-target="#construct-indicators"><span class="header-section-number">2.3</span> Construct Indicators</a></li>
+  <li><a href="#select-and-build-weight-variables" id="toc-select-and-build-weight-variables" class="nav-link" data-scroll-target="#select-and-build-weight-variables"><span class="header-section-number">2.4</span> Select (and build) weight variables</a></li>
+  <li><a href="#check-missingness" id="toc-check-missingness" class="nav-link" data-scroll-target="#check-missingness"><span class="header-section-number">2.5</span> Check missingness</a></li>
+  <li><a href="#aggregate-covariates-by-domain" id="toc-aggregate-covariates-by-domain" class="nav-link" data-scroll-target="#aggregate-covariates-by-domain"><span class="header-section-number">2.6</span> Aggregate covariates by domain</a></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export"><span class="header-section-number">2.7</span> Export</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -366,8 +368,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) methods to follow. In the process, we will also address the various decisions that researchers need to make.</p>
-<section id="preparation" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="preparation"><span class="header-section-number">1</span> Preparation</h2>
+<section id="setup" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="setup"><span class="header-section-number">1</span> Setup</h2>
 <section id="understanding-the-dataset" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="understanding-the-dataset"><span class="header-section-number">1.1</span> Understanding the dataset</h3>
 <p>The <a href="https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details"><em>National Survey for Wales 2022-23</em></a> is a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language.</p>
@@ -392,8 +394,8 @@ Note
 </div>
 <p>Finally, auxiliary data aggregated at MSOA and LA levels come from <a href="https://www.nomisweb.co.uk/sources/census_2021_bulk"><em>the UK Census 2021 datasets</em></a>, made available to download on the NOMIS UK website.</p>
 </section>
-<section id="from-survey-indicators-to-estimands" class="level3" data-number="1.2">
-<h3 data-number="1.2" class="anchored" data-anchor-id="from-survey-indicators-to-estimands"><span class="header-section-number">1.2</span> From Survey Indicators to Estimands</h3>
+<section id="formulating-estimands" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="formulating-estimands"><span class="header-section-number">1.2</span> Formulating Estimands</h3>
 <p>The first step in SAE is defining specific research questions that we hope to address using available survey data. For this tutorial with a transport analysis lens, we specifically want to estimate survey indicators related to <em>commuting, bus usage, and active travel behaviour in Wales</em>.</p>
 <p>Then comes the formulation of the these survey indicators into <strong>estimands</strong>, depending on the target population, spatial (and temporal) scale of interest.</p>
 <p>It could look something like this:</p>
@@ -448,8 +450,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="from-estimands-to-sae-inputs" class="level3" data-number="1.3">
-<h3 data-number="1.3" class="anchored" data-anchor-id="from-estimands-to-sae-inputs"><span class="header-section-number">1.3</span> From Estimands to SAE Inputs</h3>
+<section id="summary" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="summary"><span class="header-section-number">1.3</span> Summary</h3>
 <p>The next stage involves preparing the indicator variables and aligning them with the appropriate weights and domain sizes (i.e., target population totals in the small area scale of choice), as defined by the estimand.</p>
 <table class="table">
 <colgroup>
@@ -503,36 +505,70 @@ Tip
 <li><code>WalesAdultWeight</code>: grossing weight, used when the total adult population for a domain is known (e.g., adult population by MSOA). It scales the sample to match these real-world totals.</li>
 <li><code>WalesTravelWeight</code>: grossing-style weight, created by scaling <code>SampleTravelWeight</code> from the survey. This weight is used to scale the active-travel subsample (approx. 2,000 respondents) up to the total resident population in each Local Authority.</li>
 </ul>
-<p>With this information we can proceed to process the survey dataset to produce inputs necessary for the SAE workflow.</p>
+</section>
+<section id="select-covariates" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="select-covariates"><span class="header-section-number">1.4</span> Select covariates</h3>
+<p>Preliminary covariates should be available for every target domain and should have a clear relationship to the indicator. The <a href="https://www.nomisweb.co.uk/sources/census_2021_bulk">Census 2021 bulk downloads</a> are a practical starting point because they provide consistent tables for many geographies.</p>
+<p>For this worked example, each indicator has at its disposal covariates that are its most logical predictors, as follows:</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Indicator</th>
+<th>Target domain</th>
+<th>Covariates from Census 2021</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>commute_distance</code></td>
+<td>MSOA</td>
+<td>- Population density (<code>TS006</code>)<br>- Share of commute by car/van (<code>TS061</code>)<br>- Share of households with car/van (<code>TS045</code>)</td>
+</tr>
+<tr class="even">
+<td><code>poor_bus_satisfaction</code></td>
+<td>MSOA</td>
+<td>- Population density (<code>TS006</code>)<br>- Share of commute by bus/minibus (<code>TS061</code>)<br>- Share of households without car/van (<code>TS045</code>)<br>- Share of households deprived in 2+ dimensions (<code>TS011</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>walk_weekly</code></td>
+<td>Local Authority</td>
+<td>- Population density (<code>TS006</code>)<br>- Share of commute by bike/walk (<code>TS061</code>)<br>- Share of households without car/van (<code>TS045</code>)<br>- Share of population in good health (<code>TS037</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>With this information we can proceed to process the survey dataset to produce inputs necessary for the workflow.</p>
 </section>
 </section>
-<section id="implemetation" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="implemetation"><span class="header-section-number">2</span> Implemetation</h2>
+<section id="processing" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="processing"><span class="header-section-number">2</span> Processing</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Download and unzip the raw data into a temp folder</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>raw_data_url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-raw-data.zip"</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>raw_data_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"tutorial-raw-data"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>raw_data_zip <span class="ot">&lt;-</span> <span class="fu">file.path</span>(raw_data_dir, <span class="st">"tutorial-raw-data.zip"</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(raw_data_dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(raw_data_url, raw_data_zip, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(raw_data_zip, <span class="at">exdir =</span> raw_data_dir)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>raw_folder <span class="ot">&lt;-</span> <span class="fu">file.path</span>(raw_data_dir, <span class="st">"raw"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Download raw input files into a temp folder</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>zip_tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".zip"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-raw-data.zip"</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(url, zip_tmp, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(zip_tmp, <span class="at">exdir =</span> <span class="fu">tempdir</span>())</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>base_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"raw"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="load-survey-data" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="load-survey-data"><span class="header-section-number">2.1</span> Load survey data</h3>
-<p>Load the survey datasets and identify the unique identifier of survey respondents, and recode it as <code>unit_id</code>.</p>
+<p>Load the survey datasets and identify the unique identifier of survey respondents, and recode it as <code>unit_id</code> for easier handling downstream.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nsw_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(raw_folder, <span class="st">"nsw_2223_msoa_la.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"nsw_2223_msoa_la.csv"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">unit_id =</span> CaseNo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>For each respondent, the survey provides two spatial identifiers: Local Authority and MSOA. They are coded as <code>la_code</code> and <code>msoa_code</code>, and are kept as separate domain fields.</p>
+<p>For each respondent, the survey provides two spatial identifiers: Local Authority and MSOA. They are coded as <code>la_code</code> and <code>msoa_code</code>, and are kept as separate domain fields since we need them both for our 3 estimands.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>survey_domains <span class="ot">&lt;-</span> nsw_raw <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
@@ -555,15 +591,15 @@ Tip
 </div>
 </div>
 </section>
-<section id="aggregating-domain-size" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="aggregating-domain-size"><span class="header-section-number">2.2</span> Aggregating Domain Size</h3>
-<p>In this exercise, assume we only have general and adult population totals, obtained from the UK Census 2021, and not worker population totals.</p>
+<section id="aggregate-domain-size" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="aggregate-domain-size"><span class="header-section-number">2.2</span> Aggregate Domain Size</h3>
+<p>Next, aggregate size of target populations by domain as required by the estimands. In this exercise, assume we only have general and adult population totals, obtained from the UK Census 2021 and not worker population totals to demonstrate working with estimands with unknown domain sizes.</p>
 <ul>
 <li>Adult population by MSOA</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>domain_sizes_adult_msoa <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(raw_folder, <span class="st">"census2021-ts007-msoa.csv"</span>),</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"census2021-ts007-msoa.csv"</span>),</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_starts</span>(<span class="st">`</span><span class="at">geography code</span><span class="st">`</span>, <span class="st">"W"</span>)) <span class="sc">|&gt;</span></span>
@@ -595,7 +631,7 @@ Tip
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>domain_sizes_population_la <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(raw_folder, <span class="st">"census2021-ts007-ltla.csv"</span>),</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"census2021-ts007-ltla.csv"</span>),</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_starts</span>(<span class="st">`</span><span class="at">geography code</span><span class="st">`</span>, <span class="st">"W"</span>)) <span class="sc">|&gt;</span></span>
@@ -619,9 +655,9 @@ Tip
 </div>
 </div>
 </section>
-<section id="building-indicators" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="building-indicators"><span class="header-section-number">2.3</span> Building Indicators</h3>
-<p>Define the missing-value rules used when constructing survey indicators, and calculate the indicators based on the rules set out above.</p>
+<section id="construct-indicators" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="construct-indicators"><span class="header-section-number">2.3</span> Construct Indicators</h3>
+<p>Next, we can start constructing the indicators from the variables based on the coding rules.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a helper to handle the NSW specific missing codes</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>clean_nsw <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
@@ -660,9 +696,9 @@ Tip
 </div>
 </div>
 </section>
-<section id="selecting-and-building-weight-variables" class="level3" data-number="2.4">
-<h3 data-number="2.4" class="anchored" data-anchor-id="selecting-and-building-weight-variables"><span class="header-section-number">2.4</span> Selecting and building weight variables</h3>
-<p>Filter for the relevant weight variables from the survey.</p>
+<section id="select-and-build-weight-variables" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="select-and-build-weight-variables"><span class="header-section-number">2.4</span> Select (and build) weight variables</h3>
+<p>Next, filter for the relevant weight variables from the survey relevant to our estimands.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>survey_weights <span class="ot">&lt;-</span> nsw_raw <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
@@ -672,7 +708,7 @@ Tip
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    SampleTravelWeight</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>SampleTravelWeight</code> is an analysis weight for the active-travel module. Because <code>walk_weekly</code> is defined over all residents at Local Authority level, we can create a grossing-style <code>WalesTravelWeight</code> by scaling <code>SampleTravelWeight</code> within each Local Authority so that the weights sum to the total resident population in each Local Authority.</p>
+<p><code>SampleTravelWeight</code> is an analysis weight for the active-travel module. Because the <code>walk_weekly</code> indicator is defined over all residents at Local Authority level, we can create a grossing-style <code>WalesTravelWeight</code> by scaling <code>SampleTravelWeight</code> within each Local Authority so that the weights sum to the total resident population in each Local Authority.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>survey_weights <span class="ot">&lt;-</span> survey_weights <span class="sc">|&gt;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Attach LA IDs and Census population sizes</span></span>
@@ -702,75 +738,84 @@ Tip
 </div>
 </div>
 </section>
-<section id="putting-it-together-and-missingness-check" class="level3" data-number="2.5">
-<h3 data-number="2.5" class="anchored" data-anchor-id="putting-it-together-and-missingness-check"><span class="header-section-number">2.5</span> Putting it together and missingness check</h3>
-<p>Join the coded indicators and calculated weights together for easy handling. Create a mapping object to link the indicator to its appropriate ‘companions’.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>survey_inputs <span class="ot">&lt;-</span> survey_domains <span class="sc">|&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(survey_indicators, <span class="at">by =</span> <span class="st">"unit_id"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(survey_weights, <span class="at">by =</span> <span class="st">"unit_id"</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>indicator_map <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>indicator,              <span class="sc">~</span>target_domain, <span class="sc">~</span>id_col,          <span class="sc">~</span>weight,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"commute_distance"</span>,      <span class="st">"MSOA"</span>,         <span class="st">"msoa_domain_id"</span>, <span class="st">"SampleAdultWeight"</span>,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"poor_bus_satisfaction"</span>, <span class="st">"MSOA"</span>,         <span class="st">"msoa_domain_id"</span>, <span class="st">"WalesAdultWeight"</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"walk_weekly"</span>,           <span class="st">"LA"</span>,           <span class="st">"la_domain_id"</span>,   <span class="st">"WalesTravelWeight"</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="check-missingness" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="check-missingness"><span class="header-section-number">2.5</span> Check missingness</h3>
 <p>At this point, check for missingness overall (number of nulls per coded indicators) and at the chosen spatial scale (whether there are domains with no respondents).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate non-nulls and spatial coverage for each indicator at its own spatial scale</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>all_target_domains <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  domain_sizes_adult_msoa <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">target_domain =</span> <span class="st">"MSOA"</span>),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  domain_sizes_population_la <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">target_domain =</span> <span class="st">"LA"</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">select</span>(domain_id, domain_name, target_domain)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>indicator_observations <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  survey_inputs <span class="sc">|&gt;</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">indicator =</span> <span class="st">"commute_distance"</span>,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain_id =</span> msoa_domain_id,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> commute_distance</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  survey_inputs <span class="sc">|&gt;</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">indicator =</span> <span class="st">"poor_bus_satisfaction"</span>,</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain_id =</span> msoa_domain_id,</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> poor_bus_satisfaction</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  survey_inputs <span class="sc">|&gt;</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">indicator =</span> <span class="st">"walk_weekly"</span>,</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain_id =</span> la_domain_id,</span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> walk_weekly</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>indicator_domain_coverage <span class="ot">&lt;-</span> indicator_map <span class="sc">|&gt;</span></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(indicator, target_domain) <span class="sc">|&gt;</span></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(all_target_domains, <span class="at">by =</span> <span class="st">"target_domain"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    indicator_observations <span class="sc">|&gt;</span></span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(value)) <span class="sc">|&gt;</span></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">count</span>(indicator, domain_id, <span class="at">name =</span> <span class="st">"non_missing"</span>),</span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"indicator"</span>, <span class="st">"domain_id"</span>)</span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">non_missing =</span> <span class="fu">replace_na</span>(non_missing, 0L),</span>
-<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_respondents =</span> non_missing <span class="sc">&gt;</span> <span class="dv">0</span></span>
-<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary</span></span>
-<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>indicator_domain_summary <span class="ot">&lt;-</span> indicator_domain_coverage <span class="sc">|&gt;</span></span>
-<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(indicator, target_domain) <span class="sc">|&gt;</span></span>
-<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_domains =</span> <span class="fu">n</span>(),</span>
-<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">domains_with_no_respondents =</span> <span class="fu">sum</span>(<span class="sc">!</span>has_respondents),</span>
-<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_non_missing =</span> <span class="fu">sum</span>(non_missing),</span>
-<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>indicator_domain_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Join the coded indicators and calculated weights together for easy handling</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>survey_inputs <span class="ot">&lt;-</span> survey_domains <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(survey_indicators, <span class="at">by =</span> <span class="st">"unit_id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(survey_weights, <span class="at">by =</span> <span class="st">"unit_id"</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>indicator_map <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>indicator,              <span class="sc">~</span>target_domain, <span class="sc">~</span>id_col,          <span class="sc">~</span>weight,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"commute_distance"</span>,      <span class="st">"MSOA"</span>,         <span class="st">"msoa_domain_id"</span>, <span class="st">"SampleAdultWeight"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"poor_bus_satisfaction"</span>, <span class="st">"MSOA"</span>,         <span class="st">"msoa_domain_id"</span>, <span class="st">"WalesAdultWeight"</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"walk_weekly"</span>,           <span class="st">"LA"</span>,           <span class="st">"la_domain_id"</span>,   <span class="st">"WalesTravelWeight"</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>indicator_map</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  indicator             target_domain id_col         weight           
+  &lt;chr&gt;                 &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;            
+1 commute_distance      MSOA          msoa_domain_id SampleAdultWeight
+2 poor_bus_satisfaction MSOA          msoa_domain_id WalesAdultWeight 
+3 walk_weekly           LA            la_domain_id   WalesTravelWeight</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate non-nulls and spatial coverage for each indicator at its own spatial scale</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>all_target_domains <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  domain_sizes_adult_msoa <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">target_domain =</span> <span class="st">"MSOA"</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  domain_sizes_population_la <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">target_domain =</span> <span class="st">"LA"</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">select</span>(domain_id, domain_name, target_domain)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>indicator_observations <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  survey_inputs <span class="sc">|&gt;</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">indicator =</span> <span class="st">"commute_distance"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain_id =</span> msoa_domain_id,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> commute_distance</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  survey_inputs <span class="sc">|&gt;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">indicator =</span> <span class="st">"poor_bus_satisfaction"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain_id =</span> msoa_domain_id,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> poor_bus_satisfaction</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  survey_inputs <span class="sc">|&gt;</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">indicator =</span> <span class="st">"walk_weekly"</span>,</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain_id =</span> la_domain_id,</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> walk_weekly</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>indicator_domain_coverage <span class="ot">&lt;-</span> indicator_map <span class="sc">|&gt;</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(indicator, target_domain) <span class="sc">|&gt;</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(all_target_domains, <span class="at">by =</span> <span class="st">"target_domain"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    indicator_observations <span class="sc">|&gt;</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(value)) <span class="sc">|&gt;</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">count</span>(indicator, domain_id, <span class="at">name =</span> <span class="st">"non_missing"</span>),</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"indicator"</span>, <span class="st">"domain_id"</span>)</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">non_missing =</span> <span class="fu">replace_na</span>(non_missing, 0L),</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_respondents =</span> non_missing <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>indicator_domain_summary <span class="ot">&lt;-</span> indicator_domain_coverage <span class="sc">|&gt;</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(indicator, target_domain) <span class="sc">|&gt;</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_domains =</span> <span class="fu">n</span>(),</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">domains_with_no_respondents =</span> <span class="fu">sum</span>(<span class="sc">!</span>has_respondents),</span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_non_missing =</span> <span class="fu">sum</span>(non_missing),</span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>indicator_domain_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 5
   indicator target_domain total_domains domains_with_no_resp…¹ total_non_missing
@@ -789,8 +834,12 @@ Tip
 <li><code>walk_weekly</code> comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion <code>WalesTravelWeight</code> scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.</li>
 </ul>
 </section>
-<section id="export-optional" class="level3" data-number="2.6">
-<h3 data-number="2.6" class="anchored" data-anchor-id="export-optional"><span class="header-section-number">2.6</span> Export (optional)</h3>
+<section id="aggregate-covariates-by-domain" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="aggregate-covariates-by-domain"><span class="header-section-number">2.6</span> Aggregate covariates by domain</h3>
+<p>[WIP - one idea is to select and aggregate covariates at this stage to complete the analysis-ready datapack]</p>
+</section>
+<section id="export" class="level3" data-number="2.7">
+<h3 data-number="2.7" class="anchored" data-anchor-id="export"><span class="header-section-number">2.7</span> Export</h3>
 <p>The next workbooks do not depend on local exports from this workbook. However, if preferred, export into your <code>data/clean/</code> folder the following components:</p>
 <ul>
 <li><code>domain_sizes_adult_msoa.csv</code>, for adult population by MSOA (from Census 2021);</li>

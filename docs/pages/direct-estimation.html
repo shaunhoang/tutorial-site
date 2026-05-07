@@ -376,12 +376,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Domain size is known and grossing weight is available</td>
 <td>Horvitz-Thompson estimator</td>
-<td>Anchors estimates to true domain size and gives design-unbiased levels; required for estimating <em>counts or totals</em></td>
+<td>Anchors estimates to true domain size and gives design-unbiased levels; required for estimating <em>counts or totals</em>, but equally valid for <em>means or proportions</em></td>
 </tr>
 <tr class="even">
 <td>Domain size is unknown and/or only analysis weights are available</td>
 <td>Hájek estimator</td>
-<td>Preferred for <em>means or proportions</em> when using normalised analysis weights and no reliable domain size is available</td>
+<td>Can only be used for estimating <em>means or proportions</em> when only using analysis weights and no reliable domain size is available</td>
 </tr>
 </tbody>
 </table>
@@ -489,26 +489,25 @@ Tip
 <li><code>walk_weekly</code> -&gt; domain sizes / grossing weights -&gt; Hórvitz-Thompson estimator</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For this tutorial, we use the pre-generated analysis-ready files.  </span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download pre-generated analysis-ready files into a temp folder</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>sae_ready_url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sae_ready_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"sae-ready-inputs"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sae_ready_zip <span class="ot">&lt;-</span> <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs.zip"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(sae_ready_dir, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(sae_ready_url, sae_ready_zip, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(sae_ready_zip, <span class="at">exdir =</span> sae_ready_dir)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>zip_tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".zip"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/tutorial-clean-data.zip"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(url, zip_tmp, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(zip_tmp, <span class="at">exdir =</span> <span class="fu">tempdir</span>())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>base_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">"clean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="mean-commute-distance" class="level4" data-number="3.0.1">
 <h4 data-number="3.0.1" class="anchored" data-anchor-id="mean-commute-distance"><span class="header-section-number">3.0.1</span> Mean Commute Distance</h4>
 <p>Load the <code>commute_distance</code> survey indicator. It has no matching domain size file.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>survey_indicator <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs"</span>, <span class="st">"ind_weight_poor_bus_satisfaction.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path,<span class="st">"ind_weight_poor_bus_satisfaction.csv"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>domain_sizes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(sae_ready_dir, <span class="st">"sae-ready-inputs"</span>, <span class="st">"domain_sizes_adult_msoa.csv"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"domain_sizes_adult_msoa.csv"</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>

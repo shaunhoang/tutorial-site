@@ -6,7 +6,7 @@ execute:
 
 This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) methods to follow. In the process, we will also address the various decisions that researchers need to make.
 
-## Preparation
+## Setup
 
 ### Understanding the dataset
 
@@ -25,7 +25,7 @@ In the original dataset, the Local Authority (LA) is the sole spatial identifier
 
 Finally, auxiliary data aggregated at MSOA and LA levels come from [*the UK Census 2021 datasets*](https://www.nomisweb.co.uk/sources/census_2021_bulk), made available to download on the NOMIS UK website.   
 
-### From Survey Indicators to Estimands
+### Formulating Estimands
 
 The first step in SAE is defining specific research questions that we hope to address using available survey data. For this tutorial with a transport analysis lens, we specifically want to estimate survey indicators related to *commuting, bus usage, and active travel behaviour in Wales*.
 
@@ -49,15 +49,15 @@ Specifying these elements early is critical as they dictate the technical requir
 In practice, this step is reiterative, based on data availability and other restrictions. It is worth starting out with the most relevant estimands and refining them further after diagnosing the estimation results' precision.
 :::
 
-### From Estimands to SAE Inputs
+### Summary
 
 The next stage involves preparing the indicator variables and aligning them with the appropriate weights and domain sizes (i.e., target population totals in the small area scale of choice), as defined by the estimand.
 
 | Indicator | Source variables | Coding rule | Target domain | Domain size | Weight |
 |---|---|---|---|---|---|
-| `commute_distance` | `TravWkDist` | numeric commute distance in miles, non-commuters are coded `NA` | MSOA |  Worker population by MSOA |`SampleAdultWeight`, analysis weight |
-| `poor_bus_satisfaction` | `BusOverSat`, `Bus12M` | binary; `1` if fairly or very dissatisfied; `0` if not dissatisfied or did not use the bus in the last 12 months | MSOA | Adult population by MSOA | `WalesAdultWeight` grossing weight |
-| `walk_weekly` | `AtFrqWlk10` | binary; `1` if walking for transport at least weekly | Local Authority |  Total population by Local Authority |`WalesTravelWeight`, grossing weight |
+| `commute_distance` | `TravWkDist` | numeric commute distance in miles, non-commuters are coded `NA` | MSOA |  Worker population by MSOA |`SampleAdultWeight`, analysis weight | 
+| `poor_bus_satisfaction` | `BusOverSat`, `Bus12M` | binary; `1` if fairly or very dissatisfied; `0` if not dissatisfied or did not use the bus in the last 12 months | MSOA | Adult population by MSOA | `WalesAdultWeight` grossing weight | |
+| `walk_weekly` | `AtFrqWlk10` | binary; `1` if walking for transport at least weekly | Local Authority |  Total population by Local Authority |`WalesTravelWeight`, grossing weight | 
 
 In this dataset, weight variables are chosen based on the availability of auxiliary data:
 
@@ -65,9 +65,21 @@ In this dataset, weight variables are chosen based on the availability of auxili
 - `WalesAdultWeight`: grossing weight, used when the total adult population for a domain is known (e.g., adult population by MSOA). It scales the sample to match these real-world totals.
 - `WalesTravelWeight`: grossing-style weight, created by scaling `SampleTravelWeight` from the survey. This weight is used to scale the active-travel subsample (approx. 2,000 respondents) up to the total resident population in each Local Authority.
 
-With this information we can proceed to process the survey dataset to produce inputs necessary for the SAE workflow.
+### Select covariates
 
-## Implemetation
+Preliminary covariates should be available for every target domain and should have a clear relationship to the indicator. The [Census 2021 bulk downloads](https://www.nomisweb.co.uk/sources/census_2021_bulk) are a practical starting point because they provide consistent tables for many geographies.
+
+For this worked example, each indicator has at its disposal covariates that are its most logical predictors, as follows: 
+
+| Indicator | Target domain | Covariates from Census 2021 |
+|---|---|---|
+| `commute_distance` | MSOA | - Population density (`TS006`)<br>- Share of commute by car/van (`TS061`)<br>- Share of households with car/van (`TS045`)  |
+| `poor_bus_satisfaction` | MSOA | - Population density (`TS006`)<br>- Share of commute by bus/minibus (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of households deprived in 2+ dimensions (`TS011`) |
+| `walk_weekly` | Local Authority | - Population density (`TS006`)<br>- Share of commute by bike/walk (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of population in good health (`TS037`) |
+
+With this information we can proceed to process the survey dataset to produce inputs necessary for the workflow.
+
+## Processing
 
 ```{r}
 library(dplyr)
@@ -75,26 +87,24 @@ library(readr)
 library(stringr)
 library(tidyr)
 
-# Download and unzip the raw data into a temp folder
-raw_data_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-raw-data.zip"
-raw_data_dir <- file.path(tempdir(), "tutorial-raw-data")
-raw_data_zip <- file.path(raw_data_dir, "tutorial-raw-data.zip")
-dir.create(raw_data_dir, showWarnings = FALSE)
-download.file(raw_data_url, raw_data_zip, mode = "wb")
-unzip(raw_data_zip, exdir = raw_data_dir)
-raw_folder <- file.path(raw_data_dir, "raw")
+# Download raw input files into a temp folder
+zip_tmp <- tempfile(fileext = ".zip")
+url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-raw-data.zip"
+download.file(url, zip_tmp, mode = "wb")
+unzip(zip_tmp, exdir = tempdir())
+base_path <- file.path(tempdir(), "raw")
 ```
 ### Load survey data 
-Load the survey datasets and identify the unique identifier of survey respondents, and recode it as `unit_id`.
+Load the survey datasets and identify the unique identifier of survey respondents, and recode it as `unit_id` for easier handling downstream.
 
 ```{r}
 nsw_raw <- read_csv(
-  file.path(raw_folder, "nsw_2223_msoa_la.csv")
+  file.path(base_path, "nsw_2223_msoa_la.csv")
 ) |>
   rename(unit_id = CaseNo)
 ```
 
-For each respondent, the survey provides two spatial identifiers: Local Authority and MSOA. They are coded as `la_code` and `msoa_code`, and are kept as separate domain fields.
+For each respondent, the survey provides two spatial identifiers: Local Authority and MSOA. They are coded as `la_code` and `msoa_code`, and are kept as separate domain fields since we need them both for our 3 estimands.
 
 ```{r}
 survey_domains <- nsw_raw |>
@@ -107,14 +117,14 @@ survey_domains <- nsw_raw |>
 head(survey_domains)
 ```
 
-### Aggregating Domain Size
+### Aggregate Domain Size
 
-In this exercise, assume we only have general and adult population totals, obtained from the UK Census 2021, and not worker population totals. 
+Next, aggregate size of target populations by domain as required by the estimands. In this exercise, assume we only have general and adult population totals, obtained from the UK Census 2021 and not worker population totals to demonstrate working with estimands with unknown domain sizes.
 
 - Adult population by MSOA
 ```{r}
 domain_sizes_adult_msoa <- read_csv(
-  file.path(raw_folder, "census2021-ts007-msoa.csv"),
+  file.path(base_path, "census2021-ts007-msoa.csv"),
   show_col_types = FALSE
 ) |>
   filter(str_starts(`geography code`, "W")) |>
@@ -134,7 +144,7 @@ head(domain_sizes_adult_msoa)
 - Total population by LA
 ```{r}
 domain_sizes_population_la <- read_csv(
-  file.path(raw_folder, "census2021-ts007-ltla.csv"),
+  file.path(base_path, "census2021-ts007-ltla.csv"),
   show_col_types = FALSE
 ) |>
   filter(str_starts(`geography code`, "W")) |>
@@ -146,9 +156,9 @@ domain_sizes_population_la <- read_csv(
 
 head(domain_sizes_population_la)
 ```
-### Building Indicators
+### Construct Indicators
 
-Define the missing-value rules used when constructing survey indicators, and calculate the indicators based on the rules set out above. 
+Next, we can start constructing the indicators from the variables based on the coding rules.
 
 ```{r}
 # Define a helper to handle the NSW specific missing codes
@@ -177,9 +187,9 @@ survey_indicators <- nsw_raw |>
 head(survey_indicators)
 ```
 
-### Selecting and building weight variables
+### Select (and build) weight variables
 
-Filter for the relevant weight variables from the survey.
+Next, filter for the relevant weight variables from the survey relevant to our estimands.
 
 ```{r}
 survey_weights <- nsw_raw |>
@@ -191,7 +201,7 @@ survey_weights <- nsw_raw |>
   )
 ```
 
-`SampleTravelWeight` is an analysis weight for the active-travel module. Because `walk_weekly` is defined over all residents at Local Authority level, we can create a grossing-style `WalesTravelWeight` by scaling `SampleTravelWeight` within each Local Authority so that the weights sum to the total resident population in each Local Authority.
+`SampleTravelWeight` is an analysis weight for the active-travel module. Because the `walk_weekly` indicator is defined over all residents at Local Authority level, we can create a grossing-style `WalesTravelWeight` by scaling `SampleTravelWeight` within each Local Authority so that the weights sum to the total resident population in each Local Authority.
 
 ```{r}
 survey_weights <- survey_weights |>
@@ -211,9 +221,12 @@ survey_weights <- survey_weights |>
 head(survey_weights)
 ```
 
-### Putting it together and missingness check
-Join the coded indicators and calculated weights together for easy handling. Create a mapping object to link the indicator to its appropriate 'companions'.
+### Check missingness
+
+At this point, check for missingness overall (number of nulls per coded indicators) and at the chosen spatial scale (whether there are domains with no respondents).
+
 ```{r}
+# Join the coded indicators and calculated weights together for easy handling
 survey_inputs <- survey_domains |>
   left_join(survey_indicators, by = "unit_id") |>
   left_join(survey_weights, by = "unit_id")
@@ -224,8 +237,9 @@ indicator_map <- tibble::tribble(
   "poor_bus_satisfaction", "MSOA",         "msoa_domain_id", "WalesAdultWeight",
   "walk_weekly",           "LA",           "la_domain_id",   "WalesTravelWeight"
 )
+indicator_map
 ```
-At this point, check for missingness overall (number of nulls per coded indicators) and at the chosen spatial scale (whether there are domains with no respondents).
+
 ```{r}
 # Calculate non-nulls and spatial coverage for each indicator at its own spatial scale
 all_target_domains <- bind_rows(
@@ -289,7 +303,10 @@ On the other hand, the number of non-missing observations reflects both survey r
 - `poor_bus_satisfaction` is a routed variable asked only to bus users. However, it maintains near-full population coverage by coding non-users as 0 rather than null. Used together with the `WalesAdultWeight` variable, this approach is consistent with the estimand definition: the share of all adults dissatisfied with bus services.
 - `walk_weekly` comes from a subsampled active-travel module of about 2,000 respondents, which explains the low number of valid values. However, it has a companion `WalesTravelWeight` scaled to total population and a known domain size (total pop per LA) making it suitable for population-level estimation at LA scale.
 
-### Export (optional)
+### Aggregate covariates by domain 
+[WIP - one idea is to select and aggregate covariates at this stage to complete the analysis-ready datapack]
+
+### Export
 
 The next workbooks do not depend on local exports from this workbook. However, if preferred, export into your `data/clean/` folder the following components:
 

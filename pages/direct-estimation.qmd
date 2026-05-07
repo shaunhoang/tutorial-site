@@ -10,8 +10,8 @@ The estimator should match the information available in the survey file and the 
 
 | Situation | Estimator | When to use |
 |---|---|---|
-| Domain size is known and grossing weight is available | Horvitz-Thompson estimator | Anchors estimates to true domain size and gives design-unbiased levels; required for estimating *counts or totals* |
-| Domain size is unknown and/or only analysis weights are available | Hájek estimator | Preferred for *means or proportions* when using normalised analysis weights and no reliable domain size is available |
+| Domain size is known and grossing weight is available | Horvitz-Thompson estimator | Anchors estimates to true domain size and gives design-unbiased levels; required for estimating *counts or totals*, but equally valid for *means or proportions* |
+| Domain size is unknown and/or only analysis weights are available | Hájek estimator | Can only be used for estimating *means or proportions* when only using analysis weights and no reliable domain size is available |
 
 The **Horvitz-Thompson estimator** calculates the direct estimate $\hat{\theta}_d^{DIR}$ in domain ($d$) as:
 
@@ -66,26 +66,25 @@ We will perform Direct Estimation for each of them differently according to the 
 - `walk_weekly` -> domain sizes / grossing weights -> Hórvitz-Thompson estimator
 
 ```{r}
-# For this tutorial, we use the pre-generated analysis-ready files.  
+# Download pre-generated analysis-ready files into a temp folder
 library(readr)
-sae_ready_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/sae-ready-inputs.zip"
-sae_ready_dir <- file.path(tempdir(), "sae-ready-inputs")
-sae_ready_zip <- file.path(sae_ready_dir, "sae-ready-inputs.zip")
 
-dir.create(sae_ready_dir, showWarnings = FALSE)
-download.file(sae_ready_url, sae_ready_zip, mode = "wb")
-unzip(sae_ready_zip, exdir = sae_ready_dir)
+zip_tmp <- tempfile(fileext = ".zip")
+url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/tutorial-clean-data.zip"
+download.file(url, zip_tmp, mode = "wb")
+unzip(zip_tmp, exdir = tempdir())
+base_path <- file.path(tempdir(), "clean")
 ```
 
 #### Mean Commute Distance
 Load the `commute_distance` survey indicator. It has no matching domain size file.
 ```{r}
 survey_indicator <- read_csv(
-  file.path(sae_ready_dir, "sae-ready-inputs", "ind_weight_poor_bus_satisfaction.csv")
+  file.path(base_path,"ind_weight_poor_bus_satisfaction.csv")
 )
 
 domain_sizes <- read_csv(
-  file.path(sae_ready_dir, "sae-ready-inputs", "domain_sizes_adult_msoa.csv")
+  file.path(base_path, "domain_sizes_adult_msoa.csv")
 )
 ```
 
