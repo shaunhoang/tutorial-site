@@ -413,13 +413,23 @@ The resulting objects are:
 
 The next workbooks do not depend on local exports from this workbook. However, if preferred, export into your `data/clean/` folder the following components:
 
-- `domain_sizes_adult_msoa.csv`, for adult population by MSOA (from Census 2021);
-- `domain_sizes_population_la.csv`, for total resident population by LA (from Census 2021);
-- `covariates_msoa.csv`, with MSOA-level preliminary covariates for `commute_distance` and `poor_bus_satisfaction`;
-- `covariates_la.csv`, with LA-level preliminary covariates for `walk_weekly`;
+Indicator microdata with weight
+
 - `ind_weight_commute_distance.csv`, with analysis adult weight;
 - `ind_weight_poor_bus_satisfaction.csv`, with grossing adult weight;
 - `ind_weight_walk_weekly.csv`, with active-travel module weight scaled to LA total population.
+
+Domain sizes
+
+- `domain_sizes_adult_msoa.csv`, for adult population by MSOA (from Census 2021);
+- `domain_sizes_population_la.csv`, for total resident population by LA (from Census 2021);
+
+Covariates by domain
+
+- `covariates_msoa.csv`, with MSOA-level preliminary covariates for `commute_distance` and `poor_bus_satisfaction`;
+- `covariates_la.csv`, with LA-level preliminary covariates for `walk_weekly`;
+
+
 
 ```{r, eval=FALSE, include=FALSE}
 export_analysis_ready_files <- function(output_dir = file.path("..","data", "clean")) {

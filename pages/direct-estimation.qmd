@@ -1,5 +1,7 @@
 ---
-title: "[WIP] Direct Estimation"
+title: "Direct Estimation"
+execute:
+  eval: true
 ---
 
 Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say and how precisely, before applying any model-based estimation, i.e., borrowing strength from covariates or spatial structure.
@@ -8,27 +10,13 @@ Direct estimates are the first estimation step in an area-level SAE workflow. Th
 
 The estimator should match the information available in the survey file and the estimand definition.
 
-| Situation | Estimator | When to use |
-|---|---|---|
-| Domain size is known and grossing weight is available | Horvitz-Thompson estimator | Anchors estimates to true domain size and gives design-unbiased levels; required for estimating *counts or totals*, but equally valid for *means or proportions* |
-| Domain size is unknown and/or only analysis weights are available | Hájek estimator | Can only be used for estimating *means or proportions* when only using analysis weights and no reliable domain size is available |
+| Scenario | Estimator | Formula | When to use |
+|---|---|---|---|
+| Known Domain Sizes; has grossing weight | Horvitz-Thompson estimator | $\hat{\theta}_d^{DIR}=\frac{\sum_{i\in s_d}w^G_{di}y_{di}}{N_d}$| Anchors estimates to true domain size and gives design-unbiased levels; required for estimating *counts or totals*, but equally valid for *means or proportions* |
+| Unknown Domain Sizes; only analysis weights | Hájek estimator |$\hat{\theta}_d^{DIR}=\frac{\sum_{i \in s_d}w_{di}y_{di}}{\sum_{i \in s_d}w^A_{di}}$| Can only be used for estimating *means or proportions* when only using analysis weights and no reliable domain size is available |
+| Unknown Domain Sizes; no survey weights provided | Unweight sample mean |$\hat{\theta}_d^{DIR}=\frac{\sum_{i \in s_d}y_{di}}{n_d}$| The simplest form of direct estimator, likely biased if survey sampling is not random and imprecise when $n_d$ is too low  |
 
-The **Horvitz-Thompson estimator** calculates the direct estimate $\hat{\theta}_d^{DIR}$ in domain ($d$) as:
-
-$$
-\hat{\theta}_d^{DIR} =
-\frac{\sum_{i \in s_d} w_{di} y_{di}}{N_d}
-$$
-
-The **Hájek Estimator** (or ratio estimator) calculates the direct estimate $\hat{\theta}_d$ in domain ($d$) as:
-
-$$
-\hat{\theta}_d^{DIR} =
-\frac{\sum_{i \in s_d} w_{di} y_{di}}
-{\sum_{i \in s_d} w_{di}}.
-$$
-
-where $N_d$ is `domain_size`, $w_{di}$ is `weight`, and $y_{di}$ is `indicator`.
+Here, the **direct estimate $\hat{\theta}_d^{DIR}$** is for **domain $d$** with **sample size $n_d$** and **domain size $N_d$**, if known.
 
 Direct estimates are paired with estimated **sampling variances**, telling us how much uncertainty comes from observing only a sample within each domain. In practice, the variance depends on the estimator, weight scale, and survey design information available.
 
@@ -46,51 +34,286 @@ Use the direct estimates and sampling variances to decide whether direct reporti
 ## Code Implementation
 
 :::{.callout-tip}
-Use [`sae::direct()`](https://search.r-project.org/CRAN/refmans/sae/html/direct.html) to calculate direct estimates by domain. It returns core direct-estimation outputs including domain sample size (`SampSize`), direct estimate (`Direct`), estimated standard deviation (`SD`), and coefficient of variation (`CV`). Square `SD` to obtain the `Variance`.
+Use [`sae::direct()`](https://search.r-project.org/CRAN/refmans/sae/html/direct.html) to calculate direct estimates by domain. It selects an estimation method automatically based on the provided inputs: 
 
-In `sae::direct()`, if `domsize` is provided, the Horvitz-Thompson direct estimator is used; if not provided, the Hajek ratio direct estimator is used.
+- Horvitz-Thompson estimator: pass `sweight` and pre-aggregated `domsize`.
+- Hajek ratio estimator: pass `sweight`, and `domsize` equals sum of weights as pseudo-domain-size.
+- If neither is provided, it defaults to unweighted sample mean.
 :::
-
-It's worth reminding ourselves of the estimands of interest defined at the start first
-
-| Indicator |  Target domain | Domain size | Weight |
-|---|---|---|---|
-| `commute_distance` |  MSOA |  Worker population by MSOA |`SampleAdultWeight`, analysis weight |
-| `poor_bus_satisfaction` |  MSOA | Adult population by MSOA | `WalesAdultWeight` grossing weight |
-| `walk_weekly` |  Local Authority |  Total population by Local Authority |`WalesTravelWeight`, grossing weight |
-
-We will perform Direct Estimation for each of them differently according to the estimands and data availability (weight and domain size)
-
-- `commute_distance` -> no domain sizes / only analysis weights -> Hajék ratio estimator
-- `poor_bus_satisfaction` -> domain sizes / grossing weights -> Hórvitz-Thompson estimator
-- `walk_weekly` -> domain sizes / grossing weights -> Hórvitz-Thompson estimator
 
 ```{r}
 # Download pre-generated analysis-ready files into a temp folder
+library(dplyr)
 library(readr)
+library(stringr)
+library(tidyr)
+library(sae)
+library(sf)
+library(ggplot2)
+library(patchwork)
 
+# Load analysis-ready data
 zip_tmp <- tempfile(fileext = ".zip")
-url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/assets/tutorial-clean-data.zip"
+url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-clean-data.zip"
 download.file(url, zip_tmp, mode = "wb")
 unzip(zip_tmp, exdir = tempdir())
 base_path <- file.path(tempdir(), "clean")
+
+# Load shapefiles for plotting
+boundary_zip <- tempfile(fileext = ".zip")
+boundary_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-boundaries.zip"
+download.file(boundary_url, boundary_zip, mode = "wb")
+unzip(boundary_zip, exdir = tempdir())
+
+msoa_boundaries <- st_read(
+  file.path(tempdir(), "boundaries", "boundaries-msoa.geojson"),
+  quiet = TRUE
+) |>
+  rename(domain_id = MSOA21CD) |>
+  filter(str_starts(domain_id, "W"))
+
+la_boundaries <- st_read(
+  file.path(tempdir(), "boundaries", "boundaries-ltla.geojson"),
+  quiet = TRUE
+) |>
+  rename(domain_id = LAD21CD) |>
+  filter(str_starts(domain_id, "W"))
+
+# Create master lists of MSOAs and LAs
+msoa_master_list <- read_csv(
+  file.path(base_path, "domain_sizes_adult_msoa.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::select(domain_id, domain_name) |>
+  distinct()
+
+la_master_list <- read_csv(
+  file.path(base_path, "domain_sizes_population_la.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::select(domain_id, domain_name) |>
+  distinct()
 ```
 
+### Direct Estimation
+We will perform Direct Estimation for each of the three indicators differently according to data availability
+
+- `commute_distance`: Hajék estimator (no known domain sizes)
+- `poor_bus_satisfaction`: Hórvitz-Thompson estimator
+- `walk_weekly`: Hórvitz-Thompson estimator
+
 #### Mean Commute Distance
-Load the `commute_distance` survey indicator. It has no matching domain size file.
+Load the `commute_distance` survey indicator. It has no known worker domain-size file, so the sum of analysis weights in each sampled MSOA is used as a pseudo domain size since `sae::direct()` requires a `domsize`.
 ```{r}
 survey_indicator <- read_csv(
-  file.path(base_path,"ind_weight_poor_bus_satisfaction.csv")
+  file.path(base_path, "ind_weight_commute_distance.csv"),
+  show_col_types = FALSE
+) |>
+  filter(!is.na(indicator), !is.na(weight), !is.na(domain_id))
+
+domain_sizes_pseudo <- survey_indicator |>
+  group_by(domain_id) |>
+  summarise(domain_size = sum(weight), .groups = "drop") |>
+  as.data.frame()
+
+dir_est_commute <- sae::direct(
+  y = survey_indicator$indicator,
+  dom = survey_indicator$domain_id,
+  sweight = survey_indicator$weight,
+  domsize = domain_sizes_pseudo,
+  replace = TRUE 
+  # required for sae::direct() to calculate variance when using Hajek estimator         
 )
 
-domain_sizes <- read_csv(
-  file.path(base_path, "domain_sizes_adult_msoa.csv")
-)
+dir_est_commute$Var <- dir_est_commute$SD^2
+dir_est_commute$Lower <- dir_est_commute$Direct - 1.96 * dir_est_commute$SD
+dir_est_commute$Upper <- dir_est_commute$Direct + 1.96 * dir_est_commute$SD
+head(dir_est_commute)
 ```
 
 #### Dissatisfaction with bus service
 Load the `poor_bus_satisfaction` survey indicator and its matching adult MSOA domain-size file.
+```{r}
+survey_indicator_bus <- read_csv(
+  file.path(base_path, "ind_weight_poor_bus_satisfaction.csv"),
+  show_col_types = FALSE
+) |>
+  filter(!is.na(indicator), !is.na(weight), !is.na(domain_id))
 
+msoa_adult_domain_sizes <- read_csv(
+  file.path(base_path, "domain_sizes_adult_msoa.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::select(domain_id, domain_size) |>
+  as.data.frame()
+
+dir_est_bus <- sae::direct(
+  y = survey_indicator_bus$indicator,
+  dom = survey_indicator_bus$domain_id,
+  sweight = survey_indicator_bus$weight,
+  domsize = msoa_adult_domain_sizes
+)
+
+dir_est_bus$Var <- dir_est_bus$SD^2
+dir_est_bus$Lower <- dir_est_bus$Direct - 1.96 * dir_est_bus$SD
+dir_est_bus$Upper <- dir_est_bus$Direct + 1.96 * dir_est_bus$SD
+
+head(dir_est_bus)
+```
 
 #### Walking
 Load the `walk_weekly` survey indicator and its matching total population LA domain-size file.
+```{r}
+survey_indicator_walk <- read_csv(
+  file.path(base_path, "ind_weight_walk_weekly.csv"),
+  show_col_types = FALSE
+) |>
+  filter(!is.na(indicator), !is.na(weight), !is.na(domain_id))
+
+domain_sizes_walk <- read_csv(
+  file.path(base_path, "domain_sizes_population_la.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::select(domain_id, domain_size) |>
+  as.data.frame()
+
+dir_est_walk <- sae::direct(
+  y = survey_indicator_walk$indicator,
+  dom = survey_indicator_walk$domain_id,
+  sweight = survey_indicator_walk$weight,
+  domsize = domain_sizes_walk
+)
+
+dir_est_walk$Var <- dir_est_walk$SD^2
+dir_est_walk$Lower <- dir_est_walk$Direct - 1.96 * dir_est_walk$SD
+dir_est_walk$Upper <- dir_est_walk$Direct + 1.96 * dir_est_walk$SD
+
+head(dir_est_walk)
+```
+
+### Evaluate Direct Estimates
+
+The key questions now are whether any domains have no direct estimates or variance, and whether the direct estimates that do exist are precise enough to report. The two metrics to pay attention to are:
+
+- `median_cv`: the typical coefficient of variation, calculated as standard error divided by the estimate. If above 100%, it means the typical standard error is larger than the estimate itself. 
+- `median_ci_width`: the typical width of the 95% confidence interval in real terms.
+
+```{r}
+#| echo: false
+summarise_direct_estimates <- function(result, master_domains) {
+  domains_no_data <- master_domains |>
+    anti_join(
+      result |> transmute(domain_id = Domain),
+      by = "domain_id"
+    )
+  
+  result |>
+    summarise(
+      target_domain_n = nrow(master_domains),
+      domains_with_direct_estimate = n(),
+      domains_with_no_data = nrow(domains_no_data),
+      domains_with_missing_variance = sum(is.na(Var) | is.nan(Var)),
+      median_sample_size = median(SampSize, na.rm = TRUE),
+      median_cv = median(CV, na.rm = TRUE),
+      median_ci_width = median(Upper - Lower, na.rm = TRUE)
+    ) |>
+    pivot_longer(
+      cols = everything(),
+      names_to = "diagnostic",
+      values_to = "value"
+    )
+}
+
+plot_direct_estimates <- function(result, boundaries, title, border_colour = NA) {
+  map_data <- boundaries |>
+    left_join(
+      result,
+      by = c("domain_id" = "Domain")
+    )
+  
+  estimate_map <- ggplot(map_data) +
+    geom_sf(aes(fill = Direct), colour = border_colour, linewidth = 0.1) +
+    scale_fill_distiller(palette = "YlGnBu", direction = 1, na.value = "grey85") +
+    labs(
+      fill = "Estimate",
+      title = "Direct estimate"
+    ) +
+    theme_void()
+  
+  cv_map <- ggplot(map_data) +
+    geom_sf(aes(fill = CV), colour = border_colour, linewidth = 0.1) +
+    scale_fill_distiller(palette = "OrRd", direction = 1, na.value = "grey85") +
+    labs(
+      fill = "CV",
+      title = "Coefficient of variation"
+    ) +
+    theme_void()
+  
+  estimate_map + cv_map +
+    plot_annotation(title = title)
+}
+```
+
+- **Mean Commute Distance**
+
+```{r}
+#| echo: false
+print(summarise_direct_estimates(dir_est_commute, msoa_master_list))
+```
+
+```{r}
+#| echo: false
+print(
+  plot_direct_estimates(
+    dir_est_commute,
+    msoa_boundaries,
+    "MSOA commute_distance direct estimate and coefficient of variation"
+  )
+)
+```
+
+- **Dissatisfaction with bus service**
+
+```{r}
+#| echo: false
+print(summarise_direct_estimates(dir_est_bus, msoa_master_list))
+```
+
+```{r}
+#| echo: false
+print(
+  plot_direct_estimates(
+    dir_est_bus,
+    msoa_boundaries,
+    "MSOA poor_bus_satisfaction direct estimate and coefficient of variation"
+  )
+)
+```
+
+- **Walking**
+
+```{r}
+#| echo: false
+print(summarise_direct_estimates(dir_est_walk, la_master_list))
+```
+
+```{r}
+#| echo: false
+print(
+  plot_direct_estimates(
+    dir_est_walk,
+    la_boundaries,
+    "LA walk_weekly direct estimate and coefficient of variation",
+    border_colour = "white"
+  )
+)
+```
+### Final thoughts
+
+Overall, the direct estimates are useful as inputs, but model-based estimation is likely needed to produce more stable small-area estimates.
+
+That said, since model-based estimation methods work on these direct estimates and variances, having a solid base is essential before moving forward.
+
+The Horvitz-Thompson estimates are generally more precise, with median CVs below 100%, because they use known domain sizes alongside grossing weights. By contrast, the Hájek estimate for `commute_distance` relies only on analysis weights and has much higher relative uncertainty. This illustrates why suitable domain-size information is valuable in SAE.
+
+Another remedy is to redefine the estimand associated with `commute_distance` so that it applies to a population with known domain sizes, such as all adults, rather than a subgroup whose MSOA totals may be unavailable. However, this would essentially change what is being measured.
