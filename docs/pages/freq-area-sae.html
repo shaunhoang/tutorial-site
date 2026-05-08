@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/bayesian-area-sae.html" rel="next">
-<link href="../pages/direct-estimation.html" rel="prev">
+<link href="../pages/unit-level-sae.html" rel="next">
+<link href="../pages/diagnostics.html" rel="prev">
 <link href="../assets/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -97,15 +97,15 @@ ul.task-list li input[type="checkbox"] {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
         <li>
     <a class="dropdown-item" href="../pages/prepare-inputs.html" rel="" target="">
- <span class="dropdown-text">Preparation</span></a>
+ <span class="dropdown-text">I. Preparation</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../pages/direct-estimation.html" rel="" target="">
- <span class="dropdown-text">Estimation</span></a>
+ <span class="dropdown-text">II. Estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../pages/diagnostics.html" rel="" target="">
- <span class="dropdown-text">Reporting</span></a>
+    <a class="dropdown-item" href="../pages/freq-area-sae.html" rel="" target="">
+ <span class="dropdown-text">Extended Methods</span></a>
   </li>  
     </ul>
   </li>
@@ -139,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/freq-area-sae.html">[WIP] Area-Level Estimation (Frequentist)</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/freq-area-sae.html">Extended methods</a></li><li class="breadcrumb-item"><a href="../pages/freq-area-sae.html">[WIP] Area-Level Estimation (Frequentist)</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -188,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
- <span class="menu-text">Part 1: Preparation</span></a>
+ <span class="menu-text">I. Preparation</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -197,7 +197,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Conceptual Overview</span></a>
+ <span class="menu-text">Overview of Preparation Workflow</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -210,19 +210,42 @@ ul.task-list li input[type="checkbox"] {
   </li>
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
- <span class="menu-text">Part 2: Estimation</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+ <span class="menu-text">II. Estimation</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Direct Estimation</span></a>
+ <span class="menu-text">Direct Estimation</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Area-Level Estimation (Bayesian)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Diagnostics, Reporting, and Benchmarking</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Extended methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link active">
@@ -231,31 +254,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Area-Level Estimation (Bayesian) + Spatial</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level Estimation</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
- <span class="menu-text">Part 3: Reporting</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics, Reporting, and Benchmarking</span></a>
+ <span class="menu-text">Bonus: Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -296,10 +296,9 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#understanding-the-fay-herriot-model" id="toc-understanding-the-fay-herriot-model" class="nav-link active" data-scroll-target="#understanding-the-fay-herriot-model"><span class="header-section-number">1</span> Understanding the Fay-Herriot model</a></li>
-  <li><a href="#covariate-choices" id="toc-covariate-choices" class="nav-link" data-scroll-target="#covariate-choices"><span class="header-section-number">2</span> Covariate Choices</a></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">2</span> Code Implementation</a>
   <ul class="collapse">
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">3.1</span> Worked Example</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">2.1</span> Worked Example</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -327,29 +326,27 @@ ul.task-list li input[type="checkbox"] {
 <p>Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct estimates with domain-level covariates to improve precision.</p>
 <section id="understanding-the-fay-herriot-model" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="understanding-the-fay-herriot-model"><span class="header-section-number">1</span> Understanding the Fay-Herriot model</h2>
-<p>Fay-Herriot combines two pieces of information for each domain:</p>
-<ol type="1">
-<li>the direct estimate from the survey, and</li>
-<li>a covariate-based model prediction.</li>
-</ol>
-<p>The direct estimate <span class="math inline">\(\hat{\theta}_d^{DIR}\)</span> can be written as the covariate-explained part <span class="math inline">\(x_d^\top\beta\)</span>, plus an area-specific unexplained effect <span class="math inline">\(u_d\)</span>, plus survey sampling noise <span class="math inline">\(e_d\)</span>.</p>
+<p>Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :</p>
 <p><span class="math display">\[
 \hat{\theta}^{DIR}_d =
 x_d^\top\beta + u_d + e_d.
 \]</span></p>
-<p>The FH estimate, is a weighted average of the direct estimate and the covariate-based prediction:</p>
 <p><span class="math display">\[
-\hat{\theta}^{FH}_d =
-\hat{\gamma}_d \hat{\theta}^{DIR}_d
-+
-(1-\hat{\gamma}_d) x_d^\top\hat{\beta}.
-\]</span></p>
-<p>The shrinkage weight <span class="math inline">\(\hat{\gamma}_d = \frac{\hat{\sigma}_u^2}{\hat{\sigma}_u^2 + \psi_d}\)</span>, where <span class="math inline">\(\psi_d\)</span> is the sampling variance of the direct estimate, controls how much the FH estimate “trusts” the direct estimate:</p>
+\tilde{\theta}^{FH}_d = \gamma_d \hat{\theta}^{DIR}_d
++ (1-\gamma_d)x_d^\top\beta .
+\]</span> The shrinkage weight <span class="math inline">\(\hat{\gamma}_d = \frac{\hat{\sigma}_u^2}{\hat{\sigma}_u^2 + \psi_d}\)</span>, where <span class="math inline">\(\psi_d\)</span> is the sampling variance of the direct estimate, controls how much the FH estimate “trusts” the direct estimate:</p>
 <ul>
 <li>if <span class="math inline">\(\psi_d\)</span> is small, the direct estimate is precise, so <span class="math inline">\(\hat{\gamma}_d\)</span> is closer to 1;</li>
 <li>if <span class="math inline">\(\psi_d\)</span> is large, the direct estimate is noisy, so <span class="math inline">\(\hat{\gamma}_d\)</span> is closer to 0.</li>
 </ul>
 <p>In practice, FH leaves precise direct estimates mostly unchanged, while pulling noisy direct estimates toward the covariate-based prediction.</p>
+<p>The difference is how the unknown quantities are estimated and how uncertainty is interpreted.</p>
+<ul>
+<li>In the <strong>frequentist</strong> approach, unknown quantities such as <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\sigma_u^2\)</span>, and <span class="math inline">\(u_d\)</span> are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), uncertainty measures such as RMSE, and confidence intervals.</li>
+<li>In the <strong>Bayesian</strong> approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries.</li>
+</ul>
+<p>This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.</p>
+<p>Therefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -368,20 +365,8 @@ Note
 </div>
 </div>
 </section>
-<section id="covariate-choices" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="covariate-choices"><span class="header-section-number">2</span> Covariate Choices</h2>
-<p>Domain-level covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across domains.</p>
-<ul>
-<li><strong>Coverage:</strong> each covariate should be available for all target domains.</li>
-<li><strong>Alignment:</strong> match geography, definition, and reference period to the survey indicator.</li>
-<li><strong>Relevance:</strong> keep variables with a clear substantive link to the outcome and avoid including many weak predictors.</li>
-<li><strong>Predictive:</strong> choose covariates that improve domain-level prediction and are easy to explain; avoid downstream variables, and remove or combine highly correlated predictors.</li>
-</ul>
-<p>Common examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessibility metrics, car ownership, etc.</p>
-<p>[ADD IMAGE]</p>
-</section>
-<section id="code-implementation" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
+<section id="code-implementation" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">2</span> Code Implementation</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -396,8 +381,8 @@ Tip
 <p><code>sae</code> does not handle out-of-sample domains (i.e., domains without respondent records) automatically. These domains require separate model-based predictions from the fitted covariate relationship.</p>
 </div>
 </div>
-<section id="worked-example" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">3.1</span> Worked Example</h3>
+<section id="worked-example" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">2.1</span> Worked Example</h3>
 <p>Lorem Ipsum - share real example National Survey of Wales</p>
 
 
@@ -654,13 +639,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/direct-estimation.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">[WIP] Direct Estimation</span>
+      <a href="../pages/diagnostics.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">[WIP] Diagnostics, Reporting, and Benchmarking</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/bayesian-area-sae.html" class="pagination-link">
-        <span class="nav-page-text">[WIP] Area-Level Estimation (Bayesian) + Spatial</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/unit-level-sae.html" class="pagination-link">
+        <span class="nav-page-text">Bonus: Unit-Level Estimation</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

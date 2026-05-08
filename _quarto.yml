@@ -19,12 +19,12 @@ website:
         href: index.qmd
       - text: "Tutorial"
         menu:
-          - text: "Preparation"
+          - text: "I. Preparation"
             href: pages/prepare-inputs.qmd
-          - text: "Estimation"
+          - text: "II. Estimation"
             href: pages/direct-estimation.qmd
-          - text: "Reporting"
-            href: pages/diagnostics.qmd
+          - text: "Extended Methods"
+            href: pages/freq-area-sae.qmd
       - text: "Resources"
         menu:
           - text: "SAE Toolkit"
@@ -44,19 +44,19 @@ website:
           - index.qmd
       - section: "Tutorial"
         contents:
-          - section: "Part 1: Preparation"
+          - section: "I. Preparation"
             contents:
               - pages/prepare-inputs.qmd
               - pages/tutorial-dataprep.qmd
-          - section: "Part 2: Estimation"
+          - section: "II. Estimation"
             contents:
               - pages/direct-estimation.qmd
-              - pages/freq-area-sae.qmd
               - pages/bayesian-area-sae.qmd
-              - pages/unit-level-sae.qmd
-          - section: "Part 3: Reporting"
-            contents:
               - pages/diagnostics.qmd
+          - section: "Extended methods"
+            contents:
+              - pages/freq-area-sae.qmd
+              - pages/unit-level-sae.qmd
       - section: "Resources"
         contents:
           - pages/sae-toolkit.qmd

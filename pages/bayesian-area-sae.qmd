@@ -1,40 +1,84 @@
 ---
-title: "[WIP] Area-Level Estimation (Bayesian) + Spatial"
+title: "[WIP] Area-Level Estimation (Bayesian)"
+execute:
+  eval: true
 ---
 
-This notebook extends the area-level Fay-Herriot workflow. It first reframes area-level SAE in Bayesian terms, then shows why spatial structure may be useful when neighbouring domains share unexplained patterns.
+Area-level SAE improves direct estimates that are too noisy, unstable, or unavailable for some domains. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct survey estimates with domain-level covariates to improve precision.
 
-## Bayesian versus Frequentist approach
+## Understanding the basic Fay-Herriot model
 
-Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :
+The Fay-Herriot model is an **area-level small area estimation model**. It combines two sources of information for each domain:
 
-$$
-\hat{\theta}^{DIR}_d =
-x_d^\top\beta + u_d + e_d.
-$$
+1. the **direct survey estimate** for the domain, and  
+2. the **model-based prediction** from covariates.
 
-The difference is how the unknown quantities are estimated and how uncertainty is interpreted. 
-
-- In the **frequentist** approach, unknown quantities such as $\beta$, $\sigma_u^2$, and $u_d$ are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), uncertainty measures such as RMSE, and confidence intervals.
-- In the **Bayesian** approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries. 
-
-This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.
-
-[ADD IMAGE]
-
-Therefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach.
-
-## Spatial Structure
-
-Going back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects $u_d$ are *independent* after accounting for covariates. In urban research, this is rarely true. This extension of the Fay-Herriot model assumes spatial correlation between areas, i.e., the values of one area will be influenced *by the values of the areas around it.*
+Their relationship can be written as:
 
 $$
-u = \rho W u + \eta,\qquad \eta \sim N(0,\sigma^2 I)
+\hat{\theta}^{DIR}_d = x_d^\top \beta + u_d + e_d
 $$
 
-Adding spatial structure, usually a binary **spatial weights matrix** $W$, lets the model borrow strength not only from covariates, but also from nearby areas. 
+where:
 
-[ADD IMAGE]
+- $\hat{\theta}^{DIR}_d$ is the direct survey estimate for domain $d$;
+- $x_d^\top \beta$ is the part explained by covariates (i.e., model prediction);
+- $u_d$ is the domain-specific unexplained effect;
+- $e_d$ is the survey sampling error.
+
+The **Fay-Herriot estimate** is then a weighted average between the direct estimate and the model-based prediction:
+
+$$
+\tilde{\theta}^{FH}_d =
+\gamma_d \hat{\theta}^{DIR}_d
++
+(1-\gamma_d)x_d^\top\hat{\beta}
+$$
+
+The **shrinkage weight** $\gamma_d =\frac{\sigma_u^2}{\sigma_u^2 + \psi_d}$ controls how much the final estimate relies on the direct survey estimate versus the model-based prediction, using sampling variance $\psi_d$ and between-domain unexplained variance $\sigma_u^2$ (i.e., variance of $u_d$).
+
+- If $\psi_d$ is small (the direct estimate is precise), $\gamma_d$ is closer to 1 and the FH estimate stays close to the direct estimate;
+- If $\psi_d$ is large (the direct estimate is noisy), $\gamma_d$ is closer to 0 and the FH estimate is pulled more strongly toward the model-based prediction;
+- If $\sigma_u^2$ is large (strong remaining differences among domains), the FH estimate gives more weight to the direct estimate.
+- If $\sigma_u^2$ is small (weak remaining differences among domains), the FH estimate is pulled more strongly toward the model-based prediction.
+
+Essentially, the Fay-Herriot model evaluates how reliable the direct estimates are. Reliable direct estimates are mostly preserved, while noisy direct estimates borrow more information from the model.
+
+## What is the Bayesian approach?
+
+The Bayesian approach treats the unknown quantities as uncertain. Instead of estimating $\beta$, $\sigma_u^2$, and $\gamma_d$ once and plugging them into the formula, the Bayesian model gives them probability distributions.
+
+As a result, the Bayesian FH estimate is usually reported as the **posterior mean of a distribution** of plausible true values with a **credible interval**. 
+
+> E.g., a **95% credible interval** represents the range within which the true domain value lies with 95% probability.
+
+The Bayesian approach is also flexible when dealing with domains with little or no survey data. If a domain has no direct estimate, the model can still predict a plausible value using its covariates and the patterns learned from other domains. That said, these estimates will be by design more model-dependent and usually have wider credible intervals.
+
+[ADD IMAGE - credible intervals]
+
+## Spatial structure
+
+The basic Fay-Herriot model usually assumes that the unexplained area effects $u_d$ are **independent** after accounting for covariates. In urban research, this assumption is often unrealistic. Nearby areas may share infrastructure, socio-demographic profiles, transport conditions, etc. As a result, neighbouring areas may still have **similar unexplained effects** even after covariates have been included.
+
+A spatial Fay-Herriot model relaxes this independence assumption by allowing the unexplained area effects to be spatially related. One way to express this is:
+
+$$
+u = \rho W u + \eta
+$$
+
+where:
+
+- $u$ is the vector of unexplained area effects;
+- $W$ is a spatial weights matrix describing which areas are neighbours (based on adjacency, distance, etc.);
+- $\rho$ controls the strength of spatial dependence;
+- $\eta$ is the remaining non-spatial random variation.
+
+[ADD IMAGE - spatial weight matrix]
+
+Essentially, the model informed by $W$ tries to relate the unexplained effect in one area to the unexplained effects in nearby areas. The strength of this spatial relationship is estimated by the model:
+
+- if nearby areas have similar unexplained effects, $\rho$ will indicate stronger spatial dependence, and the model applies more spatial smoothing;
+- if nearby areas are not strongly related, the spatial effect contributes less, and the model behaves more like the non-spatial Fay-Herriot model.
 
 ## Code Implementation
 
@@ -43,8 +87,6 @@ For Bayesian area-level SAE, the main package used here is [`SUMMER`](https://cr
 
 - Use [`SUMMER::smoothArea()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html) when you already have direct estimates and their variances. 
 - Use [`SUMMER::smoothSurvey()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html) when you want `SUMMER` to calculate design-adjusted direct estimates from survey microdata before smoothing. 
-
-The `sae` package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure automatically. These cases require extra implementation work.
 :::
 
 ### Worked Example

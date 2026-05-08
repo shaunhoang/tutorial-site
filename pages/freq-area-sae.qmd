@@ -1,32 +1,24 @@
 ---
 title: "[WIP] Area-Level Estimation (Frequentist)"
+execute:
+  eval: true
 ---
 
 Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct estimates with domain-level covariates to improve precision.
 
 ## Understanding the Fay-Herriot model
 
-Fay-Herriot combines two pieces of information for each domain:
-
-1. the direct estimate from the survey, and
-2. a covariate-based model prediction.
-
-The direct estimate $\hat{\theta}_d^{DIR}$ can be written as the covariate-explained part $x_d^\top\beta$, plus an area-specific unexplained effect $u_d$, plus survey sampling noise $e_d$.
+Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :
 
 $$
 \hat{\theta}^{DIR}_d =
 x_d^\top\beta + u_d + e_d.
 $$
 
-The FH estimate, is a weighted average of the direct estimate and the covariate-based prediction:
-
 $$
-\hat{\theta}^{FH}_d =
-\hat{\gamma}_d \hat{\theta}^{DIR}_d
-+
-(1-\hat{\gamma}_d) x_d^\top\hat{\beta}.
+\tilde{\theta}^{FH}_d = \gamma_d \hat{\theta}^{DIR}_d
++ (1-\gamma_d)x_d^\top\beta .
 $$
-
 The shrinkage weight $\hat{\gamma}_d = \frac{\hat{\sigma}_u^2}{\hat{\sigma}_u^2 + \psi_d}$, where $\psi_d$ is the sampling variance of the direct estimate, controls how much the FH estimate "trusts" the direct estimate:
 
 - if $\psi_d$ is small, the direct estimate is precise, so $\hat{\gamma}_d$ is closer to 1;
@@ -34,25 +26,21 @@ The shrinkage weight $\hat{\gamma}_d = \frac{\hat{\sigma}_u^2}{\hat{\sigma}_u^2 
 
 In practice, FH leaves precise direct estimates mostly unchanged, while pulling noisy direct estimates toward the covariate-based prediction.
 
+The difference is how the unknown quantities are estimated and how uncertainty is interpreted. 
+
+- In the **frequentist** approach, unknown quantities such as $\beta$, $\sigma_u^2$, and $u_d$ are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), uncertainty measures such as RMSE, and confidence intervals.
+- In the **Bayesian** approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries. 
+
+This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.
+
+Therefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach.
+
 :::{.callout-note}
 In this **frequentist** FH workflow, the main outputs are the model-based estimate (**EBLUP**) and its uncertainty (**RMSE**). 
 
 - If EBLUPs stay close to precise direct estimates and RMSE is acceptable, the estimates may be suitable for reporting. 
 - If results are sensitive to covariate choice or diagnostics show poor fit, revisit the covariates and refit the model.
 :::
-
-## Covariate Choices
-
-Domain-level covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across domains. 
-
-- **Coverage:** each covariate should be available for all target domains.
-- **Alignment:** match geography, definition, and reference period to the survey indicator.
-- **Relevance:** keep variables with a clear substantive link to the outcome and avoid including many weak predictors.
-- **Predictive:** choose covariates that improve domain-level prediction and are easy to explain; avoid downstream variables, and remove or combine highly correlated predictors.
-
-Common examples of covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessibility metrics, car ownership, etc.
-
-[ADD IMAGE]
 
 ## Code Implementation
 

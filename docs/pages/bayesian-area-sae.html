@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - [WIP] Area-Level Estimation (Bayesian) + Spatial</title>
+<title>Small Area Estimation for Urban Analytics - [WIP] Area-Level Estimation (Bayesian)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/unit-level-sae.html" rel="next">
-<link href="../pages/freq-area-sae.html" rel="prev">
+<link href="../pages/diagnostics.html" rel="next">
+<link href="../pages/direct-estimation.html" rel="prev">
 <link href="../assets/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -97,15 +97,15 @@ ul.task-list li input[type="checkbox"] {
     <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
         <li>
     <a class="dropdown-item" href="../pages/prepare-inputs.html" rel="" target="">
- <span class="dropdown-text">Preparation</span></a>
+ <span class="dropdown-text">I. Preparation</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../pages/direct-estimation.html" rel="" target="">
- <span class="dropdown-text">Estimation</span></a>
+ <span class="dropdown-text">II. Estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../pages/diagnostics.html" rel="" target="">
- <span class="dropdown-text">Reporting</span></a>
+    <a class="dropdown-item" href="../pages/freq-area-sae.html" rel="" target="">
+ <span class="dropdown-text">Extended Methods</span></a>
   </li>  
     </ul>
   </li>
@@ -139,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">Part 2: Estimation</a></li><li class="breadcrumb-item"><a href="../pages/bayesian-area-sae.html">[WIP] Area-Level Estimation (Bayesian) + Spatial</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/direct-estimation.html">II. Estimation</a></li><li class="breadcrumb-item"><a href="../pages/bayesian-area-sae.html">[WIP] Area-Level Estimation (Bayesian)</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -188,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false">
- <span class="menu-text">Part 1: Preparation</span></a>
+ <span class="menu-text">I. Preparation</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -197,7 +197,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Conceptual Overview</span></a>
+ <span class="menu-text">Overview of Preparation Workflow</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -211,7 +211,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
- <span class="menu-text">Part 2: Estimation</span></a>
+ <span class="menu-text">II. Estimation</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -220,9 +220,32 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/direct-estimation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Direct Estimation</span></a>
+ <span class="menu-text">Direct Estimation</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">[WIP] Area-Level Estimation (Bayesian)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Diagnostics, Reporting, and Benchmarking</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+ <span class="menu-text">Extended methods</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
@@ -231,31 +254,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">[WIP] Area-Level Estimation (Bayesian) + Spatial</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level Estimation</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
- <span class="menu-text">Part 3: Reporting</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics, Reporting, and Benchmarking</span></a>
+ <span class="menu-text">Bonus: Unit-Level Estimation</span></a>
   </div>
 </li>
       </ul>
@@ -295,11 +295,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#bayesian-versus-frequentist-approach" id="toc-bayesian-versus-frequentist-approach" class="nav-link active" data-scroll-target="#bayesian-versus-frequentist-approach"><span class="header-section-number">1</span> Bayesian versus Frequentist approach</a></li>
-  <li><a href="#spatial-structure" id="toc-spatial-structure" class="nav-link" data-scroll-target="#spatial-structure"><span class="header-section-number">2</span> Spatial Structure</a></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a>
+  <li><a href="#understanding-the-basic-fay-herriot-model" id="toc-understanding-the-basic-fay-herriot-model" class="nav-link active" data-scroll-target="#understanding-the-basic-fay-herriot-model"><span class="header-section-number">1</span> Understanding the basic Fay-Herriot model</a></li>
+  <li><a href="#what-is-the-bayesian-approach" id="toc-what-is-the-bayesian-approach" class="nav-link" data-scroll-target="#what-is-the-bayesian-approach"><span class="header-section-number">2</span> What is the Bayesian approach?</a></li>
+  <li><a href="#spatial-structure" id="toc-spatial-structure" class="nav-link" data-scroll-target="#spatial-structure"><span class="header-section-number">3</span> Spatial structure</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">4</span> Code Implementation</a>
   <ul class="collapse">
-  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">3.1</span> Worked Example</a></li>
+  <li><a href="#worked-example" id="toc-worked-example" class="nav-link" data-scroll-target="#worked-example"><span class="header-section-number">4.1</span> Worked Example</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -309,7 +310,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">[WIP] Area-Level Estimation (Bayesian) + Spatial</h1>
+<h1 class="title">[WIP] Area-Level Estimation (Bayesian)</h1>
 </div>
 
 
@@ -324,34 +325,75 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>This notebook extends the area-level Fay-Herriot workflow. It first reframes area-level SAE in Bayesian terms, then shows why spatial structure may be useful when neighbouring domains share unexplained patterns.</p>
-<section id="bayesian-versus-frequentist-approach" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="bayesian-versus-frequentist-approach"><span class="header-section-number">1</span> Bayesian versus Frequentist approach</h2>
-<p>Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :</p>
+<p>Area-level SAE improves direct estimates that are too noisy, unstable, or unavailable for some domains. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct survey estimates with domain-level covariates to improve precision.</p>
+<section id="understanding-the-basic-fay-herriot-model" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="understanding-the-basic-fay-herriot-model"><span class="header-section-number">1</span> Understanding the basic Fay-Herriot model</h2>
+<p>The Fay-Herriot model is an <strong>area-level small area estimation model</strong>. It combines two sources of information for each domain:</p>
+<ol type="1">
+<li>the <strong>direct survey estimate</strong> for the domain, and<br>
+</li>
+<li>the <strong>model-based prediction</strong> from covariates.</li>
+</ol>
+<p>Their relationship can be written as:</p>
 <p><span class="math display">\[
-\hat{\theta}^{DIR}_d =
-x_d^\top\beta + u_d + e_d.
+\hat{\theta}^{DIR}_d = x_d^\top \beta + u_d + e_d
 \]</span></p>
-<p>The difference is how the unknown quantities are estimated and how uncertainty is interpreted.</p>
+<p>where:</p>
 <ul>
-<li>In the <strong>frequentist</strong> approach, unknown quantities such as <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\sigma_u^2\)</span>, and <span class="math inline">\(u_d\)</span> are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), uncertainty measures such as RMSE, and confidence intervals.</li>
-<li>In the <strong>Bayesian</strong> approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries.</li>
+<li><span class="math inline">\(\hat{\theta}^{DIR}_d\)</span> is the direct survey estimate for domain <span class="math inline">\(d\)</span>;</li>
+<li><span class="math inline">\(x_d^\top \beta\)</span> is the part explained by covariates (i.e., model prediction);</li>
+<li><span class="math inline">\(u_d\)</span> is the domain-specific unexplained effect;</li>
+<li><span class="math inline">\(e_d\)</span> is the survey sampling error.</li>
 </ul>
-<p>This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.</p>
-<p>[ADD IMAGE]</p>
-<p>Therefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach.</p>
-</section>
-<section id="spatial-structure" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="spatial-structure"><span class="header-section-number">2</span> Spatial Structure</h2>
-<p>Going back to the FH model equation cited above, the non-spatial area-level model assumes the unexplained area effects <span class="math inline">\(u_d\)</span> are <em>independent</em> after accounting for covariates. In urban research, this is rarely true. This extension of the Fay-Herriot model assumes spatial correlation between areas, i.e., the values of one area will be influenced <em>by the values of the areas around it.</em></p>
+<p>The <strong>Fay-Herriot estimate</strong> is then a weighted average between the direct estimate and the model-based prediction:</p>
 <p><span class="math display">\[
-u = \rho W u + \eta,\qquad \eta \sim N(0,\sigma^2 I)
+\tilde{\theta}^{FH}_d =
+\gamma_d \hat{\theta}^{DIR}_d
++
+(1-\gamma_d)x_d^\top\hat{\beta}
 \]</span></p>
-<p>Adding spatial structure, usually a binary <strong>spatial weights matrix</strong> <span class="math inline">\(W\)</span>, lets the model borrow strength not only from covariates, but also from nearby areas.</p>
-<p>[ADD IMAGE]</p>
+<p>The <strong>shrinkage weight</strong> <span class="math inline">\(\gamma_d =\frac{\sigma_u^2}{\sigma_u^2 + \psi_d}\)</span> controls how much the final estimate relies on the direct survey estimate versus the model-based prediction, using sampling variance <span class="math inline">\(\psi_d\)</span> and between-domain unexplained variance <span class="math inline">\(\sigma_u^2\)</span> (i.e., variance of <span class="math inline">\(u_d\)</span>).</p>
+<ul>
+<li>If <span class="math inline">\(\psi_d\)</span> is small (the direct estimate is precise), <span class="math inline">\(\gamma_d\)</span> is closer to 1 and the FH estimate stays close to the direct estimate;</li>
+<li>If <span class="math inline">\(\psi_d\)</span> is large (the direct estimate is noisy), <span class="math inline">\(\gamma_d\)</span> is closer to 0 and the FH estimate is pulled more strongly toward the model-based prediction;</li>
+<li>If <span class="math inline">\(\sigma_u^2\)</span> is large (strong remaining differences among domains), the FH estimate gives more weight to the direct estimate.</li>
+<li>If <span class="math inline">\(\sigma_u^2\)</span> is small (weak remaining differences among domains), the FH estimate is pulled more strongly toward the model-based prediction.</li>
+</ul>
+<p>Essentially, the Fay-Herriot model evaluates how reliable the direct estimates are. Reliable direct estimates are mostly preserved, while noisy direct estimates borrow more information from the model.</p>
 </section>
-<section id="code-implementation" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
+<section id="what-is-the-bayesian-approach" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-is-the-bayesian-approach"><span class="header-section-number">2</span> What is the Bayesian approach?</h2>
+<p>The Bayesian approach treats the unknown quantities as uncertain. Instead of estimating <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\sigma_u^2\)</span>, and <span class="math inline">\(\gamma_d\)</span> once and plugging them into the formula, the Bayesian model gives them probability distributions.</p>
+<p>As a result, the Bayesian FH estimate is usually reported as the <strong>posterior mean of a distribution</strong> of plausible true values with a <strong>credible interval</strong>.</p>
+<blockquote class="blockquote">
+<p>E.g., a <strong>95% credible interval</strong> represents the range within which the true domain value lies with 95% probability.</p>
+</blockquote>
+<p>The Bayesian approach is also flexible when dealing with domains with little or no survey data. If a domain has no direct estimate, the model can still predict a plausible value using its covariates and the patterns learned from other domains. That said, these estimates will be by design more model-dependent and usually have wider credible intervals.</p>
+<p>[ADD IMAGE - credible intervals]</p>
+</section>
+<section id="spatial-structure" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="spatial-structure"><span class="header-section-number">3</span> Spatial structure</h2>
+<p>The basic Fay-Herriot model usually assumes that the unexplained area effects <span class="math inline">\(u_d\)</span> are <strong>independent</strong> after accounting for covariates. In urban research, this assumption is often unrealistic. Nearby areas may share infrastructure, socio-demographic profiles, transport conditions, etc. As a result, neighbouring areas may still have <strong>similar unexplained effects</strong> even after covariates have been included.</p>
+<p>A spatial Fay-Herriot model relaxes this independence assumption by allowing the unexplained area effects to be spatially related. One way to express this is:</p>
+<p><span class="math display">\[
+u = \rho W u + \eta
+\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(u\)</span> is the vector of unexplained area effects;</li>
+<li><span class="math inline">\(W\)</span> is a spatial weights matrix describing which areas are neighbours (based on adjacency, distance, etc.);</li>
+<li><span class="math inline">\(\rho\)</span> controls the strength of spatial dependence;</li>
+<li><span class="math inline">\(\eta\)</span> is the remaining non-spatial random variation.</li>
+</ul>
+<p>[ADD IMAGE - spatial weight matrix]</p>
+<p>Essentially, the model informed by <span class="math inline">\(W\)</span> tries to relate the unexplained effect in one area to the unexplained effects in nearby areas. The strength of this spatial relationship is estimated by the model:</p>
+<ul>
+<li>if nearby areas have similar unexplained effects, <span class="math inline">\(\rho\)</span> will indicate stronger spatial dependence, and the model applies more spatial smoothing;</li>
+<li>if nearby areas are not strongly related, the spatial effect contributes less, and the model behaves more like the non-spatial Fay-Herriot model.</li>
+</ul>
+</section>
+<section id="code-implementation" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">4</span> Code Implementation</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -367,11 +409,10 @@ Tip
 <li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html"><code>SUMMER::smoothArea()</code></a> when you already have direct estimates and their variances.</li>
 <li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html"><code>SUMMER::smoothSurvey()</code></a> when you want <code>SUMMER</code> to calculate design-adjusted direct estimates from survey microdata before smoothing.</li>
 </ul>
-<p>The <code>sae</code> package, which applies a Frequentist approach to SAE, does not handle out-of-sample domains (i.e., domains without respondent records) and spatial structure automatically. These cases require extra implementation work.</p>
 </div>
 </div>
-<section id="worked-example" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">3.1</span> Worked Example</h3>
+<section id="worked-example" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="worked-example"><span class="header-section-number">4.1</span> Worked Example</h3>
 <p>Lorem Ipsum - share real example National Survey of Wales</p>
 
 
@@ -628,13 +669,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/freq-area-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">[WIP] Area-Level Estimation (Frequentist)</span>
+      <a href="../pages/direct-estimation.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Direct Estimation</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/unit-level-sae.html" class="pagination-link">
-        <span class="nav-page-text">Unit-Level Estimation</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/diagnostics.html" class="pagination-link">
+        <span class="nav-page-text">[WIP] Diagnostics, Reporting, and Benchmarking</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
