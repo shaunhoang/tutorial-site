@@ -2,28 +2,28 @@
   {
     "objectID": "pages/unit-level-sae.html",
     "href": "pages/unit-level-sae.html",
-    "title": "Bonus: Unit-Level Estimation",
+    "title": "Unit-Level Estimation",
     "section": "",
     "text": "Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models."
   },
   {
     "objectID": "pages/unit-level-sae.html#understanding-unit-level-estimation",
     "href": "pages/unit-level-sae.html#understanding-unit-level-estimation",
-    "title": "Bonus: Unit-Level Estimation",
+    "title": "Unit-Level Estimation",
     "section": "1 Understanding Unit-Level Estimation",
     "text": "1 Understanding Unit-Level Estimation\nIn area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:\n\\[\ny_{di} =\nx_{di}^{\\top}\\beta + u_d + e_{di},\n\\]\nwhere \\(y_{di}\\) is the outcome for unit \\(i\\) in domain \\(d\\), \\(x_{di}\\) is a vector of unit-level covariates, \\(u_d\\) is the area effect, and \\(e_{di}\\) is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.\nThe domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:\n\\[\n\\theta_d =\n\\frac{1}{N_d}\n\\sum_{i \\in U_d} y_{di}.\n\\]\nThis makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.\n[ADD IMAGE]"
   },
   {
     "objectID": "pages/unit-level-sae.html#caveats-with-unit-level-estimation",
     "href": "pages/unit-level-sae.html#caveats-with-unit-level-estimation",
-    "title": "Bonus: Unit-Level Estimation",
+    "title": "Unit-Level Estimation",
     "section": "2 Caveats with Unit-Level Estimation",
     "text": "2 Caveats with Unit-Level Estimation\nUnit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.\n\n\n\n\n\n\nPros:\n\nUses individual or household covariates directly, rather than area averages\nCan aggregate to several geographic scales\n\nCons:\n\nSurvey and population datasets need to be harmonised and include the same covariates\nMore sensitive estimates because predictions are made for many non-sampled units and scaled up to population level\nMore technically demanding, especially in terms of privacy/access\n\n\n\n\nIn general, prefer Area-level SAE when only domain-level covariates are available. Unit-level SAE is more realistic when suitable population microdata, or a validated synthetic population can provide the prediction population."
   },
   {
     "objectID": "pages/unit-level-sae.html#code-implementation",
     "href": "pages/unit-level-sae.html#code-implementation",
-    "title": "Bonus: Unit-Level Estimation",
+    "title": "Unit-Level Estimation",
     "section": "3 Code Implementation",
     "text": "3 Code Implementation\n\n\n\n\n\n\nTip\n\n\n\nUse SUMMER::smoothUnit() to fit a basic unit-level SAE model from a survey::svydesign() object and population unit-level covariates. It supports using an adjacency matrix for spatial structure."
   },
@@ -177,28 +177,28 @@
   {
     "objectID": "pages/diagnostics.html",
     "href": "pages/diagnostics.html",
-    "title": "[WIP] Diagnostics, Reporting, and Benchmarking",
+    "title": "[WIP] Diagnostics and Reporting",
     "section": "",
     "text": "SAE methods is best visualised as a pipeline and their outputs should be evaluated at each step to decide whether estimates and uncertainties are good enough to report."
   },
   {
     "objectID": "pages/diagnostics.html#evaluate-the-estimates-and-benchmarking",
     "href": "pages/diagnostics.html#evaluate-the-estimates-and-benchmarking",
-    "title": "[WIP] Diagnostics, Reporting, and Benchmarking",
+    "title": "[WIP] Diagnostics and Reporting",
     "section": "1 Evaluate the Estimates and Benchmarking",
     "text": "1 Evaluate the Estimates and Benchmarking\nFocus on a few checks:\n\nDirect vs modelled: do modelled estimates stay close to precise direct estimates?\nUncertainty: which domains still have large SE, RMSE, RSE, or wide credible intervals?\nModel effect: which domains move most after adding covariates or spatial structure?\nSpatial pattern: do residuals still show geographic structure?\n\nFinally, compare aggregated final estimates with known higher-level totals, if available. This helps check whether the small-area estimates remain consistent with trusted regional or national figures. This step is more important as the estimation workflow becomes more complex, especially for unit-level estimation approach."
   },
   {
     "objectID": "pages/diagnostics.html#report-estimates-and-uncertainty",
     "href": "pages/diagnostics.html#report-estimates-and-uncertainty",
-    "title": "[WIP] Diagnostics, Reporting, and Benchmarking",
+    "title": "[WIP] Diagnostics and Reporting",
     "section": "2 Report Estimates and Uncertainty",
     "text": "2 Report Estimates and Uncertainty\nReport the uncertainty measure that matches the method used:\n\n\n\n\n\n\n\nWorkflow\nUncertainty to report\n\n\n\n\nDirect estimation\nstandard error, confidence interval, RSE\n\n\nFrequentist Fay-Herriot\nMSE, RMSE, approximate confidence interval\n\n\nBayesian or spatial SAE\ncredible interval, posterior probability, threshold probability\n\n\nUnit-level SAE\nbootstrap MSE/RMSE, simulation interval, credible interval, or posterior interval depending on the model\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nUseful outputs include estimate maps, uncertainty maps, direct-versus-model plots, and flags for domains where estimates are mostly model-driven."
   },
   {
     "objectID": "pages/diagnostics.html#code-implementation",
     "href": "pages/diagnostics.html#code-implementation",
-    "title": "[WIP] Diagnostics, Reporting, and Benchmarking",
+    "title": "[WIP] Diagnostics and Reporting",
     "section": "3 Code Implementation",
     "text": "3 Code Implementation\n\n3.1 Worked Example\nLorem Ipsum - share real example National Survey of Wales"
   },
