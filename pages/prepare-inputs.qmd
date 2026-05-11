@@ -1,5 +1,5 @@
 ---
-title: "Overview of Preparation Workflow"
+title: "Overview"
 ---
 
 Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the target domain, and a compatible survey weight.

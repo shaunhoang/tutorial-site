@@ -30,18 +30,13 @@ The workflow
 |---|---|---|
 | 1 |**[Preparing the Inputs](pages/prepare-inputs.qmd)** | Define what is being estimated, for whom, and at what geographical scale. |
 | 2 |**[Direct estimation](pages/direct-estimation.qmd)** | Estimate area-level indicators directly from the survey mnicrodata and assess their precision. |
-| 3 |**[Area-Level SAE (Bayesian) with Spatial](pages/bayesian-area-sae.qmd)** | Fit a Fay-Herriot model that improves direct estimates by borrowing strength from area-level covariates and spatial structure (Bayesian approach).  |
+| 3 |**[Area-Level estimation with Spatial](pages/bayesian-area-sae.qmd)** | Fit a Fay-Herriot model that improves direct estimates by borrowing strength from area-level covariates and spatial structure (Bayesian approach).  |
+| 3* |**[Unit-Level estimation](pages/unit-level-sae.qmd)** | A bottom-up approach to SAE using highly granular population unit data. |
 | 4 |**[Diagnose and Report](pages/diagnostics.qmd)** | Check model performance, report uncertainty, and present estimates. |
-
-Extended methods
-| No. | Method | Objective |
-|---|---|---|
-| 1 |**[Area-Level SAE (Frequentist)](pages/freq-area-sae.qmd)** | Fit a Fay-Herriot model that improves unstable direct estimates by borrowing strength from covariates (Frequentist approach). |
-| 2 |**[Unit-Level SAE](pages/unit-level-sae.qmd)** | A bottom-up approach to SAE using highly granular population unit data. |
 
 ## Resources
 \[draft\] 
 Supporting materials for adapting the workflow:
 
 -   **[SAE Toolkit](pages/sae-toolkit.qmd)** provides guidance on reusable input formats and shares helper scripts.
--   **[Troubleshooting](pages/troubleshooting.qmd)** lists common data, estimation, and reporting problems.
+-   **[FAQs](pages/faqs.qmd)** lists common data, estimation, and reporting problems.

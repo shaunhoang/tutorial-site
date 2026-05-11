@@ -129,17 +129,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Tutorial</span>
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-tutorial">    
+        <li class="dropdown-header">I. Preparation</li>
         <li>
     <a class="dropdown-item" href="../pages/prepare-inputs.html" rel="" target="">
- <span class="dropdown-text">I. Preparation</span></a>
+ <span class="dropdown-text">1. Overview</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../pages/tutorial-dataprep.html" rel="" target="">
+ <span class="dropdown-text">2. Worked example</span></a>
+  </li>  
+        <li class="dropdown-header">II. Estimation</li>
         <li>
     <a class="dropdown-item" href="../pages/direct-estimation.html" rel="" target="">
- <span class="dropdown-text">II. Estimation</span></a>
+ <span class="dropdown-text">1. Direct estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../pages/freq-area-sae.html" rel="" target="">
- <span class="dropdown-text">Extended Methods</span></a>
+    <a class="dropdown-item" href="../pages/bayesian-area-sae.html" rel="" target="">
+ <span class="dropdown-text">2. Area-level estimation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../pages/unit-level-sae.html" rel="" target="">
+ <span class="dropdown-text">3. Unit-level estimation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../pages/diagnostics.html" rel="" target="">
+ <span class="dropdown-text">4. Diagnostics and reporting</span></a>
   </li>  
     </ul>
   </li>
@@ -153,8 +167,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">SAE Toolkit</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../pages/troubleshooting.html" rel="" target="">
- <span class="dropdown-text">Troubleshooting</span></a>
+    <a class="dropdown-item" href="../pages/faqs.html" rel="" target="">
+ <span class="dropdown-text">FAQs</span></a>
   </li>  
     </ul>
   </li>
@@ -231,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/prepare-inputs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Overview of Preparation Workflow</span></a>
+ <span class="menu-text">Overview</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -266,24 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics, Reporting, and Benchmarking</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
- <span class="menu-text">Extended methods</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Area-Level Estimation (Frequentist)</span></a>
+ <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -298,13 +295,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
  <span class="menu-text">Resources</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/sae-toolkit.html" class="sidebar-item-text sidebar-link">
@@ -313,8 +310,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/troubleshooting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Troubleshooting</span></a>
+  <a href="../pages/faqs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] FAQs</span></a>
   </div>
 </li>
       </ul>
@@ -333,9 +330,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#next-step" id="toc-next-step" class="nav-link" data-scroll-target="#next-step"><span class="header-section-number">2</span> Next Step</a></li>
   <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a>
   <ul class="collapse">
-  <li><a href="#direct-estimation" id="toc-direct-estimation" class="nav-link" data-scroll-target="#direct-estimation"><span class="header-section-number">3.1</span> Direct Estimation</a></li>
-  <li><a href="#evaluate-direct-estimates" id="toc-evaluate-direct-estimates" class="nav-link" data-scroll-target="#evaluate-direct-estimates"><span class="header-section-number">3.2</span> Evaluate Direct Estimates</a></li>
-  <li><a href="#final-thoughts" id="toc-final-thoughts" class="nav-link" data-scroll-target="#final-thoughts"><span class="header-section-number">3.3</span> Final thoughts</a></li>
+  <li><a href="#frequent-walking-behaviour" id="toc-frequent-walking-behaviour" class="nav-link" data-scroll-target="#frequent-walking-behaviour"><span class="header-section-number">3.1</span> Frequent walking behaviour</a></li>
+  <li><a href="#mean-commute-distance" id="toc-mean-commute-distance" class="nav-link" data-scroll-target="#mean-commute-distance"><span class="header-section-number">3.2</span> Mean commute distance</a></li>
+  <li><a href="#dissatisfaction-with-bus-service" id="toc-dissatisfaction-with-bus-service" class="nav-link" data-scroll-target="#dissatisfaction-with-bus-service"><span class="header-section-number">3.3</span> Dissatisfaction with bus service</a></li>
+  <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation"><span class="header-section-number">3.4</span> Evaluation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -360,7 +358,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>Direct estimates are the first estimation step in an area-level SAE workflow. They show what the survey can say and how precisely, before applying any model-based estimation, i.e., borrowing strength from covariates or spatial structure.</p>
+<p>This workbook focuses on <code>walk_weekly</code>. We first produce the direct estimates, then evaluate whether those direct estimates are complete and precise enough to report. The same direct-estimation checks are then repeated for the other indicators, but their code is hidden so the page stays centred on the worked example.</p>
 <section id="direct-estimator-and-sampling-variances" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="direct-estimator-and-sampling-variances"><span class="header-section-number">1</span> Direct Estimator and Sampling Variances</h2>
 <p>The estimator should match the information available in the survey file and the estimand definition.</p>
@@ -396,7 +394,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Unknown Domain Sizes; no survey weights provided</td>
 <td>Unweight sample mean</td>
 <td><span class="math inline">\(\hat{\theta}_d^{DIR}=\frac{\sum_{i \in s_d}y_{di}}{n_d}\)</span></td>
-<td>The simplest form of direct estimator, likely biased if survey sampling is not random and imprecise when <span class="math inline">\(n_d\)</span> is too low</td>
+<td>The simplest form of direct estimator, likely biased if survey sampling is not random, and imprecise when <span class="math inline">\(n_d\)</span> is too low</td>
 </tr>
 </tbody>
 </table>
@@ -423,10 +421,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Revisit the domain choice, estimand, or input data before modelling.</td>
 </tr>
 <tr class="odd">
-<td>Direct estimates are imprecise and a quick model-based approach is enough</td>
-<td>Fit a <a href="../pages/freq-area-sae.html">Frequentist Area-Level SAE</a> model to borrow strength from covariates.</td>
-</tr>
-<tr class="even">
 <td>Direct estimates are imprecise, spatial effects matter, or uncertainty needs to be reported as probabilities</td>
 <td>Fit a <a href="../pages/bayesian-area-sae.html">Bayesian Area-Level SAE with Spatial</a> model to borrow strength from covariates and neighbouring areas.</td>
 </tr>
@@ -506,136 +500,38 @@ Tip
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(domain_id, domain_name) <span class="sc">|&gt;</span></span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="direct-estimation" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="direct-estimation"><span class="header-section-number">3.1</span> Direct Estimation</h3>
-<p>We will perform Direct Estimation for each of the three indicators differently according to data availability</p>
-<ul>
-<li><code>commute_distance</code>: Hajék estimator (no known domain sizes)</li>
-<li><code>poor_bus_satisfaction</code>: Hórvitz-Thompson estimator</li>
-<li><code>walk_weekly</code>: Hórvitz-Thompson estimator</li>
-</ul>
-<section id="mean-commute-distance" class="level4" data-number="3.1.1">
-<h4 data-number="3.1.1" class="anchored" data-anchor-id="mean-commute-distance"><span class="header-section-number">3.1.1</span> Mean Commute Distance</h4>
-<p>Load the <code>commute_distance</code> survey indicator. It has no known worker domain-size file, so the sum of analysis weights in each sampled MSOA is used as a pseudo domain size since <code>sae::direct()</code> requires a <code>domsize</code>.</p>
+<section id="frequent-walking-behaviour" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="frequent-walking-behaviour"><span class="header-section-number">3.1</span> Frequent walking behaviour</h3>
+<p><code>walk_weekly</code> estimates the proportion of people who walk at least weekly by Local Authority.</p>
+<p>Load the <code>walk_weekly</code> survey indicator and its matching total population LA domain-size file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>survey_indicator <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_commute_distance.csv"</span>),</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_walk_weekly.csv"</span>),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(indicator), <span class="sc">!</span><span class="fu">is.na</span>(weight), <span class="sc">!</span><span class="fu">is.na</span>(domain_id))</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>domain_sizes_pseudo <span class="ot">&lt;-</span> survey_indicator <span class="sc">|&gt;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(domain_id) <span class="sc">|&gt;</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">domain_size =</span> <span class="fu">sum</span>(weight), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>dir_est_commute <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator<span class="sc">$</span>indicator,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator<span class="sc">$</span>domain_id,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator<span class="sc">$</span>weight,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> domain_sizes_pseudo,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span> </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># required for sae::direct() to calculate variance when using Hajek estimator         </span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>dir_est_commute<span class="sc">$</span>Var <span class="ot">&lt;-</span> dir_est_commute<span class="sc">$</span>SD<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>dir_est_commute<span class="sc">$</span>Lower <span class="ot">&lt;-</span> dir_est_commute<span class="sc">$</span>Direct <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_commute<span class="sc">$</span>SD</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>dir_est_commute<span class="sc">$</span>Upper <span class="ot">&lt;-</span> dir_est_commute<span class="sc">$</span>Direct <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_commute<span class="sc">$</span>SD</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_commute)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     Domain SampSize    Direct        SD        CV        Var       Lower
-6 W02000001       11  9.699559 10.013940 103.24118  100.27899   -9.927763
-4 W02000002       11 11.214544  9.461629  84.36927   89.52243   -7.330249
-2 W02000003       11 10.648435 11.739061 110.24213  137.80556  -12.360125
-5 W02000005       12 25.326154 36.639024 144.66872 1342.41806  -46.486333
-7 W02000006       17 35.131997 99.311303 282.68049 9862.73497 -159.518157
-3 W02000007       12  9.908802  7.527014  75.96291   56.65594   -4.844146
-      Upper
-6  29.32688
-4  29.75934
-2  33.65700
-5  97.13864
-7 229.78215
-3  24.66175</code></pre>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>domain_sizes_walk <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"domain_sizes_population_la.csv"</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(domain_id, domain_size) <span class="sc">|&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</section>
-<section id="dissatisfaction-with-bus-service" class="level4" data-number="3.1.2">
-<h4 data-number="3.1.2" class="anchored" data-anchor-id="dissatisfaction-with-bus-service"><span class="header-section-number">3.1.2</span> Dissatisfaction with bus service</h4>
-<p>Load the <code>poor_bus_satisfaction</code> survey indicator and its matching adult MSOA domain-size file.</p>
+<p>The indicator has matching domain sizes (i.e., total population by LA), so we use a Horvitz-Thompson direct estimator, simply by specifying <code>domsize</code> in the <code>sae::direct()</code> function call</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>survey_indicator_bus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_poor_bus_satisfaction.csv"</span>),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(indicator), <span class="sc">!</span><span class="fu">is.na</span>(weight), <span class="sc">!</span><span class="fu">is.na</span>(domain_id))</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>msoa_adult_domain_sizes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"domain_sizes_adult_msoa.csv"</span>),</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(domain_id, domain_size) <span class="sc">|&gt;</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>dir_est_bus <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator_bus<span class="sc">$</span>indicator,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator_bus<span class="sc">$</span>domain_id,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator_bus<span class="sc">$</span>weight,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> msoa_adult_domain_sizes</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>dir_est_bus<span class="sc">$</span>Var <span class="ot">&lt;-</span> dir_est_bus<span class="sc">$</span>SD<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>dir_est_bus<span class="sc">$</span>Lower <span class="ot">&lt;-</span> dir_est_bus<span class="sc">$</span>Direct <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_bus<span class="sc">$</span>SD</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>dir_est_bus<span class="sc">$</span>Upper <span class="ot">&lt;-</span> dir_est_bus<span class="sc">$</span>Direct <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_bus<span class="sc">$</span>SD</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_bus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       Domain SampSize     Direct         SD       CV          Var       Lower
-7   W02000001       56 0.01753649 0.01746546 99.59493 0.0003050422 -0.01669580
-2   W02000002       50 0.19884501 0.13076212 65.76083 0.0170987318 -0.05744875
-6   W02000003       42 0.13140496 0.05029407 38.27411 0.0025294938  0.03282858
-408 W02000004        0         NA         NA       NA           NA          NA
-1   W02000005       54 0.15764472 0.05935876 37.65350 0.0035234620  0.04130156
-8   W02000006       46 0.03591922 0.03582941 99.74995 0.0012837466 -0.03430642
-         Upper
-7   0.05176879
-2   0.45513876
-6   0.22998134
-408         NA
-1   0.27398789
-8   0.10614487</code></pre>
-</div>
-</div>
-</section>
-<section id="walking" class="level4" data-number="3.1.3">
-<h4 data-number="3.1.3" class="anchored" data-anchor-id="walking"><span class="header-section-number">3.1.3</span> Walking</h4>
-<p>Load the <code>walk_weekly</code> survey indicator and its matching total population LA domain-size file.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_walk_weekly.csv"</span>),</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(indicator), <span class="sc">!</span><span class="fu">is.na</span>(weight), <span class="sc">!</span><span class="fu">is.na</span>(domain_id))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>domain_sizes_walk <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"domain_sizes_population_la.csv"</span>),</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(domain_id, domain_size) <span class="sc">|&gt;</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>dir_est_walk <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator_walk<span class="sc">$</span>indicator,</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator_walk<span class="sc">$</span>domain_id,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator_walk<span class="sc">$</span>weight,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> domain_sizes_walk</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>dir_est_walk<span class="sc">$</span>Var <span class="ot">&lt;-</span> dir_est_walk<span class="sc">$</span>SD<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>dir_est_walk<span class="sc">$</span>Lower <span class="ot">&lt;-</span> dir_est_walk<span class="sc">$</span>Direct <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_walk<span class="sc">$</span>SD</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>dir_est_walk<span class="sc">$</span>Upper <span class="ot">&lt;-</span> dir_est_walk<span class="sc">$</span>Direct <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_walk<span class="sc">$</span>SD</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_walk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dir_est_walk <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator_walk<span class="sc">$</span>indicator,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator_walk<span class="sc">$</span>domain_id,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator_walk<span class="sc">$</span>weight,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> domain_sizes_walk</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>dir_est_walk<span class="sc">$</span>Var <span class="ot">&lt;-</span> dir_est_walk<span class="sc">$</span>SD<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>dir_est_walk<span class="sc">$</span>Lower <span class="ot">&lt;-</span> dir_est_walk<span class="sc">$</span>Direct <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_walk<span class="sc">$</span>SD</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>dir_est_walk<span class="sc">$</span>Upper <span class="ot">&lt;-</span> dir_est_walk<span class="sc">$</span>Direct <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_walk<span class="sc">$</span>SD</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_walk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     Domain SampSize    Direct         SD       CV         Var     Lower
 1 W06000001       72 0.3628000 0.07515335 20.71481 0.005648025 0.2154995
@@ -654,87 +550,227 @@ Tip
 </div>
 </div>
 </section>
-</section>
-<section id="evaluate-direct-estimates" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="evaluate-direct-estimates"><span class="header-section-number">3.2</span> Evaluate Direct Estimates</h3>
-<p>The key questions now are whether any domains have no direct estimates or variance, and whether the direct estimates that do exist are precise enough to report. The two metrics to pay attention to are:</p>
-<ul>
-<li><code>median_cv</code>: the typical coefficient of variation, calculated as standard error divided by the estimate. If above 100%, it means the typical standard error is larger than the estimate itself.</li>
-<li><code>median_ci_width</code>: the typical width of the 95% confidence interval in real terms.</li>
-</ul>
-<ul>
-<li><strong>Mean Commute Distance</strong></li>
-</ul>
+<section id="mean-commute-distance" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="mean-commute-distance"><span class="header-section-number">3.2</span> Mean commute distance</h3>
+<p>The indicator <code>commute_distance</code> has no known worker domain-size file, so the sum of analysis weights in each sampled MSOA is used as a pseudo domain size because <code>sae::direct()</code> requires a <code>domsize</code>. This is a common workaround when working with <code>sae</code> and the Hajek estimator is called for.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>survey_indicator <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_commute_distance.csv"</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(indicator), <span class="sc">!</span><span class="fu">is.na</span>(weight), <span class="sc">!</span><span class="fu">is.na</span>(domain_id))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>domain_sizes_pseudo <span class="ot">&lt;-</span> survey_indicator <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(domain_id) <span class="sc">|&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">domain_size =</span> <span class="fu">sum</span>(weight), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>dir_est_commute <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator<span class="sc">$</span>indicator,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator<span class="sc">$</span>domain_id,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator<span class="sc">$</span>weight,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> domain_sizes_pseudo,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>dir_est_commute<span class="sc">$</span>Var <span class="ot">&lt;-</span> dir_est_commute<span class="sc">$</span>SD<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>dir_est_commute<span class="sc">$</span>Lower <span class="ot">&lt;-</span> dir_est_commute<span class="sc">$</span>Direct <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_commute<span class="sc">$</span>SD</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>dir_est_commute<span class="sc">$</span>Upper <span class="ot">&lt;-</span> dir_est_commute<span class="sc">$</span>Direct <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_commute<span class="sc">$</span>SD</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_commute)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 2
+<pre><code>     Domain SampSize    Direct        SD        CV        Var       Lower
+6 W02000001       11  9.699559 10.013940 103.24118  100.27899   -9.927763
+4 W02000002       11 11.214544  9.461629  84.36927   89.52243   -7.330249
+2 W02000003       11 10.648435 11.739061 110.24213  137.80556  -12.360125
+5 W02000005       12 25.326154 36.639024 144.66872 1342.41806  -46.486333
+7 W02000006       17 35.131997 99.311303 282.68049 9862.73497 -159.518157
+3 W02000007       12  9.908802  7.527014  75.96291   56.65594   -4.844146
+      Upper
+6  29.32688
+4  29.75934
+2  33.65700
+5  97.13864
+7 229.78215
+3  24.66175</code></pre>
+</div>
+</div>
+</section>
+<section id="dissatisfaction-with-bus-service" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="dissatisfaction-with-bus-service"><span class="header-section-number">3.3</span> Dissatisfaction with bus service</h3>
+<p>The indicator <code>poor_bus_satisfaction</code> uses the adult MSOA domain-size file, so it is also estimated with a Horvitz-Thompson direct estimator.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>survey_indicator_bus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_poor_bus_satisfaction.csv"</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(indicator), <span class="sc">!</span><span class="fu">is.na</span>(weight), <span class="sc">!</span><span class="fu">is.na</span>(domain_id))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>msoa_adult_domain_sizes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"domain_sizes_adult_msoa.csv"</span>),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(domain_id, domain_size) <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>dir_est_bus <span class="ot">&lt;-</span> sae<span class="sc">::</span><span class="fu">direct</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> survey_indicator_bus<span class="sc">$</span>indicator,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">dom =</span> survey_indicator_bus<span class="sc">$</span>domain_id,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">sweight =</span> survey_indicator_bus<span class="sc">$</span>weight,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">domsize =</span> msoa_adult_domain_sizes</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>dir_est_bus<span class="sc">$</span>Var <span class="ot">&lt;-</span> dir_est_bus<span class="sc">$</span>SD<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>dir_est_bus<span class="sc">$</span>Lower <span class="ot">&lt;-</span> dir_est_bus<span class="sc">$</span>Direct <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_bus<span class="sc">$</span>SD</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>dir_est_bus<span class="sc">$</span>Upper <span class="ot">&lt;-</span> dir_est_bus<span class="sc">$</span>Direct <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> dir_est_bus<span class="sc">$</span>SD</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_bus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Domain SampSize     Direct         SD       CV          Var       Lower
+7   W02000001       56 0.01753649 0.01746546 99.59493 0.0003050422 -0.01669580
+2   W02000002       50 0.19884501 0.13076212 65.76083 0.0170987318 -0.05744875
+6   W02000003       42 0.13140496 0.05029407 38.27411 0.0025294938  0.03282858
+408 W02000004        0         NA         NA       NA           NA          NA
+1   W02000005       54 0.15764472 0.05935876 37.65350 0.0035234620  0.04130156
+8   W02000006       46 0.03591922 0.03582941 99.74995 0.0012837466 -0.03430642
+         Upper
+7   0.05176879
+2   0.45513876
+6   0.22998134
+408         NA
+1   0.27398789
+8   0.10614487</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluation" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="evaluation"><span class="header-section-number">3.4</span> Evaluation</h3>
+<p>Direct estimation itself is prone to be insufficient: some domains may have no sampled observations at all especially when estimating across very small areas, while others may have so few data points that their estimates are not reliable.</p>
+<p>To assess the quality of the direct estimates, first check whether any domains lack a direct estimate because they have no samples.</p>
+<p>Next, assess whether the available direct estimates are precise enough to report. Two uncertainty metrics are especially important:</p>
+<ul>
+<li><code>median_cv</code>: the typical coefficient of variation, calculated as the standard error divided by the estimate. Values above 100% indicate that the typical standard error is larger than the estimate itself.</li>
+<li><code>median_ci_width</code>: the typical width of the 95% confidence interval, expressed in the original units.</li>
+</ul>
+<p>We define custom functions to summarise and plot these diagnostics.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>summarise_direct_estimates <span class="ot">&lt;-</span> <span class="cf">function</span>(result, master_domains) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  domains_no_data <span class="ot">&lt;-</span> master_domains <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">anti_join</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      result <span class="sc">|&gt;</span> <span class="fu">transmute</span>(<span class="at">domain_id =</span> Domain),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="st">"domain_id"</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  result <span class="sc">|&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">target_domain_n =</span> <span class="fu">nrow</span>(master_domains),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">domains_with_direct_estimate =</span> <span class="fu">n</span>(),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">domains_with_no_data =</span> <span class="fu">nrow</span>(domains_no_data),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">median_sample_size =</span> <span class="fu">median</span>(SampSize, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">median_cv =</span> <span class="fu">median</span>(CV, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">median_ci_width =</span> <span class="fu">median</span>(Upper <span class="sc">-</span> Lower, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">cols =</span> <span class="fu">everything</span>(),</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="st">"diagnostic"</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>plot_direct_estimates <span class="ot">&lt;-</span> <span class="cf">function</span>(result, boundaries) {</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  map_data <span class="ot">&lt;-</span> boundaries <span class="sc">|&gt;</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>      result,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"domain_id"</span> <span class="ot">=</span> <span class="st">"Domain"</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  estimate_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Direct), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"YlGnBu"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Direct estimate"</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_void</span>()</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  cv_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(map_data) <span class="sc">+</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> CV), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"OrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">fill =</span> <span class="st">"CV"</span>,</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Coefficient of Variation"</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_void</span>()</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  estimate_map <span class="sc">+</span> cv_map</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Summarise and plot the diagnostics of the <code>walk_weekly</code> direct estimates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise_direct_estimates</span>(dir_est_walk, la_master_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
   diagnostic                    value
   &lt;chr&gt;                         &lt;dbl&gt;
-1 target_domain_n               408  
-2 domains_with_direct_estimate  407  
-3 domains_with_no_data            1  
-4 domains_with_missing_variance   0  
-5 median_sample_size              9  
-6 median_cv                     106. 
-7 median_ci_width                40.1</code></pre>
+1 target_domain_n              22    
+2 domains_with_direct_estimate 22    
+3 domains_with_no_data          0    
+4 median_sample_size           79    
+5 median_cv                    20.5  
+6 median_ci_width               0.370</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_direct_estimates</span>(dir_est_walk,la_boundaries)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="direct-estimation_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="direct-estimation_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<ul>
-<li><strong>Dissatisfaction with bus service</strong></li>
-</ul>
+<p>Summarise and plot the diagnostics of the <code>commute_distance</code> direct estimates.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise_direct_estimates</span>(dir_est_commute, msoa_master_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 2
-  diagnostic                      value
-  &lt;chr&gt;                           &lt;dbl&gt;
-1 target_domain_n               408    
-2 domains_with_direct_estimate  408    
-3 domains_with_no_data            0    
-4 domains_with_missing_variance   1    
-5 median_sample_size             25    
-6 median_cv                      72.1  
-7 median_ci_width                 0.164</code></pre>
+<pre><code># A tibble: 6 × 2
+  diagnostic                   value
+  &lt;chr&gt;                        &lt;dbl&gt;
+1 target_domain_n              408  
+2 domains_with_direct_estimate 407  
+3 domains_with_no_data           1  
+4 median_sample_size             9  
+5 median_cv                    106. 
+6 median_ci_width               40.1</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_direct_estimates</span>(dir_est_commute, msoa_boundaries)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="direct-estimation_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="direct-estimation_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<ul>
-<li><strong>Walking</strong></li>
-</ul>
+<p>Summarise and plot the diagnostics of the <code>poor_bus_satisfaction</code> direct estimates.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise_direct_estimates</span>(dir_est_bus, msoa_master_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 2
+<pre><code># A tibble: 6 × 2
   diagnostic                     value
   &lt;chr&gt;                          &lt;dbl&gt;
-1 target_domain_n               22    
-2 domains_with_direct_estimate  22    
+1 target_domain_n              408    
+2 domains_with_direct_estimate 408    
 3 domains_with_no_data           0    
-4 domains_with_missing_variance  0    
-5 median_sample_size            79    
-6 median_cv                     20.5  
-7 median_ci_width                0.370</code></pre>
+4 median_sample_size            25    
+5 median_cv                     72.1  
+6 median_ci_width                0.164</code></pre>
 </div>
 </div>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_direct_estimates</span>(dir_est_bus,msoa_boundaries)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="direct-estimation_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="direct-estimation_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-</section>
-<section id="final-thoughts" class="level3" data-number="3.3">
-<h3 data-number="3.3" class="anchored" data-anchor-id="final-thoughts"><span class="header-section-number">3.3</span> Final thoughts</h3>
-<p>Overall, the direct estimates are useful as inputs, but model-based estimation is likely needed to produce more stable small-area estimates.</p>
-<p>That said, since model-based estimation methods work on these direct estimates and variances, having a solid base is essential before moving forward.</p>
-<p>In general, the high the sample size per domain, the more stable the estimates. Moreover, when domain sizes are known, the precision is also higher (<code>walk-weekly</code> and <code>poor_bus_satisfaction</code>’s median CVs are below 100%). By contrast, the estimates for <code>commute_distance</code> rely only on weights and has much higher relative uncertainty. This illustrates why suitable domain-size information is valuable in SAE.</p>
-<p>In the last scenario, another remedy is to redefine the estimand associated with <code>commute_distance</code> so that it applies to a population with known domain sizes, such as all adults, rather than a subgroup whose MSOA totals may be unavailable. However, this would essentially change what is being measured.</p>
+<p>Overall, the <code>walk_weekly</code> and <code>poor_bus_satisfaction</code> direct estimates are useful as inputs and are relatively stable because the indicator is estimated at local authority level with known population domain sizes.</p>
+<p>By contrast, the estimates for <code>commute_distance</code> rely only on weights and have much higher relative uncertainty. A remedy is to redefine the estimand associated with <code>commute_distance</code> so that it applies to a population with known domain sizes, such as all adults, rather than a subgroup whose MSOA totals may be unavailable. However, this would essentially change what is being measured.</p>
+<p>In general, the higher the sample size per domain, the more stable the estimates. Moreover, when domain sizes are known, precision is also higher. Since model-based estimation methods work on these direct estimates and variances, having a solid base is essential before moving forward.</p>
 
 
 </section>
