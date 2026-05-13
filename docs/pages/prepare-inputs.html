@@ -328,7 +328,7 @@ ul.task-list li input[type="checkbox"] {
 <p>The data preparation pipeline can be summarised as follows:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="../assets/dataprep_summary.png" class="img-fluid figure-img"></p>
+<p><img src="../assets/dataprep.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Preparation pipeline for analysis-ready inputs</figcaption>
 </figure>
 </div>
@@ -351,8 +351,8 @@ ul.task-list li input[type="checkbox"] {
 <li>share</li>
 <li>mean</li>
 <li>count</li>
-<li>rate (e.g., trips per adults)</li>
-<li>ratio (e.g., accidents per 1,000 residents)</li>
+<li>ratio (e.g., trips per adults)</li>
+<li>rate (e.g., accidents per 1,000 residents)</li>
 </ul>
 </section>
 <section id="outcome" class="level3" data-number="1.2">
@@ -416,13 +416,12 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li>E.g., if a sampling unit has an analysis weight of 0.5, it is over-represented in the sample relative to the population, so their contribution is ‘down-weighted’.</li>
 </ul></li>
-<li><strong>Grossing weights</strong> <span class="math inline">\(w^{G}\)</span> are essentially scaled-<span class="math inline">\(w^{A}\)</span> so that they sum to a known population total within the relevant estimation area. They are required if the estimand measure is <code>count</code>, <code>rate</code> (e.g., x per 1,000 adults).
+<li><strong>Grossing weights</strong> <span class="math inline">\(w^{G}\)</span> are essentially scaled-<span class="math inline">\(w^{A}\)</span> so that they sum to a known population total within the relevant estimation area. They are usually required if the estimand measure is <code>count</code>
 <ul>
 <li>E.g., if a sampling unit has a grossing weight of 50, it means this one sampled row represents about 50 people in the population.</li>
 </ul></li>
 </ul>
-<p>To calculate <code>count</code>, <code>rate</code> estimands, we not only need <strong>grossing weights</strong> to scale the sample to population totals, we also need to know these population totals at the chosen <strong>estimation geography</strong>.</p>
-<p>In SAE, these totals are called <strong>domain sizes</strong> <span class="math inline">\(N_d\)</span>, i.e.,the size of the target population in each estimation area, usually obtained from Census data or other regional statistics.</p>
+<p>To calculate <code>count</code> estimands, we not only need <strong>grossing weights</strong> to scale the sample to population totals, we also need to know these population totals at the chosen <strong>estimation geography</strong>. In SAE, these totals are called <strong>domain sizes</strong> <span class="math inline">\(N_d\)</span>, i.e.,the size of the target population in each estimation area, usually obtained from Census data or other regional statistics.</p>
 <p>E.g.,</p>
 <ul>
 <li>All residents by MSOA</li>

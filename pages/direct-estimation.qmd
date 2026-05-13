@@ -16,7 +16,9 @@ The estimator should match the information available in the survey file and the 
 | Unknown domain sizes; has survey weights | Hájek estimator |$\hat{\theta}_d^{DIR}=\frac{\sum_{i \in s_d}w_{di}^Ay_{di}}{\sum_{i \in s_d}w^A_{di}}$| Can only be used for estimating *means or proportions* when only using analysis weights and no reliable area population size is available |
 | Unknown domain sizes; no survey weights | Unweight sample mean |$\hat{\theta}_d^{DIR}=\frac{\sum_{i \in s_d}y_{di}}{n_d}$| The simplest form of direct estimator, likely biased if survey sampling is not random, and imprecise when $n_d$ is too low  |
 
-Here, the **direct estimate $\hat{\theta}_d^{DIR}$** is for **area $d$** with **sample size $n_d$** and **domain size $N_d$** if known. Direct estimates are paired with estimated **sampling variances**, telling us how much uncertainty comes from observing only a sample within each estimation area. The variance depends not only on the estimator, but also the weight scale, and survey design information available.
+Here, the **direct estimate $\hat{\theta}_d^{DIR}$** is for **area $d$** with **sample size $n_d$** and **domain size $N_d$** if known. 
+
+Direct estimates are paired with **sampling variances**, telling us how much uncertainty comes from observing only a sample within each estimation area. The variance depends not only on the estimator, but also the weight scale, and survey design information available.
 
 ## Evaluate direct estimates
 
@@ -79,59 +81,50 @@ We will first focus on producing and evaluating the estimates using the indicato
 ### Estimand: Frequent walkers per 1,000 residents by MSOA
 #### Direct Estimation
 
-Keep in mind that with `walk-weekly`, we are estimating:
+Keep in mind that with `freq_walker`, we are estimating:
 
-> **Rate per 1,000 residents** walking as main transport mode at least weekly across **MSOAs**
+> **Rate per 1,000 residents** walking as main transport mode daily across **MSOAs**
 
-`freq_walker` is a binary survey indicator for whether a respondent walks for transport at least weekly. We first scale `SampleTravelWeight` to a Wales-wide grossing weight using the total population across Welsh MSOAs. Then we estimate the weighted total number of weekly walkers in each MSOA, divide by the known MSOA population, and multiply by 1,000.
+`freq_walker` is a binary survey indicator for whether a respondent walks for transport daily. We first scale `SampleTravelWeight` within each sampled MSOA so that the weights sum to the known MSOA population. 
 
 ```{r}
-# Load the active-travel indicator with its module analysis weight
+# Load the active-travel indicator with its module analysis weight,
+# then attach the MSOA population used as the denominator
 survey_indicator_walk <- read_csv(
   file.path(base_path, "ind_weight_freq_walker.csv"),
   show_col_types = FALSE
-)
-
-# Scale SampleTravelWeight once to the Wales population total
-wales_population_total <- sum(msoa_totalpop_domsizes$domain_size, na.rm = TRUE)
-travel_weight_total <- sum(survey_indicator_walk$weight, na.rm = TRUE)
-wales_travel_scale <- wales_population_total / travel_weight_total
-
-survey_indicator_walk <- survey_indicator_walk |>
-  mutate(WalesTravelWeight = weight * wales_travel_scale)
-
-# Check that the scaled weight sums to the target population
-survey_indicator_walk |>
-  summarise(
-    WalesTravelWeight_sum = sum(WalesTravelWeight, na.rm = TRUE),
-    Wales_population_total = wales_population_total
-  )
-```
-```{r}
-# Attach the domain size (total pop per MSOA)
-survey_indicator_walk <- survey_indicator_walk |>
+) |>
   left_join(
     msoa_totalpop_domsizes |> select(domain_id, domain_size),
     by = "domain_id"
-  )
-
-survey_indicator_walk <- survey_indicator_walk |>
+) |>
   filter(
     !is.na(indicator),
-    !is.na(WalesTravelWeight),
+    !is.na(weight),
     !is.na(domain_id),
     !is.na(strata),
     !is.na(domain_size)
   )
 
+# Create an MSOA grossing weight for the active-travel sample (scaled from `SampleTravelWeight`)
+survey_indicator_walk <- survey_indicator_walk |>
+  group_by(domain_id) |>
+  mutate(
+    grossing_weight = weight * domain_size / sum(weight)
+  ) |>
+  ungroup()
+```
+Then we estimate the weighted total number of frequent walkers, divide by the MSOA population, and multiply by 1,000.
+```{r}
+# Set up the survey design
 design_walk <- survey::svydesign(
   ids = ~1,
   strata = ~strata,
-  weights = ~WalesTravelWeight,
+  weights = ~grossing_weight,
   data = survey_indicator_walk
 )
 
-# Estimate the total number of freq walkers in each MSOA
+# Estimate the weighted total in each MSOA
 walk_total <- survey::svyby(
   formula = ~indicator,
   by = ~domain_id + domain_size,
@@ -143,7 +136,7 @@ walk_total <- survey::svyby(
   as.data.frame() |>
   tibble::as_tibble()
 
-# Convert the total into a rate per 1,000 residents
+# Divide by the known MSOA population and keep the uncertainty on the same scale
 dir_est_walk <- walk_total |>
   transmute(
     domain = domain_id,
@@ -161,17 +154,15 @@ Alongside the direct estimate (`direct`) and its sampling variance (`variance`),
 - `ci_width` for the approximate width of the 95% confidence interval (expressed in the original units).
 
 #### Evaluation
+Direct estimation itself is prone to be insufficient. To assess the quality of the direct estimates, 
 
-Direct estimation itself is prone to be insufficient. For `freq_walker`, the direct estimate depends on only the respondents observed in each MSOA. Small samples can therefore create unstable rates and wide confidence intervals, even though the calculation uses the known MSOA population as the denominator. Since the weight is scaled once for Wales rather than calibrated within each MSOA, some small-sample area estimates may even exceed 1,000 and should be treated as unstable direct estimates.
-
-To assess the quality of the direct estimates, first check whether any estimation areas lack a direct estimate. In some cases, they might have a direct estimate but no useful variance, especially when `n = 1`. Next, assess whether the available direct estimates are precise enough to report by looking at `median_cv` and `median_ci_width`.
+- First check whether any estimation areas lack a direct estimate. In some cases, they might have a direct estimate but no useful variance, especially when `n = 1`. 
+- Next, assess whether the available direct estimates are precise enough to report by looking at metrics such as `median_cv` and `median_ci_width`.
 
 ```{r}
+# Plot estimate and CV
 walk_map_data <- msoa_boundaries |>
-  left_join(
-    dir_est_walk,
-    by = c("domain_id" = "domain")
-  )
+  left_join(dir_est_walk, by = c("domain_id" = "domain"))
 
 walk_estimate_map <- ggplot(walk_map_data) +
   geom_sf(aes(fill = direct), colour = "white", linewidth = 0.25) +
@@ -193,29 +184,27 @@ walk_cv_map <- ggplot(walk_map_data) +
 
 walk_estimate_map + walk_cv_map +
   plot_annotation(
-    title = "Residents walking weekly as main transport mode per 1,000 residents by MSOA"
+    title = "Residents walking daily as main transport mode per 1,000 residents by MSOA"
   )
 ```
 
 ```{r}
-walk_diagnostics <- msoa_totalpop_domsizes |>
+# Uncertainty diagnostics summary
+walk_sample_n <- survey_indicator_walk |>
+  count(domain_id, name = "n")
+
+msoa_totalpop_domsizes |>
   select(domain_id) |>
-  left_join(
-    survey_indicator_walk |>
-      count(domain_id, name = "n"),
-    by = "domain_id"
-  ) |>
+  left_join(walk_sample_n, by = "domain_id") |>
   left_join(
     dir_est_walk,
     by = c("domain_id" = "domain")
   ) |>
-  mutate(n = replace_na(n, 0L))
-
-walk_diagnostics |>
+  mutate(n = replace_na(n, 0L)) |>
   summarise(
-    areas_total = nrow(msoa_totalpop_domsizes),
-    areas_no_data = sum(n == 0, na.rm = TRUE),
-    areas_n_1 = sum(n == 1, na.rm = TRUE),
+    areas_total = n(),
+    areas_n_0 = sum(n == 0),
+    areas_n_lt2 = sum(n < 2),
     median_sample_size = median(n, na.rm = TRUE),
     median_cv = median(cv, na.rm = TRUE),
     median_ci_width = median(ci_width, na.rm = TRUE)
@@ -229,22 +218,30 @@ walk_diagnostics |>
 
 ### Estimand: Mean commute distance among commuters by MSOA
 #### Direct Estimation
-The indicator `commute_distance` is continuous, so the direct estimate is the weighted mean commute distance among available commuter respondents.
+The indicator `commute_distance` is continuous, so the direct estimate is simply the weighted mean commute distance among available commuter respondents (Hajek estimator).
 
 ```{r}
-survey_indicator <- read_csv(
+# Load the indicator and weight
+survey_indicator_commute <- read_csv(
   file.path(base_path, "ind_weight_commute_distance.csv"),
   show_col_types = FALSE
 ) |>
-  filter(!is.na(indicator), !is.na(weight), !is.na(domain_id), !is.na(strata))
+  filter(
+    !is.na(indicator), 
+    !is.na(weight), 
+    !is.na(domain_id), 
+    !is.na(strata)
+    )
 
+# Set up the survey design
 design_commute <- survey::svydesign(
   ids = ~1,
   strata = ~strata,
   weights = ~weight,
-  data = survey_indicator
+  data = survey_indicator_commute
 )
 
+# Estimate the weighted mean in each MSOA
 commute_mean <- survey::svyby(
   formula = ~indicator,
   by = ~domain_id,
@@ -256,6 +253,7 @@ commute_mean <- survey::svyby(
   as.data.frame() |>
   tibble::as_tibble()
 
+# Output with uncertainty measures
 dir_est_commute <- commute_mean |>
   transmute(
     domain = domain_id,
@@ -303,24 +301,21 @@ commute_estimate_map + commute_cv_map +
 
 ```{r}
 #| echo: false
-commute_diagnostics <- msoa_totalpop_domsizes |>
+commute_sample_n <- survey_indicator_commute |>
+  count(domain_id, name = "n")
+
+msoa_totalpop_domsizes |>
   select(domain_id) |>
-  left_join(
-    survey_indicator |>
-      count(domain_id, name = "n"),
-    by = "domain_id"
-  ) |>
+  left_join(commute_sample_n, by = "domain_id") |>
   left_join(
     dir_est_commute,
     by = c("domain_id" = "domain")
   ) |>
-  mutate(n = replace_na(n, 0L))
-
-commute_diagnostics |>
+  mutate(n = replace_na(n, 0L)) |>
   summarise(
-    areas_total = nrow(msoa_totalpop_domsizes),
-    areas_no_data = sum(n == 0, na.rm = TRUE),
-    areas_n_1 = sum(n == 1, na.rm = TRUE),
+    areas_total = n(),
+    areas_n_0 = sum(n == 0),
+    areas_n_lt2 = sum(n < 2),
     median_sample_size = median(n, na.rm = TRUE),
     median_cv = median(cv, na.rm = TRUE),
     median_ci_width = median(ci_width, na.rm = TRUE)
@@ -332,19 +327,26 @@ commute_diagnostics |>
   )
 ```
 
-### Estimand: Dissatisfaction with bus service among recent adult bus riders by MSOA
+### Estimand: Dissatisfied bus users among recent adult bus riders by MSOA
 
-The indicator `bus_nosat` is binary. It is defined only among adults who rode a bus in the last 12 months: `1` means dissatisfied, `0` means not dissatisfied, and non-riders are left as missing. The direct estimate is the weighted proportion among available recent bus riders.
+The indicator `bus_nosat` is binary. It is defined only among adults who rode a bus in the last 12 months: `1` means dissatisfied, `0` means not dissatisfied, and non-riders are left as missing. The direct estimate is the weighted proportion among available recent bus riders (Hajek estimator).
 
 #### Direct Estimation
 
 ```{r}
+# Load the indicator and weight
 survey_indicator_bus <- read_csv(
   file.path(base_path, "ind_weight_bus_nosat.csv"),
   show_col_types = FALSE
 ) |>
-  filter(!is.na(indicator), !is.na(weight), !is.na(domain_id), !is.na(strata))
+  filter(
+    !is.na(indicator), 
+    !is.na(weight), 
+    !is.na(domain_id), 
+    !is.na(strata)
+    )
 
+# Set up the survey design 
 design_bus <- survey::svydesign(
   ids = ~1,
   strata = ~strata,
@@ -352,17 +354,19 @@ design_bus <- survey::svydesign(
   data = survey_indicator_bus
 )
 
+# Estimate the weighted share in each MSOA
 bus_mean <- survey::svyby(
   formula = ~indicator,
   by = ~domain_id,
   design = design_bus,
-  FUN = survey::svymean,
+  FUN = survey::svymean, # when paired with binary indicator, it represents share
   vartype = "se",
   na.rm = TRUE
 ) |>
   as.data.frame() |>
   tibble::as_tibble()
 
+# Output with uncertainty measures
 dir_est_bus <- bus_mean |>
   transmute(
     domain = domain_id,
@@ -410,24 +414,21 @@ bus_estimate_map + bus_cv_map +
 
 ```{r}
 #| echo: false
-bus_diagnostics <- msoa_totalpop_domsizes |>
+bus_sample_n <- survey_indicator_bus |>
+  count(domain_id, name = "n")
+
+msoa_totalpop_domsizes |>
   select(domain_id) |>
-  left_join(
-    survey_indicator_bus |>
-      count(domain_id, name = "n"),
-    by = "domain_id"
-  ) |>
+  left_join(bus_sample_n, by = "domain_id") |>
   left_join(
     dir_est_bus,
     by = c("domain_id" = "domain")
   ) |>
-  mutate(n = replace_na(n, 0L))
-
-bus_diagnostics |>
+  mutate(n = replace_na(n, 0L)) |>
   summarise(
-    areas_total = nrow(msoa_totalpop_domsizes),
-    areas_no_data = sum(n == 0, na.rm = TRUE),
-    areas_n_1 = sum(n == 1, na.rm = TRUE),
+    areas_total = n(),
+    areas_n_0 = sum(n == 0),
+    areas_n_lt2 = sum(n < 2),
     median_sample_size = median(n, na.rm = TRUE),
     median_cv = median(cv, na.rm = TRUE),
     median_ci_width = median(ci_width, na.rm = TRUE)
@@ -440,8 +441,18 @@ bus_diagnostics |>
 ```
 
 ### Final thoughts
-In this exercise, all three direct estimates use the same survey-design pattern: create a stratified survey design, estimate by MSOA, and convert the result to the estimand scale where needed. For `freq_walker`, `SampleTravelWeight` is first scaled to a Wales-wide grossing weight, then the weighted total is divided by the known MSOA population and multiplied by 1,000.
+Even though direct estimation does not involve modelling, it is where we stress-test the raw data. It shows how much survey evidence we actually have in each area, how uncertain the estimates are, and whether the direct estimates and sampling variances are robust enough to feed into the modelled-estimation step in the next workbook.
 
-This keeps the code consistent across a mean, a share, and a rate-style binary indicator, and it lets the variance estimates account for the survey strata. The population totals are used as known denominators for `freq_walker`, but the grossing weight is scaled once for Wales overall rather than separately within each MSOA. That is why the diagnostic checks matter: small-sample area estimates can still be noisy even when the denominator is known.
+The **direct estimate calculation** should follow the measure and the estimand:
 
-Precision still needs to be judged from the diagnostics rather than from the estimator alone. In general, the larger the sample sizes, the lower the uncertainty. If many areas have no direct estimate, high CVs, or wide confidence intervals, direct estimation is probably not enough. These direct estimates and sampling variances are then better treated as inputs to model-based SAE.
+- `freq_walker` is a population rate per 1,000 residents, so the estimate is weighted total over known MSOA population size as the denominator, times 1000.
+- `commute_distance` is a mean distance among commuter respondents.
+- `bus_nosat` is a share among adults who rode a bus in the last 12 months.
+
+The **uncertainty diagnostics** above show different levels of uncertainty across the three examples. 
+
+- `freq_walker` is the most fragile, due to being derived from a subsampled survey question: 5 MSOAs have no data, 30 have fewer than 2 obs, and the median CV is around 1. This is an example of an indicator that is likely to benefit the most from model-based estimation. 
+- `commute_distance` looks more stable, with only 1 area with no data, 2 areas with fewer than two observations, a median sample size of 8.5, and a CI width of 11 (miles). 
+- `bus_nosat` has reasonable area coverage, but the median CV and CI width are still high, reflecting the smaller eligible group of recent bus riders rendering the direct estimates imprecise.
+
+A practical rule of thumb is to use known domain sizes only when the denominator really matches the estimand. The Hájek-style weighted mean or proportion is often more versatile because it only needs a compatible survey weight, but its interpretation is narrower: it estimates an average among the weighted eligible population, not a population count or rate against a fixed denominator.

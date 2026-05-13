@@ -6,7 +6,7 @@ Raw survey microdata is transformed into analysis-ready inputs by defining the e
 
 The data preparation pipeline can be summarised as follows:
 
-![Preparation pipeline for analysis-ready inputs](../assets/dataprep_summary.png)
+![Preparation pipeline for analysis-ready inputs](../assets/dataprep.png)
 
 ## Define the Estimands
 
@@ -27,8 +27,8 @@ Estimands can take on any of these types of **measures** which determine how the
 - share
 - mean
 - count
-- rate (e.g., trips per adults)
-- ratio (e.g., accidents per 1,000 residents)
+- ratio (e.g., trips per adults)
+- rate (e.g., accidents per 1,000 residents)
 
 ### Outcome
 
@@ -68,12 +68,10 @@ Moreover, it is important to distinguish the **scale** of the weight variable:
 
 - **Analysis weights** $w^{A}$ make means or proportions representative of the target population, and they generally sum to the sample size. This type of weight variables are most common for estimating `share` or `mean`.
     - E.g., if a sampling unit has an analysis weight of 0.5, it is over-represented in the sample relative to the population, so their contribution is 'down-weighted'.
-- **Grossing weights** $w^{G}$ are essentially scaled-$w^{A}$ so that they sum to a known population total within the relevant estimation area. They are required if the estimand measure is `count`, `rate` (e.g., x per 1,000 adults).
+- **Grossing weights** $w^{G}$ are essentially scaled-$w^{A}$ so that they sum to a known population total within the relevant estimation area. They are usually required if the estimand measure is `count`
     - E.g., if a sampling unit has a grossing weight of 50, it means this one sampled row represents about 50 people in the population.
 
-To calculate `count`, `rate` estimands, we not only need **grossing weights** to scale the sample to population totals, we also need to know these population totals at the chosen **estimation geography**. 
-
-In SAE, these totals are called **domain sizes** $N_d$, i.e.,the size of the target population in each estimation area, usually obtained from Census data or other regional statistics.
+To calculate `count` estimands, we not only need **grossing weights** to scale the sample to population totals, we also need to know these population totals at the chosen **estimation geography**. In SAE, these totals are called **domain sizes** $N_d$, i.e.,the size of the target population in each estimation area, usually obtained from Census data or other regional statistics.
 
 E.g.,
 

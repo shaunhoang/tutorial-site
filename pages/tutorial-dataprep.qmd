@@ -31,7 +31,7 @@ The most important first step is to define the **estimands**, i.e. what is being
 |---|---|---|---|---|
 |1| Mean | Commute distance | Commuters | MSOAs in Wales |
 |2| Share | Dissatisfaction with bus services | Adults who rode a bus in the last 12 months | MSOAs in Wales |
-|3| Rate | Walking as main transport at least weekly per 1,000 residents | All residents | MSOAs in Wales |
+|3| Rate | Walking as main transport daily per 1,000 residents | All residents | MSOAs in Wales |
 
 Specifying these elements early is critical as they dictate the technical requirements for the estimation process. 
 
@@ -53,12 +53,12 @@ The next stage involves preparing the indicator variables and aligning them with
 |---|---|---|---|---|---|
 |1| `commute_distance` | [`TravWkDist`] Numeric commute distance in miles, non-commuters are coded `NA` | Mean | MSOA | `SampleAdultWeight`, analysis weight |
 |2| `bus_nosat` | [`BusOverSat`, `Bus12M`] Binary: `1` if rode a bus in the last 12 months and is fairly or very dissatisfied; `0` if rode a bus in the last 12 months and is not dissatisfied; `NA` otherwise | Share | MSOA | `SampleAdultWeight`, analysis weight |
-|3| `freq_walker` | [`AtFrqWlk10`] Binary: `1` if walking for transport at least weekly | Rate (per 1k)| MSOA | `SampleTravelWeight`, analysis weight; to be scaled to grossing weight  |
+|3| `freq_walker` | [`AtFrqWlk10`] Binary: `1` if walking for transport daily | Rate (per 1k)| MSOA | `SampleTravelWeight`, analysis weight; scaled to an MSOA grossing weight during direct estimation |
 
 As a reminder, analysis weights support weighted means and proportions. A grossing weight scales survey respondents up to a known population total. In this dataset, weight variables are chosen for each indicator based on definitional compatibility:
 
 - `SampleAdultWeight`: an analysis weight that adjusts for sample design bias to reflect real-world means and proportions. It is used here for `commute_distance` and `bus_nosat`.
-- `SampleTravelWeight`: an analysis weight for the active-travel module. It is exported for `freq_walker`, then scaled to a Wales-wide grossing weight in the direct-estimation workbook.
+- `SampleTravelWeight`: an analysis weight for the active-travel module. It is exported for `freq_walker`, then scaled to an MSOA grossing weight during direct estimation.
 
 ### Selecting covariates
 
@@ -142,32 +142,22 @@ head(domain_sizes_population_msoa)
 Next, we can start constructing the indicators from the variables based on the coding rules set out above.
 
 ```{r}
-# Define a helper to handle the NSW specific missing codes
-clean_nsw <- function(x) {
-  ifelse(x %in% c(-99, -98, -9, -8, -7), NA, x)
-}
-
+# Construct the three analysis indicators
 survey_indicators <- nsw_raw |>
-  mutate(
-    commute_distance_raw = clean_nsw(TravWkDist),
-    bus_used_12m = clean_nsw(Bus12M),
-    bus_satisfaction = clean_nsw(BusOverSat),
-    walk_frequency = clean_nsw(AtFrqWlk10)
-  ) |>
   transmute(
     unit_id,
-    commute_distance = as.numeric(commute_distance_raw),
+    commute_distance = as.numeric(TravWkDist),
 
     bus_nosat = case_when(
-      bus_used_12m != 1 ~ NA_real_,
-      bus_satisfaction %in% c(4, 5) ~ 1,
-      !is.na(bus_satisfaction) ~ 0,
+      Bus12M != 1 ~ NA_real_,
+      BusOverSat %in% c(4, 5) ~ 1, # Fairly or very dissatisfied
+      !is.na(BusOverSat) ~ 0,
       TRUE ~ NA_real_
     ),
 
     freq_walker = case_when(
-      is.na(walk_frequency) ~ NA_real_,
-      walk_frequency %in% 1:3 ~ 1,
+      is.na(AtFrqWlk10) ~ NA_real_,
+      AtFrqWlk10 %in% 1 ~ 1, # daily
       TRUE ~ 0
     )
   )
@@ -189,7 +179,7 @@ survey_weights <- nsw_raw |>
   )
 ```
 
-`SampleTravelWeight` is an analysis weight for the active-travel module (subsampled). The survey user guide describes it as adjusting the active-travel sample to have the same age/sex distribution as the general population. We will need a grossing weight to scale the survey data to the total population in order to calculate rate per 1k. 
+`SampleTravelWeight` is an analysis weight for the active-travel module (subsampled). The survey user guide describes it as adjusting the active-travel sample to have the same age/sex distribution as the general population. For `freq_walker`, the direct-estimation workbook scales it within each sampled MSOA so that the grossing weight sums to the known MSOA population.
 
 ### Check missingness
 
@@ -233,14 +223,14 @@ indicator_area_summary <- indicator_observations |>
   summarise(
     geography = "MSOA",
     areas_total = nrow(domain_sizes_population_msoa),
-    areas_no_data = areas_total - n_distinct(domain_id),
-    areas_small_samp = areas_no_data + sum(non_missing <= 2),
+    areas_n_0 = areas_total - n_distinct(domain_id),
+    areas_n_lt2 = areas_n_0 + sum(non_missing < 2),
     .groups = "drop"
   )
 
 indicator_area_summary
 ```
-This summary highlights areas with no or few data (`n <= 2`). For two indicators, `bus_nosat` and `commute_distance`, the number of small-sample areas is below 10, which is not a major concern at this stage. `freq_walker` has many more small-sample areas.
+This summary highlights areas with no data (`areas_n_0`) and areas with fewer than two usable observations (`areas_n_lt2`). For two indicators, `bus_nosat` and `commute_distance`, the number of very-low-sample areas is below 10, which is not a major concern at this stage. `freq_walker` has many more very-low-sample areas.
 
 ```{r}
 indicator_area_counts <- indicator_observations |>
@@ -387,7 +377,7 @@ Indicator microdata with weight and survey strata
 
 - `ind_weight_commute_distance.csv`, with analysis adult weight;
 - `ind_weight_bus_nosat.csv`, with analysis adult weight;
-- `ind_weight_freq_walker.csv`, with active-travel module analysis weight, which will be scaled to a Wales-wide grossing weight during direct estimation.
+- `ind_weight_freq_walker.csv`, with active-travel module analysis weight, which will be scaled to an MSOA grossing weight during direct estimation.
 
 Each indicator microdata file contains the same key columns:
 
@@ -407,9 +397,11 @@ Domain list, denominator, and covariate input
 
 - `domain_sizes_population_msoa.csv`, for the full list of target MSOAs, the `freq_walker` denominator, and the total-population covariate.
 
+The same files are then bundled into `data/tutorial-clean-data.zip`, with the files stored inside the archive as `clean/*.csv`.
+
 ```{r}
-# eval: false
-output_dir <- file.path("..","data", "clean")
+#| eval: false
+output_dir <- file.path("..", "data", "clean")
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 ind_weight_commute_distance <- survey_inputs |>
@@ -465,5 +457,24 @@ write_csv(
   as.data.frame(covariates_msoa),
   file.path(output_dir, "covariates_msoa.csv")
 )
+
+# Create data/tutorial-clean-data.zip
+data_dir <- file.path("..", "data")
+old_wd <- setwd(data_dir)
+
+tryCatch(
+  {
+    if (file.exists("tutorial-clean-data.zip")) {
+      file.remove("tutorial-clean-data.zip")
+    }
+
+    utils::zip(
+      zipfile = "tutorial-clean-data.zip",
+      files = list.files("clean", pattern = "\\.csv$", full.names = TRUE)
+    )
+  },
+  finally = setwd(old_wd)
+)
+
 ```
 

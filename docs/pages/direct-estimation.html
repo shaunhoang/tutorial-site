@@ -333,7 +333,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">3.1</span> Setup</a></li>
   <li><a href="#estimand-frequent-walkers-per-1000-residents-by-msoa" id="toc-estimand-frequent-walkers-per-1000-residents-by-msoa" class="nav-link" data-scroll-target="#estimand-frequent-walkers-per-1000-residents-by-msoa"><span class="header-section-number">3.2</span> Estimand: Frequent walkers per 1,000 residents by MSOA</a></li>
   <li><a href="#estimand-mean-commute-distance-among-commuters-by-msoa" id="toc-estimand-mean-commute-distance-among-commuters-by-msoa" class="nav-link" data-scroll-target="#estimand-mean-commute-distance-among-commuters-by-msoa"><span class="header-section-number">3.3</span> Estimand: Mean commute distance among commuters by MSOA</a></li>
-  <li><a href="#estimand-dissatisfaction-with-bus-service-among-recent-adult-bus-riders-by-msoa" id="toc-estimand-dissatisfaction-with-bus-service-among-recent-adult-bus-riders-by-msoa" class="nav-link" data-scroll-target="#estimand-dissatisfaction-with-bus-service-among-recent-adult-bus-riders-by-msoa"><span class="header-section-number">3.4</span> Estimand: Dissatisfaction with bus service among recent adult bus riders by MSOA</a></li>
+  <li><a href="#estimand-dissatisfied-bus-users-among-recent-adult-bus-riders-by-msoa" id="toc-estimand-dissatisfied-bus-users-among-recent-adult-bus-riders-by-msoa" class="nav-link" data-scroll-target="#estimand-dissatisfied-bus-users-among-recent-adult-bus-riders-by-msoa"><span class="header-section-number">3.4</span> Estimand: Dissatisfied bus users among recent adult bus riders by MSOA</a></li>
   <li><a href="#final-thoughts" id="toc-final-thoughts" class="nav-link" data-scroll-target="#final-thoughts"><span class="header-section-number">3.5</span> Final thoughts</a></li>
   </ul></li>
   </ul>
@@ -399,7 +399,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Here, the <strong>direct estimate <span class="math inline">\(\hat{\theta}_d^{DIR}\)</span></strong> is for <strong>area <span class="math inline">\(d\)</span></strong> with <strong>sample size <span class="math inline">\(n_d\)</span></strong> and <strong>domain size <span class="math inline">\(N_d\)</span></strong> if known. Direct estimates are paired with estimated <strong>sampling variances</strong>, telling us how much uncertainty comes from observing only a sample within each estimation area. The variance depends not only on the estimator, but also the weight scale, and survey design information available.</p>
+<p>Here, the <strong>direct estimate <span class="math inline">\(\hat{\theta}_d^{DIR}\)</span></strong> is for <strong>area <span class="math inline">\(d\)</span></strong> with <strong>sample size <span class="math inline">\(n_d\)</span></strong> and <strong>domain size <span class="math inline">\(N_d\)</span></strong> if known.</p>
+<p>Direct estimates are paired with <strong>sampling variances</strong>, telling us how much uncertainty comes from observing only a sample within each estimation area. The variance depends not only on the estimator, but also the weight scale, and survey design information available.</p>
 </section>
 <section id="evaluate-direct-estimates" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="evaluate-direct-estimates"><span class="header-section-number">2</span> Evaluate direct estimates</h2>
@@ -481,102 +482,87 @@ Tip
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">domain_size =</span> <span class="fu">as.numeric</span>(domain_size)) <span class="sc">|&gt;</span></span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We will first focus on producing and evaluating the estimates using the indicator <code>walk_weekly</code> before replicating the process for <code>poor_bus_satisfaction</code> and <code>commute_distance</code>.</p>
+<p>We will first focus on producing and evaluating the estimates using the indicator <code>freq_walker</code> before replicating the process for <code>bus_nosat</code> and <code>commute_distance</code>.</p>
 </section>
 <section id="estimand-frequent-walkers-per-1000-residents-by-msoa" class="level3" data-number="3.2">
 <h3 data-number="3.2" class="anchored" data-anchor-id="estimand-frequent-walkers-per-1000-residents-by-msoa"><span class="header-section-number">3.2</span> Estimand: Frequent walkers per 1,000 residents by MSOA</h3>
 <section id="direct-estimation" class="level4" data-number="3.2.1">
 <h4 data-number="3.2.1" class="anchored" data-anchor-id="direct-estimation"><span class="header-section-number">3.2.1</span> Direct Estimation</h4>
-<p>Keep in mind that with <code>walk-weekly</code>, we are estimating:</p>
+<p>Keep in mind that with <code>freq_walker</code>, we are estimating:</p>
 <blockquote class="blockquote">
-<p><strong>Rate per 1,000 residents</strong> walking as main transport mode at least weekly across <strong>MSOAs</strong></p>
+<p><strong>Rate per 1,000 residents</strong> walking as main transport mode daily across <strong>MSOAs</strong></p>
 </blockquote>
-<p><code>walk_weekly</code> is a binary survey indicator for whether a respondent walks for transport at least weekly. We first scale <code>SampleTravelWeight</code> to a Wales-wide grossing weight using the total population across Welsh MSOAs. Then we estimate the weighted total number of weekly walkers in each MSOA, divide by the known MSOA population, and multiply by 1,000.</p>
+<p><code>freq_walker</code> is a binary survey indicator for whether a respondent walks for transport daily. We first scale <code>SampleTravelWeight</code> within each sampled MSOA so that the weights sum to the known MSOA population.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the active-travel indicator with its module analysis weight</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_walk_weekly.csv"</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale SampleTravelWeight once to the Wales population total</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>wales_population_total <span class="ot">&lt;-</span> <span class="fu">sum</span>(msoa_totalpop_domsizes<span class="sc">$</span>domain_size, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>travel_weight_total <span class="ot">&lt;-</span> <span class="fu">sum</span>(survey_indicator_walk<span class="sc">$</span>weight, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>wales_travel_scale <span class="ot">&lt;-</span> wales_population_total <span class="sc">/</span> travel_weight_total</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> survey_indicator_walk <span class="sc">|&gt;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">WalesTravelWeight =</span> weight <span class="sc">*</span> wales_travel_scale)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that the scaled weight sums to the target population</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="sc">|&gt;</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">WalesTravelWeight_sum =</span> <span class="fu">sum</span>(WalesTravelWeight, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Wales_population_total =</span> wales_population_total</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 2
-  WalesTravelWeight_sum Wales_population_total
-                  &lt;dbl&gt;                  &lt;dbl&gt;
-1               3107408                3107408</code></pre>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the active-travel indicator with its module analysis weight,</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># then attach the MSOA population used as the denominator</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_freq_walker.csv"</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    msoa_totalpop_domsizes <span class="sc">|&gt;</span> <span class="fu">select</span>(domain_id, domain_size),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"domain_id"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(indicator),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(weight),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_id),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(strata),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_size)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an MSOA grossing weight for the active-travel sample (scaled from `SampleTravelWeight`)</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> survey_indicator_walk <span class="sc">|&gt;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(domain_id) <span class="sc">|&gt;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">grossing_weight =</span> weight <span class="sc">*</span> domain_size <span class="sc">/</span> <span class="fu">sum</span>(weight)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
+<p>Then we estimate the weighted total number of frequent walkers, divide by the MSOA population, and multiply by 1,000.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Attach the domain size (total pop per MSOA)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> survey_indicator_walk <span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    msoa_totalpop_domsizes <span class="sc">|&gt;</span> <span class="fu">select</span>(domain_id, domain_size),</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"domain_id"</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> survey_indicator_walk <span class="sc">|&gt;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(indicator),</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(WalesTravelWeight),</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_id),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(strata),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_size)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>design_walk <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>WalesTravelWeight,</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator_walk</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the total number of weekly walkers in each MSOA</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>walk_total <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id <span class="sc">+</span> domain_size,</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_walk,</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svytotal,</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the total into a rate per 1,000 residents</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>dir_est_walk <span class="ot">&lt;-</span> walk_total <span class="sc">|&gt;</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> domain_id,</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> (indicator <span class="sc">/</span> domain_size) <span class="sc">*</span> <span class="dv">1000</span>,</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> ((se <span class="sc">/</span> domain_size) <span class="sc">*</span> <span class="dv">1000</span>)<span class="sc">^</span><span class="dv">2</span>,</span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_walk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the survey design</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>design_walk <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>grossing_weight,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator_walk</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the weighted total in each MSOA</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>walk_total <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id <span class="sc">+</span> domain_size,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_walk,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svytotal,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide by the known MSOA population and keep the uncertainty on the same scale</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>dir_est_walk <span class="ot">&lt;-</span> walk_total <span class="sc">|&gt;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> domain_id,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> (indicator <span class="sc">/</span> domain_size) <span class="sc">*</span> <span class="dv">1000</span>,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> ((se <span class="sc">/</span> domain_size) <span class="sc">*</span> <span class="dv">1000</span>)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_walk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
-  domain    direct variance    cv ci_width
-  &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
-1 W02000185   869.  260674. 0.587    2001.
-2 W02000306   578.  165372. 0.703    1594.
-3 W02000058   929.  283365. 0.573    2087.
-4 W02000200  1872. 2723194. 0.881    6469.
-5 W02000105   888.   92405. 0.342    1192.
-6 W02000056   257.   65861. 1.000    1006.</code></pre>
+  domain    direct variance     cv ci_width
+  &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+1 W02000185     0        0  NA           0 
+2 W02000306   187.   35012.  1.00      733.
+3 W02000058     0        0  NA           0 
+4 W02000200   619.  383772.  1.000    2428.
+5 W02000105   319.   27062.  0.516     645.
+6 W02000056   449.  201721.  1.00     1761.</code></pre>
 </div>
 </div>
 <p>Alongside the direct estimate (<code>direct</code>) and its sampling variance (<code>variance</code>), the output above also produces</p>
@@ -587,79 +573,78 @@ Tip
 </section>
 <section id="evaluation" class="level4" data-number="3.2.2">
 <h4 data-number="3.2.2" class="anchored" data-anchor-id="evaluation"><span class="header-section-number">3.2.2</span> Evaluation</h4>
-<p>Direct estimation itself is prone to be insufficient. For <code>walk_weekly</code>, the direct estimate depends on only the respondents observed in each MSOA. Small samples can therefore create unstable rates and wide confidence intervals, even though the calculation uses the known MSOA population as the denominator. Since the weight is scaled once for Wales rather than calibrated within each MSOA, some small-sample area estimates may even exceed 1,000 and should be treated as unstable direct estimates.</p>
-<p>To assess the quality of the direct estimates, first check whether any estimation areas lack a direct estimate. In some cases, they might have a direct estimate but no useful variance, especially when <code>n = 1</code>. Next, assess whether the available direct estimates are precise enough to report by looking at <code>median_cv</code> and <code>median_ci_width</code>.</p>
+<p>Direct estimation itself is prone to be insufficient. To assess the quality of the direct estimates,</p>
+<ul>
+<li>First check whether any estimation areas lack a direct estimate. In some cases, they might have a direct estimate but no useful variance, especially when <code>n = 1</code>.</li>
+<li>Next, assess whether the available direct estimates are precise enough to report by looking at metrics such as <code>median_cv</code> and <code>median_ci_width</code>.</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>walk_map_data <span class="ot">&lt;-</span> msoa_boundaries <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    dir_est_walk,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"domain_id"</span> <span class="ot">=</span> <span class="st">"domain"</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>walk_estimate_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(walk_map_data) <span class="sc">+</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> direct), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"YlGnBu"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Estimate"</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Direct estimate"</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>walk_cv_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(walk_map_data) <span class="sc">+</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> cv), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"OrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"CV"</span>,</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Coefficient of Variation"</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>walk_estimate_map <span class="sc">+</span> walk_cv_map <span class="sc">+</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residents walking weekly as main transport mode per 1,000 residents by MSOA"</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot estimate and CV</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>walk_map_data <span class="ot">&lt;-</span> msoa_boundaries <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(dir_est_walk, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"domain_id"</span> <span class="ot">=</span> <span class="st">"domain"</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>walk_estimate_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(walk_map_data) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> direct), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"YlGnBu"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Estimate"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Direct estimate"</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>walk_cv_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(walk_map_data) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> cv), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"OrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"CV"</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Coefficient of Variation"</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>walk_estimate_map <span class="sc">+</span> walk_cv_map <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residents walking daily as main transport mode per 1,000 residents by MSOA"</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="direct-estimation_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>walk_diagnostics <span class="ot">&lt;-</span> msoa_totalpop_domsizes <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    survey_indicator_walk <span class="sc">|&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">count</span>(domain_id, <span class="at">name =</span> <span class="st">"n"</span>),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"domain_id"</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    dir_est_walk,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"domain_id"</span> <span class="ot">=</span> <span class="st">"domain"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">replace_na</span>(n, 0L))</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>walk_diagnostics <span class="sc">|&gt;</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">areas_total =</span> <span class="fu">nrow</span>(msoa_totalpop_domsizes),</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">areas_no_data =</span> <span class="fu">sum</span>(n <span class="sc">==</span> <span class="dv">0</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">areas_n_1 =</span> <span class="fu">sum</span>(n <span class="sc">==</span> <span class="dv">1</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_sample_size =</span> <span class="fu">median</span>(n, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_cv =</span> <span class="fu">median</span>(cv, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_ci_width =</span> <span class="fu">median</span>(ci_width, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">everything</span>(),</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"diagnostic"</span>,</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"value"</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Uncertainty diagnostics summary</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>walk_sample_n <span class="ot">&lt;-</span> survey_indicator_walk <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(domain_id, <span class="at">name =</span> <span class="st">"n"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>msoa_totalpop_domsizes <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(walk_sample_n, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    dir_est_walk,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"domain_id"</span> <span class="ot">=</span> <span class="st">"domain"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">replace_na</span>(n, 0L)) <span class="sc">|&gt;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">areas_total =</span> <span class="fu">n</span>(),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">areas_n_0 =</span> <span class="fu">sum</span>(n <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">areas_n_lt2 =</span> <span class="fu">sum</span>(n <span class="sc">&lt;</span> <span class="dv">2</span>),</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_sample_size =</span> <span class="fu">median</span>(n, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_cv =</span> <span class="fu">median</span>(cv, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_ci_width =</span> <span class="fu">median</span>(ci_width, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">everything</span>(),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"diagnostic"</span>,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"value"</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
-  diagnostic            value
-  &lt;chr&gt;                 &lt;dbl&gt;
-1 areas_total         408    
-2 areas_no_data         5    
-3 areas_n_1            25    
-4 median_sample_size    5    
-5 median_cv             0.708
-6 median_ci_width    1165.   </code></pre>
+  diagnostic           value
+  &lt;chr&gt;                &lt;dbl&gt;
+1 areas_total        408    
+2 areas_n_0            5    
+3 areas_n_lt2         30    
+4 median_sample_size   5    
+5 median_cv            1.000
+6 median_ci_width    260.   </code></pre>
 </div>
 </div>
 </section>
@@ -668,42 +653,51 @@ Tip
 <h3 data-number="3.3" class="anchored" data-anchor-id="estimand-mean-commute-distance-among-commuters-by-msoa"><span class="header-section-number">3.3</span> Estimand: Mean commute distance among commuters by MSOA</h3>
 <section id="direct-estimation-1" class="level4" data-number="3.3.1">
 <h4 data-number="3.3.1" class="anchored" data-anchor-id="direct-estimation-1"><span class="header-section-number">3.3.1</span> Direct Estimation</h4>
-<p>The indicator <code>commute_distance</code> is continuous, so the direct estimate is the weighted mean commute distance among available commuter respondents.</p>
+<p>The indicator <code>commute_distance</code> is continuous, so the direct estimate is simply the weighted mean commute distance among available commuter respondents (Hajek estimator).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>survey_indicator <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_commute_distance.csv"</span>),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(indicator), <span class="sc">!</span><span class="fu">is.na</span>(weight), <span class="sc">!</span><span class="fu">is.na</span>(domain_id), <span class="sc">!</span><span class="fu">is.na</span>(strata))</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>design_commute <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>commute_mean <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_commute,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svymean,</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>dir_est_commute <span class="ot">&lt;-</span> commute_mean <span class="sc">|&gt;</span></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> domain_id,</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> indicator,</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> se<span class="sc">^</span><span class="dv">2</span>,</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_commute)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the indicator and weight</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>survey_indicator_commute <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_commute_distance.csv"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(indicator), </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(weight), </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_id), </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(strata)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the survey design</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>design_commute <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator_commute</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the weighted mean in each MSOA</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>commute_mean <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_commute,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svymean,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Output with uncertainty measures</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>dir_est_commute <span class="ot">&lt;-</span> commute_mean <span class="sc">|&gt;</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> domain_id,</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> indicator,</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> se<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_commute)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   domain    direct variance    cv ci_width
@@ -730,8 +724,8 @@ Tip
   diagnostic           value
   &lt;chr&gt;                &lt;dbl&gt;
 1 areas_total        408    
-2 areas_no_data        1    
-3 areas_n_1            1    
+2 areas_n_0            1    
+3 areas_n_lt2          2    
 4 median_sample_size   8.5  
 5 median_cv            0.318
 6 median_ci_width     11.9  </code></pre>
@@ -739,46 +733,55 @@ Tip
 </div>
 </section>
 </section>
-<section id="estimand-dissatisfaction-with-bus-service-among-recent-adult-bus-riders-by-msoa" class="level3" data-number="3.4">
-<h3 data-number="3.4" class="anchored" data-anchor-id="estimand-dissatisfaction-with-bus-service-among-recent-adult-bus-riders-by-msoa"><span class="header-section-number">3.4</span> Estimand: Dissatisfaction with bus service among recent adult bus riders by MSOA</h3>
-<p>The indicator <code>poor_bus_satisfaction</code> is binary. It is defined only among adults who rode a bus in the last 12 months: <code>1</code> means dissatisfied, <code>0</code> means not dissatisfied, and non-riders are left as missing. The direct estimate is the weighted proportion among available recent bus riders.</p>
+<section id="estimand-dissatisfied-bus-users-among-recent-adult-bus-riders-by-msoa" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="estimand-dissatisfied-bus-users-among-recent-adult-bus-riders-by-msoa"><span class="header-section-number">3.4</span> Estimand: Dissatisfied bus users among recent adult bus riders by MSOA</h3>
+<p>The indicator <code>bus_nosat</code> is binary. It is defined only among adults who rode a bus in the last 12 months: <code>1</code> means dissatisfied, <code>0</code> means not dissatisfied, and non-riders are left as missing. The direct estimate is the weighted proportion among available recent bus riders (Hajek estimator).</p>
 <section id="direct-estimation-2" class="level4" data-number="3.4.1">
 <h4 data-number="3.4.1" class="anchored" data-anchor-id="direct-estimation-2"><span class="header-section-number">3.4.1</span> Direct Estimation</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>survey_indicator_bus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_poor_bus_satisfaction.csv"</span>),</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(indicator), <span class="sc">!</span><span class="fu">is.na</span>(weight), <span class="sc">!</span><span class="fu">is.na</span>(domain_id), <span class="sc">!</span><span class="fu">is.na</span>(strata))</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>design_bus <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator_bus</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>bus_mean <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id,</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_bus,</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svymean,</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>dir_est_bus <span class="ot">&lt;-</span> bus_mean <span class="sc">|&gt;</span></span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> domain_id,</span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> indicator,</span>
-<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> se<span class="sc">^</span><span class="dv">2</span>,</span>
-<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
-<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
-<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_bus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the indicator and weight</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>survey_indicator_bus <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_bus_nosat.csv"</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(indicator), </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(weight), </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_id), </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(strata)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the survey design </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>design_bus <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator_bus</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the weighted share in each MSOA</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>bus_mean <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_bus,</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svymean, <span class="co"># when paired with binary indicator, it represents share</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Output with uncertainty measures</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>dir_est_bus <span class="ot">&lt;-</span> bus_mean <span class="sc">|&gt;</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">domain =</span> domain_id,</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> indicator,</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> se<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_bus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   domain    direct variance    cv ci_width
@@ -805,8 +808,8 @@ Tip
   diagnostic           value
   &lt;chr&gt;                &lt;dbl&gt;
 1 areas_total        408    
-2 areas_no_data        1    
-3 areas_n_1            0    
+2 areas_n_0            1    
+3 areas_n_lt2          1    
 4 median_sample_size  10    
 5 median_cv            0.675
 6 median_ci_width      0.428</code></pre>
@@ -816,9 +819,20 @@ Tip
 </section>
 <section id="final-thoughts" class="level3" data-number="3.5">
 <h3 data-number="3.5" class="anchored" data-anchor-id="final-thoughts"><span class="header-section-number">3.5</span> Final thoughts</h3>
-<p>In this exercise, all three direct estimates use the same survey-design pattern: create a stratified survey design, estimate by MSOA, and convert the result to the estimand scale where needed. For <code>walk_weekly</code>, <code>SampleTravelWeight</code> is first scaled to a Wales-wide grossing weight, then the weighted total is divided by the known MSOA population and multiplied by 1,000.</p>
-<p>This keeps the code consistent across a mean, a share, and a rate-style binary indicator, and it lets the variance estimates account for the survey strata. The population totals are used as known denominators for <code>walk_weekly</code>, but the grossing weight is scaled once for Wales overall rather than separately within each MSOA. That is why the diagnostic checks matter: small-sample area estimates can still be noisy even when the denominator is known.</p>
-<p>Precision still needs to be judged from the diagnostics rather than from the estimator alone. In general, the larger the sample sizes, the lower the uncertainty. If many areas have no direct estimate, high CVs, or wide confidence intervals, direct estimation is probably not enough. These direct estimates and sampling variances are then better treated as inputs to model-based SAE.</p>
+<p>Even though direct estimation does not involve modelling, it is where we stress-test the raw data. It shows how much survey evidence we actually have in each area, how uncertain the estimates are, and whether the direct estimates and sampling variances are robust enough to feed into the modelled-estimation step in the next workbook.</p>
+<p>The <strong>direct estimate calculation</strong> should follow the measure and the estimand:</p>
+<ul>
+<li><code>freq_walker</code> is a population rate per 1,000 residents, so the estimate is weighted total over known MSOA population size as the denominator, times 1000.</li>
+<li><code>commute_distance</code> is a mean distance among commuter respondents.</li>
+<li><code>bus_nosat</code> is a share among adults who rode a bus in the last 12 months.</li>
+</ul>
+<p>The <strong>uncertainty diagnostics</strong> above show different levels of uncertainty across the three examples.</p>
+<ul>
+<li><code>freq_walker</code> is the most fragile, due to being derived from a subsampled survey question: 5 MSOAs have no data, 30 have fewer than 2 obs, and the median CV is around 1. This is an example of an indicator that is likely to benefit the most from model-based estimation.</li>
+<li><code>commute_distance</code> looks more stable, with only 1 area with no data, 2 areas with fewer than two observations, a median sample size of 8.5, and a CI width of 11 (miles).</li>
+<li><code>bus_nosat</code> has reasonable area coverage, but the median CV and CI width are still high, reflecting the smaller eligible group of recent bus riders rendering the direct estimates imprecise.</li>
+</ul>
+<p>A practical rule of thumb is to use known domain sizes only when the denominator really matches the estimand. The Hájek-style weighted mean or proportion is often more versatile because it only needs a compatible survey weight, but its interpretation is narrower: it estimates an average among the weighted eligible population, not a population count or rate against a fixed denominator.</p>
 
 
 </section>
