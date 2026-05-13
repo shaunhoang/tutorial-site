@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/diagnostics.html" rel="next">
+<link href="../pages/unit-level-sae.html" rel="next">
 <link href="../pages/direct-estimation.html" rel="prev">
 <link href="../assets/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js"></script>
@@ -245,14 +245,14 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
+  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level Estimation</span></a>
+  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
   </div>
 </li>
       </ul>
@@ -322,12 +322,12 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Area-level SAE improves direct estimates that are too noisy, unstable, or unavailable for some domains. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct survey estimates with domain-level covariates to improve precision.</p>
+<p>Area-level estimation improves direct estimates that are too noisy, unstable, or unavailable for some areas. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct survey estimates with area-level covariates to improve precision.</p>
 <section id="understanding-the-basic-fay-herriot-model" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="understanding-the-basic-fay-herriot-model"><span class="header-section-number">1</span> Understanding the basic Fay-Herriot model</h2>
-<p>The Fay-Herriot model is an <strong>area-level small area estimation model</strong>. It combines two sources of information for each domain:</p>
+<p>The Fay-Herriot model is an <strong>area-level small area estimation model</strong>. It combines two sources of information for each estimation area:</p>
 <ol type="1">
-<li>the <strong>direct survey estimate</strong> for the domain, and<br>
+<li>the <strong>direct survey estimate</strong> for the estimation area, and<br>
 </li>
 <li>the <strong>model-based prediction</strong> from covariates.</li>
 </ol>
@@ -337,9 +337,9 @@ ul.task-list li input[type="checkbox"] {
 \]</span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(\hat{\theta}^{DIR}_d\)</span> is the direct survey estimate for domain <span class="math inline">\(d\)</span>;</li>
+<li><span class="math inline">\(\hat{\theta}^{DIR}_d\)</span> is the direct survey estimate for area <span class="math inline">\(d\)</span>;</li>
 <li><span class="math inline">\(x_d^\top \beta\)</span> is the part explained by covariates (i.e., model prediction);</li>
-<li><span class="math inline">\(u_d\)</span> is the domain-specific unexplained effect;</li>
+<li><span class="math inline">\(u_d\)</span> is the area-specific unexplained effect;</li>
 <li><span class="math inline">\(e_d\)</span> is the survey sampling error.</li>
 </ul>
 <p>The <strong>Fay-Herriot estimate</strong> is then a weighted average between the direct estimate and the model-based prediction:</p>
@@ -349,12 +349,12 @@ ul.task-list li input[type="checkbox"] {
 +
 (1-\gamma_d)x_d^\top\hat{\beta}
 \]</span></p>
-<p>The <strong>shrinkage weight</strong> <span class="math inline">\(\gamma_d =\frac{\sigma_u^2}{\sigma_u^2 + \psi_d}\)</span> controls how much the final estimate relies on the direct survey estimate versus the model-based prediction, using sampling variance <span class="math inline">\(\psi_d\)</span> and between-domain unexplained variance <span class="math inline">\(\sigma_u^2\)</span> (i.e., variance of <span class="math inline">\(u_d\)</span>).</p>
+<p>The <strong>shrinkage weight</strong> <span class="math inline">\(\gamma_d =\frac{\sigma_u^2}{\sigma_u^2 + \psi_d}\)</span> controls how much the final estimate relies on the direct survey estimate versus the model-based prediction, using sampling variance <span class="math inline">\(\psi_d\)</span> and between-area unexplained variance <span class="math inline">\(\sigma_u^2\)</span> (i.e., variance of <span class="math inline">\(u_d\)</span>).</p>
 <ul>
 <li>If <span class="math inline">\(\psi_d\)</span> is small (the direct estimate is precise), <span class="math inline">\(\gamma_d\)</span> is closer to 1 and the FH estimate stays close to the direct estimate;</li>
 <li>If <span class="math inline">\(\psi_d\)</span> is large (the direct estimate is noisy), <span class="math inline">\(\gamma_d\)</span> is closer to 0 and the FH estimate is pulled more strongly toward the model-based prediction;</li>
-<li>If <span class="math inline">\(\sigma_u^2\)</span> is large (strong remaining differences among domains), the FH estimate gives more weight to the direct estimate.</li>
-<li>If <span class="math inline">\(\sigma_u^2\)</span> is small (weak remaining differences among domains), the FH estimate is pulled more strongly toward the model-based prediction.</li>
+<li>If <span class="math inline">\(\sigma_u^2\)</span> is large (strong remaining differences among areas), the FH estimate gives more weight to the direct estimate.</li>
+<li>If <span class="math inline">\(\sigma_u^2\)</span> is small (weak remaining differences among areas), the FH estimate is pulled more strongly toward the model-based prediction.</li>
 </ul>
 <p>Essentially, the Fay-Herriot model evaluates how reliable the direct estimates are. Reliable direct estimates are mostly preserved, while noisy direct estimates borrow more information from the model.</p>
 </section>
@@ -363,9 +363,9 @@ ul.task-list li input[type="checkbox"] {
 <p>The Bayesian approach treats the unknown quantities as uncertain. Instead of estimating <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\sigma_u^2\)</span>, and <span class="math inline">\(\gamma_d\)</span> once and plugging them into the formula, the Bayesian model gives them probability distributions.</p>
 <p>As a result, the Bayesian FH estimate is usually reported as the <strong>posterior mean of a distribution</strong> of plausible true values with a <strong>credible interval</strong>.</p>
 <blockquote class="blockquote">
-<p>E.g., a <strong>95% credible interval</strong> represents the range within which the true domain value lies with 95% probability.</p>
+<p>E.g., a <strong>95% credible interval</strong> represents the range within which the true area value lies with 95% probability.</p>
 </blockquote>
-<p>The Bayesian approach is also flexible when dealing with domains with little or no survey data. If a domain has no direct estimate, the model can still predict a plausible value using its covariates and the patterns learned from other domains. That said, these estimates will be by design more model-dependent and usually have wider credible intervals.</p>
+<p>The Bayesian approach is also flexible when dealing with areas with little or no survey data. If an area has no direct estimate, the model can still predict a plausible value using its covariates and the patterns learned from other areas. That said, these estimates will be, by design, more model-dependent and usually have wider credible intervals, i.e, more imprecise.</p>
 <p>[ADD IMAGE - credible intervals]</p>
 </section>
 <section id="spatial-structure" class="level2" data-number="3">
@@ -383,10 +383,10 @@ u = \rho W u + \eta
 <li><span class="math inline">\(\eta\)</span> is the remaining non-spatial random variation.</li>
 </ul>
 <p>[ADD IMAGE - spatial weight matrix]</p>
-<p>Essentially, the model informed by <span class="math inline">\(W\)</span> tries to relate the unexplained effect in one area to the unexplained effects in nearby areas. The strength of this spatial relationship is estimated by the model:</p>
+<p>The weight matrix <span class="math inline">\(W\)</span> defines which areas are treated as neighbours. The spatial Fay-Herriot model then estimates whether the unexplained effects in neighbouring areas tend to be similar.</p>
 <ul>
-<li>if nearby areas have similar unexplained effects, <span class="math inline">\(\rho\)</span> will indicate stronger spatial dependence, and the model applies more spatial smoothing;</li>
-<li>if nearby areas are not strongly related, the spatial effect contributes less, and the model behaves more like the non-spatial Fay-Herriot model.</li>
+<li>If neighbouring areas have similar unexplained effects, the model estimates stronger spatial dependence. For noisy areas, the final estimate is shifted toward values suggested by neighbouring areas and the model prediction. This is also called <em>spatial smoothing</em>.</li>
+<li>If neighbouring areas do not have similar unexplained effects, the spatial component has little influence. The model behaves more like a non-spatial Fay-Herriot model.</li>
 </ul>
 </section>
 <section id="code-implementation" class="level2" data-number="4">
@@ -401,11 +401,11 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For Bayesian area-level SAE, the main package used here is <a href="https://cran.r-project.org/package=SUMMER"><code>SUMMER</code></a>. It fits area-level smoothing models using INLA, and can work either from direct estimates or from survey microdata, greatly simplifying the implementation of the Bayesian approach and adding spatial structure in Area-Level SAE.</p>
+<p>For Bayesian area-level SAE, the main package used here is <a href="https://cran.r-project.org/package=SUMMER"><code>SUMMER</code></a>. It fits area-level smoothing models using INLA. This greatly simplifies the implementation of the Bayesian approach and adding a spatial structure.</p>
 <ul>
 <li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html"><code>SUMMER::smoothArea()</code></a> when you already have direct estimates and their variances.</li>
-<li>Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html"><code>SUMMER::smoothSurvey()</code></a> when you want <code>SUMMER</code> to calculate design-adjusted direct estimates from survey microdata before smoothing.</li>
 </ul>
+<p>If the survey design is more complex (e.g., stratified sampling): - Use <a href="https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html"><code>SUMMER::smoothSurvey()</code></a> when you want <code>SUMMER</code> to calculate design-adjusted direct estimates from survey microdata.</p>
 </div>
 </div>
 <section id="worked-example" class="level3" data-number="4.1">
@@ -671,8 +671,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/diagnostics.html" class="pagination-link">
-        <span class="nav-page-text">[WIP] Diagnostics and Reporting</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/unit-level-sae.html" class="pagination-link">
+        <span class="nav-page-text">Unit-Level Estimation</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

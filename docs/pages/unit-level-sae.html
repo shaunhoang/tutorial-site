@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/sae-toolkit.html" rel="next">
-<link href="../pages/diagnostics.html" rel="prev">
+<link href="../pages/diagnostics.html" rel="next">
+<link href="../pages/bayesian-area-sae.html" rel="prev">
 <link href="../assets/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -245,14 +245,14 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
+  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Unit-Level Estimation</span></a>
+  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
   </div>
 </li>
       </ul>
@@ -318,22 +318,22 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models.</p>
+<p>Unit-level SAE models use survey microdata directly rather than starting from area-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models.</p>
 <section id="understanding-unit-level-estimation" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="understanding-unit-level-estimation"><span class="header-section-number">1</span> Understanding Unit-Level Estimation</h2>
-<p>In area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:</p>
+<p>In area-level Small Area Estimation, the model starts from one direct estimate per estimation area. In unit-level Small Area Estimation, the model starts from individual or household survey records:</p>
 <p><span class="math display">\[
 y_{di} =
 x_{di}^{\top}\beta + u_d + e_{di},
 \]</span></p>
-<p>where <span class="math inline">\(y_{di}\)</span> is the outcome for unit <span class="math inline">\(i\)</span> in domain <span class="math inline">\(d\)</span>, <span class="math inline">\(x_{di}\)</span> is a vector of unit-level covariates, <span class="math inline">\(u_d\)</span> is the area effect, and <span class="math inline">\(e_{di}\)</span> is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.</p>
-<p>The domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:</p>
+<p>where <span class="math inline">\(y_{di}\)</span> is the outcome for unit <span class="math inline">\(i\)</span> in estimation area <span class="math inline">\(d\)</span>, <span class="math inline">\(x_{di}\)</span> is a vector of unit-level covariates, <span class="math inline">\(u_d\)</span> is the area effect, and <span class="math inline">\(e_{di}\)</span> is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.</p>
+<p>The area estimate is then built by predicting or simulating values for the population units in each estimation area and aggregating them:</p>
 <p><span class="math display">\[
 \theta_d =
 \frac{1}{N_d}
 \sum_{i \in U_d} y_{di}.
 \]</span></p>
-<p>This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.</p>
+<p>This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the chosen estimation geography.</p>
 <p>[ADD IMAGE]</p>
 </section>
 <section id="caveats-with-unit-level-estimation" class="level2" data-number="2">
@@ -359,7 +359,7 @@ x_{di}^{\top}\beta + u_d + e_{di},
 </div>
 </div>
 </div>
-<p>In general, prefer <strong>Area-level SAE</strong> when only domain-level covariates are available. <strong>Unit-level SAE</strong> is more realistic when suitable population microdata, or a validated <strong>synthetic population</strong> can provide the prediction population.</p>
+<p>In general, prefer <strong>Area-level SAE</strong> when only area-level covariates are available. <strong>Unit-level SAE</strong> is more realistic when suitable population microdata, or a validated <strong>synthetic population</strong> can provide the prediction population.</p>
 </section>
 <section id="code-implementation" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
@@ -630,13 +630,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/diagnostics.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">[WIP] Diagnostics and Reporting</span>
+      <a href="../pages/bayesian-area-sae.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">[WIP] Area-Level Estimation (Bayesian)</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/sae-toolkit.html" class="pagination-link">
-        <span class="nav-page-text">SAE Toolkit Lite</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/diagnostics.html" class="pagination-link">
+        <span class="nav-page-text">[WIP] Diagnostics and Reporting</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

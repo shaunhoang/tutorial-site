@@ -245,14 +245,14 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
+  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level Estimation</span></a>
+  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
   </div>
 </li>
       </ul>
@@ -292,15 +292,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#define-the-estimands" id="toc-define-the-estimands" class="nav-link active" data-scroll-target="#define-the-estimands"><span class="header-section-number">1</span> Define the Estimands</a></li>
-  <li><a href="#construct-the-indicators" id="toc-construct-the-indicators" class="nav-link" data-scroll-target="#construct-the-indicators"><span class="header-section-number">2</span> Construct the Indicators</a></li>
-  <li><a href="#choose-domain-sizes-and-survey-weights" id="toc-choose-domain-sizes-and-survey-weights" class="nav-link" data-scroll-target="#choose-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choose Domain Sizes and Survey Weights</a>
+  <li><a href="#define-the-estimands" id="toc-define-the-estimands" class="nav-link active" data-scroll-target="#define-the-estimands"><span class="header-section-number">1</span> Define the Estimands</a>
   <ul class="collapse">
-  <li><a href="#domain-sizes" id="toc-domain-sizes" class="nav-link" data-scroll-target="#domain-sizes"><span class="header-section-number">3.1</span> Domain sizes</a></li>
-  <li><a href="#survey-weight" id="toc-survey-weight" class="nav-link" data-scroll-target="#survey-weight"><span class="header-section-number">3.2</span> Survey weight</a></li>
+  <li><a href="#measure" id="toc-measure" class="nav-link" data-scroll-target="#measure"><span class="header-section-number">1.1</span> Measure</a></li>
+  <li><a href="#outcome" id="toc-outcome" class="nav-link" data-scroll-target="#outcome"><span class="header-section-number">1.2</span> Outcome</a></li>
+  <li><a href="#estimation-geography" id="toc-estimation-geography" class="nav-link" data-scroll-target="#estimation-geography"><span class="header-section-number">1.3</span> Estimation geography</a></li>
   </ul></li>
-  <li><a href="#select-covariates" id="toc-select-covariates" class="nav-link" data-scroll-target="#select-covariates"><span class="header-section-number">4</span> Select covariates</a></li>
-  <li><a href="#generate-analysis-ready-inputs" id="toc-generate-analysis-ready-inputs" class="nav-link" data-scroll-target="#generate-analysis-ready-inputs"><span class="header-section-number">5</span> Generate analysis-ready inputs</a></li>
+  <li><a href="#weights-and-domain-sizes" id="toc-weights-and-domain-sizes" class="nav-link" data-scroll-target="#weights-and-domain-sizes"><span class="header-section-number">2</span> Weights and domain sizes</a></li>
+  <li><a href="#select-covariates" id="toc-select-covariates" class="nav-link" data-scroll-target="#select-covariates"><span class="header-section-number">3</span> Select covariates</a></li>
+  <li><a href="#generate-analysis-ready-inputs" id="toc-generate-analysis-ready-inputs" class="nav-link" data-scroll-target="#generate-analysis-ready-inputs"><span class="header-section-number">4</span> Generate analysis-ready inputs</a></li>
   </ul>
 </nav>
     </div>
@@ -324,7 +324,7 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the target domain, and a compatible survey weight.</p>
+<p>Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the estimation geography, and choosing a compatible survey weight.</p>
 <p>The data preparation pipeline can be summarised as follows:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -334,19 +334,30 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <section id="define-the-estimands" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="define-the-estimands"><span class="header-section-number">1</span> Define the Estimands</h2>
-<p>Before fitting any SAE model, define exactly what the survey estimate should represent. This <strong>estimand</strong> determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:</p>
+<p>Before fitting any SAE model, define exactly what we are estimating. This <strong>estimand</strong> determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream.</p>
+<p>It is good practice to formulate the estimands of interest in this format:</p>
 <blockquote class="blockquote">
-<p>Estimate the <strong>measure</strong> of <strong>what outcome</strong>, among <strong>which population</strong>, across <strong>which geographic domains</strong>.</p>
+<p>Estimate the <strong>measure</strong> of <strong>what outcome</strong>, among <strong>which population</strong>, across <strong>which estimation geography</strong>.</p>
 </blockquote>
 <p>E.g.,</p>
 <ol type="1">
-<li>Share of adults who use the train weekly across MSOA</li>
-<li>Mean leisure travel distance among retirees across Wards</li>
+<li>Share of adults who use the train weekly by MSOA</li>
+<li>Mean leisure travel distance among retirees by Ward</li>
 </ol>
+<section id="measure" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="measure"><span class="header-section-number">1.1</span> Measure</h3>
+<p>Estimands can take on any of these types of <strong>measures</strong> which determine how the outcome will be aggregated at the desired estimation geography.</p>
+<ul>
+<li>share</li>
+<li>mean</li>
+<li>count</li>
+<li>rate (e.g., trips per adults)</li>
+<li>ratio (e.g., accidents per 1,000 residents)</li>
+</ul>
 </section>
-<section id="construct-the-indicators" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="construct-the-indicators"><span class="header-section-number">2</span> Construct the Indicators</h2>
-<p>After defining the estimand, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:</p>
+<section id="outcome" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="outcome"><span class="header-section-number">1.2</span> Outcome</h3>
+<p>Based on the estimands, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:</p>
 <table class="table">
 <colgroup>
 <col style="width: 33%">
@@ -375,70 +386,79 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>Use the survey questionnaire, response codes, and routing rules to guide indicator construction. Some indicators are direct recodes of one survey question; others need to combine several variables. The same raw survey variable can support different estimands.</p>
 </section>
-<section id="choose-domain-sizes-and-survey-weights" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="choose-domain-sizes-and-survey-weights"><span class="header-section-number">3</span> Choose Domain Sizes and Survey Weights</h2>
-<section id="domain-sizes" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="domain-sizes"><span class="header-section-number">3.1</span> Domain sizes</h3>
-<p>The <strong>domain size</strong> <span class="math inline">\(N_d\)</span> is the size of the target population in each domain <span class="math inline">\(d\)</span>. It is the denominator for domain means and proportions, and is essential for the SAE workflow. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.</p>
-<ul>
-<li>The <strong>target population</strong> is the group the estimate is about, such as <em>all adults, households, retirees, or public transport users</em>, etc.</li>
-<li>The <strong>target domain</strong> is the geographic area for which estimates will be produced, such as <em>Local Authority, Ward, LSOA, or MSOA</em>, etc.</li>
-</ul>
-<p>The choice of the scale of the target domains should be informed by data availability. E.g., if survey respondent records are only identified at the Local Authority level, then that is the most granular scale for SAE.</p>
+<section id="estimation-geography" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="estimation-geography"><span class="header-section-number">1.3</span> Estimation geography</h3>
+<p>In SAE, the groups or areas being estimated are often called <strong>domains</strong>. In the spatial context such as urban and transport research, they are better understood as <strong>estimation areas</strong> instead. An estimation area is one unit in the chosen <strong>estimation geography</strong>, such as one Local Authority, Ward, LSOA, or MSOA.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../assets/maps_geography_types.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Census Geography hierarchy going from Country to LA to MSOA to LSOA to OA (<a href="https://ukdataservice.ac.uk/learning-hub/census/other-information/census-boundary-data/">Source</a>)</figcaption>
 </figure>
 </div>
+<p>The estimation geography must also match the spatial detail available in the survey. For example, if respondents are only identified by Local Authority, then Local Authority is the finest geography available for SAE.</p>
 </section>
-<section id="survey-weight" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="survey-weight"><span class="header-section-number">3.2</span> Survey weight</h3>
-<p>Survey weights connect the sample back to the population to ensure the survey sample can <strong>best represent real-world proportions</strong>. Here is a <a href="https://sampleweighting.com/how-to-weight-data/">visual refresher guide</a> to weighting.</p>
-<p>The Survey User Guide is the go-to resource to understand which weight variables are available, how they are derived, and which survey modules/questions they apply to. In general, weight variables are derived to adjust for one or more aspects, such as:</p>
+</section>
+<section id="weights-and-domain-sizes" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="weights-and-domain-sizes"><span class="header-section-number">2</span> Weights and domain sizes</h2>
+<p>Survey weights connect the sample back to the population to ensure the survey sample can <strong>best represent real-world proportions</strong>.</p>
+<p>In general, weight variables provided by surveys have already been derived from one or more adjustments, such as:</p>
 <ol type="1">
 <li><strong>Selection adjustment</strong>: accounts for unequal probabilities of selection.</li>
 <li><strong>Non-response adjustment</strong>: compensates for differences between respondents and non-respondents.</li>
 <li><strong>Calibration adjustment</strong>: aligns the weighted sample with known population totals, such as age, sex, region, Local Authority, tenure, or household structure.</li>
 <li><strong>Subsample adjustment</strong>: accounts for cases where only part of the sample was asked a module or completed a diary.</li>
 </ol>
-<p>For SAE, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. Moreover, it is also important to distinguish the <strong>scale</strong> of the weight variable, as it implies different estimation approaches.</p>
+<p>The survey user guide is the go-to resource to understand which weight variables are available, what they adjust for, and most importantly, which survey modules/questions they apply to.</p>
+<p>For SAE, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design.</p>
+<p>Moreover, it is important to distinguish the <strong>scale</strong> of the weight variable:</p>
 <ul>
-<li>Survey weights are most commonly provided as <strong>analysis weights</strong> <span class="math inline">\(w^{A}\)</span>. They make <em>proportions</em> representative of the target population, but only sum to the achieved sample size <span class="math inline">\(n_d\)</span>.</li>
-<li>In certain cases <strong>grossing weights</strong> <span class="math inline">\(w^{G}\)</span> are provided. They not only make proportions representative of the target population but also sum to the population total <span class="math inline">\(N_d\)</span>.</li>
+<li><strong>Analysis weights</strong> <span class="math inline">\(w^{A}\)</span> make means or proportions representative of the target population, and they generally sum to the sample size. This type of weight variables are most common for estimating <code>share</code> or <code>mean</code>.
+<ul>
+<li>E.g., if a sampling unit has an analysis weight of 0.5, it is over-represented in the sample relative to the population, so their contribution is ‘down-weighted’.</li>
+</ul></li>
+<li><strong>Grossing weights</strong> <span class="math inline">\(w^{G}\)</span> are essentially scaled-<span class="math inline">\(w^{A}\)</span> so that they sum to a known population total within the relevant estimation area. They are required if the estimand measure is <code>count</code>, <code>rate</code> (e.g., x per 1,000 adults).
+<ul>
+<li>E.g., if a sampling unit has a grossing weight of 50, it means this one sampled row represents about 50 people in the population.</li>
+</ul></li>
 </ul>
-<p>If analysis weights are provided and the domain sizes <span class="math inline">\(N_d\)</span> are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula <span class="math display">\[
-w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}
-\]</span></p>
-<div class="callout callout-style-default callout-warning callout-titled">
+<p>To calculate <code>count</code>, <code>rate</code> estimands, we not only need <strong>grossing weights</strong> to scale the sample to population totals, we also need to know these population totals at the chosen <strong>estimation geography</strong>.</p>
+<p>In SAE, these totals are called <strong>domain sizes</strong> <span class="math inline">\(N_d\)</span>, i.e.,the size of the target population in each estimation area, usually obtained from Census data or other regional statistics.</p>
+<p>E.g.,</p>
+<ul>
+<li>All residents by MSOA</li>
+<li>All adults (16+) by LA</li>
+<li>All commuters by Region</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For the SAE workflow, the preferred setup is one where <strong>grossing weights</strong> are provided for each survey respondent record and <strong>domain sizes</strong> are available, because it gives a direct link between the survey respondent records and the population totals in each domain. If the domain size is unknown, <a href="../pages/direct-estimation.html">alternative direct estimation methods</a> may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).</p>
+<p>If analysis weights are provided and the domain sizes <span class="math inline">\(N_d\)</span> are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula: <span class="math display">\[
+w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}
+\]</span></p>
 </div>
 </div>
 </section>
-</section>
-<section id="select-covariates" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="select-covariates"><span class="header-section-number">4</span> Select covariates</h2>
-<p>SAE improves precision by “borrowing strength” from auxiliary variables (i.e., covariates). This is critical for domains with sparse or non-existent survey data.</p>
-<p>Domain-level covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across domains.</p>
+<section id="select-covariates" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="select-covariates"><span class="header-section-number">3</span> Select covariates</h2>
+<p>SAE improves precision by “borrowing strength” from auxiliary variables (i.e., covariates). This is critical for estimation areas with sparse or non-existent survey data.</p>
+<p>Area-level covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across estimation areas.</p>
 <ul>
-<li><strong>Coverage:</strong> each covariate should be available for all target domains.</li>
+<li><strong>Coverage:</strong> each covariate should be available for all estimation areas.</li>
 <li><strong>Alignment:</strong> match geography, definition, and reference period to the survey indicator.</li>
 <li><strong>Relevance:</strong> keep variables with a clear substantive link to the outcome and avoid including many weak predictors.</li>
-<li><strong>Predictive:</strong> choose covariates that improve domain-level prediction and are easy to explain.</li>
+<li><strong>Predictive:</strong> choose covariates that improve area-level prediction and are easy to explain.</li>
 </ul>
 <p>For example, some common covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessibility metrics, car ownership, etc.</p>
 </section>
-<section id="generate-analysis-ready-inputs" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="generate-analysis-ready-inputs"><span class="header-section-number">5</span> Generate analysis-ready inputs</h2>
+<section id="generate-analysis-ready-inputs" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="generate-analysis-ready-inputs"><span class="header-section-number">4</span> Generate analysis-ready inputs</h2>
 <p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:</p>
 <table class="table">
 <colgroup>
@@ -456,11 +476,11 @@ Warning
 <th>#</th>
 <th>Estimand</th>
 <th>Indicator</th>
-<th>Coding rule</th>
-<th>Target domain</th>
-<th>Domain size</th>
-<th>Weight</th>
-<th>Prelim. Covariates</th>
+<th>Variable coding rule</th>
+<th>Measure</th>
+<th>Estimation geography</th>
+<th>Weight variable</th>
+<th>Covariates</th>
 </tr>
 </thead>
 <tbody>
@@ -469,9 +489,9 @@ Warning
 <td>Share of adults who use the train weekly across MSOAs</td>
 <td><code>is_freq_train_user</code></td>
 <td>Binary: <code>1</code> if <code>TrainUseFreq = 1</code>; <code>0</code> if adult does not use the train weekly; <code>null</code> for invalid or refused responses</td>
+<td>Share</td>
 <td>MSOA</td>
-<td>Adult population aged 16+ by MSOA</td>
-<td><code>AdultWeight</code>; applies to all adult respondents; grossing weight</td>
+<td><code>SampleAdultWeight</code></td>
 <td><code>age</code>,<code>income</code>,<code>own_carvan</code>, etc.</td>
 </tr>
 <tr class="even">
@@ -479,19 +499,13 @@ Warning
 <td>Mean leisure travel distance among retirees across Wards</td>
 <td><code>leisure_travel_distance</code></td>
 <td>Continuous: numeric miles from <code>TravelWorkDistance</code>; only retirees with valid leisure travel distance are in scope</td>
+<td>Mean</td>
 <td>Ward</td>
-<td>Worker population by Ward</td>
-<td><code>LeisureTravelModuleWeight</code>; applies to leisure travel module respondents (a subsample)</td>
+<td><code>LeisureTravelModuleWeight</code></td>
 <td><code>income</code>,<code>own_home</code>,<code>own_carvan</code>, etc.</td>
 </tr>
 </tbody>
 </table>
-<p>By the end, each estimand should have enough information to create:</p>
-<ol type="1">
-<li>a survey indicator file with <em>one row per sampled unit</em>;</li>
-<li>a covariate file with <em>one row per domain (area-level SAE)</em> or <em>per population unit (unit-level SAE)</em>, aggregating all the preliminary covariates chosen;</li>
-<li>a domain size file with <em>one row per domain</em>, only required if estimands have known domain sizes;</li>
-</ol>
 <p>The next workbook will demonstrate a worked example using a <strong>simulated National Survey for Wales 2022-2023</strong> respondent microdata.</p>
 
 

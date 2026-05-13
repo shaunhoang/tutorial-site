@@ -2,7 +2,7 @@
 title: "Overview"
 ---
 
-Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the target domain, and a compatible survey weight.
+Raw survey microdata is transformed into analysis-ready inputs by defining the estimand, coding the indicator from the survey variables, aligning it with the estimation geography, and choosing a compatible survey weight.
 
 The data preparation pipeline can be summarised as follows:
 
@@ -10,18 +10,29 @@ The data preparation pipeline can be summarised as follows:
 
 ## Define the Estimands
 
-Before fitting any SAE model, define exactly what the survey estimate should represent. This **estimand** determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream. It is good practice to formulate the estimands of interest in this format:
+Before fitting any SAE model, define exactly what we are estimating. This **estimand** determines how survey microdata inputs are prepared and how to choose the most appropriate estimation approach downstream. 
 
-> Estimate the **measure** of **what outcome**, among **which population**, across **which geographic domains**.
+It is good practice to formulate the estimands of interest in this format:
+
+> Estimate the **measure** of **what outcome**, among **which population**, across **which estimation geography**.
 
 E.g.,
 
-1. Share of adults who use the train weekly across MSOA
-2. Mean leisure travel distance among retirees across Wards
+1. Share of adults who use the train weekly by MSOA
+2. Mean leisure travel distance among retirees by Ward
 
-## Construct the Indicators
+### Measure
+Estimands can take on any of these types of **measures** which determine how the outcome will be aggregated at the desired estimation geography. 
 
-After defining the estimand, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:
+- share
+- mean
+- count
+- rate (e.g., trips per adults)
+- ratio (e.g., accidents per 1,000 residents)
+
+### Outcome
+
+Based on the estimands, identify or create the survey indicator that measures the outcome. Here are some of the most common indicator types:
 
 | Indicator type | What to define | Example |
 |---|---|---|
@@ -30,53 +41,63 @@ After defining the estimand, identify or create the survey indicator that measur
 
 Use the survey questionnaire, response codes, and routing rules to guide indicator construction. Some indicators are direct recodes of one survey question; others need to combine several variables. The same raw survey variable can support different estimands.
 
-## Choose Domain Sizes and Survey Weights
-### Domain sizes
-The **domain size** $N_d$ is the size of the target population in each domain $d$. It is the denominator for domain means and proportions, and is essential for the SAE workflow. Domain sizes can often be obtained from census datasets or other regional aggregate statistics.
+### Estimation geography
 
--   The **target population** is the group the estimate is about, such as *all adults, households, retirees, or public transport users*, etc.
--   The **target domain** is the geographic area for which estimates will be produced, such as *Local Authority, Ward, LSOA, or MSOA*, etc. 
-
-The choice of the scale of the target domains should be informed by data availability. E.g., if survey respondent records are only identified at the Local Authority level, then that is the most granular scale for SAE.
+In SAE, the groups or areas being estimated are often called **domains**. In the spatial context such as urban and transport research, they are better understood as **estimation areas** instead. An estimation area is one unit in the chosen **estimation geography**, such as one Local Authority, Ward, LSOA, or MSOA.
 
 ![Census Geography hierarchy going from Country to LA to MSOA to LSOA to OA ([Source](https://ukdataservice.ac.uk/learning-hub/census/other-information/census-boundary-data/))](../assets/maps_geography_types.png)
 
-### Survey weight
+The estimation geography must also match the spatial detail available in the survey. For example, if respondents are only identified by Local Authority, then Local Authority is the finest geography available for SAE.
 
-Survey weights connect the sample back to the population to ensure the survey sample can **best represent real-world proportions**. Here is a [visual refresher guide](https://sampleweighting.com/how-to-weight-data/) to weighting.
+## Weights and domain sizes
 
-The Survey User Guide is the go-to resource to understand which weight variables are available, how they are derived, and which survey modules/questions they apply to. 
-In general, weight variables are derived to adjust for one or more aspects, such as:
+Survey weights connect the sample back to the population to ensure the survey sample can **best represent real-world proportions**. 
+
+In general, weight variables provided by surveys have already been derived from one or more adjustments, such as:
 
 1.  **Selection adjustment**: accounts for unequal probabilities of selection.
 2.  **Non-response adjustment**: compensates for differences between respondents and non-respondents.
 3.  **Calibration adjustment**: aligns the weighted sample with known population totals, such as age, sex, region, Local Authority, tenure, or household structure.
 4.  **Subsample adjustment**: accounts for cases where only part of the sample was asked a module or completed a diary.
 
-For SAE, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. Moreover, it is also important to distinguish the **scale** of the weight variable, as it implies different estimation approaches.
+The survey user guide is the go-to resource to understand which weight variables are available, what they adjust for, and most importantly, which survey modules/questions they apply to.
 
-- Survey weights are most commonly provided as **analysis weights** $w^{A}$. They make *proportions* representative of the target population, but only sum to the achieved sample size $n_d$. 
-- In certain cases **grossing weights** $w^{G}$ are provided. They not only make proportions representative of the target population but also sum to the population total $N_d$.
+For SAE, there is no one-size-fits-all approach to survey weight selection. The weight used must match the estimand unit, target population, and survey design. 
 
-If analysis weights are provided and the domain sizes $N_d$ are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula 
+Moreover, it is important to distinguish the **scale** of the weight variable:
+
+- **Analysis weights** $w^{A}$ make means or proportions representative of the target population, and they generally sum to the sample size. This type of weight variables are most common for estimating `share` or `mean`.
+    - E.g., if a sampling unit has an analysis weight of 0.5, it is over-represented in the sample relative to the population, so their contribution is 'down-weighted'.
+- **Grossing weights** $w^{G}$ are essentially scaled-$w^{A}$ so that they sum to a known population total within the relevant estimation area. They are required if the estimand measure is `count`, `rate` (e.g., x per 1,000 adults).
+    - E.g., if a sampling unit has a grossing weight of 50, it means this one sampled row represents about 50 people in the population.
+
+To calculate `count`, `rate` estimands, we not only need **grossing weights** to scale the sample to population totals, we also need to know these population totals at the chosen **estimation geography**. 
+
+In SAE, these totals are called **domain sizes** $N_d$, i.e.,the size of the target population in each estimation area, usually obtained from Census data or other regional statistics.
+
+E.g.,
+
+- All residents by MSOA
+- All adults (16+) by LA
+- All commuters by Region
+
+:::{.callout-tip}
+If analysis weights are provided and the domain sizes $N_d$ are known, analysis weights can be scaled to grossing weights for each survey respondent using the following formula:
 $$
 w^G_{di} = w^A_{di} * \frac{N_d}{\sum w^A_d}
 $$
-
-::: {.callout-warning}
-For the SAE workflow, the preferred setup is one where **grossing weights** are provided for each survey respondent record and **domain sizes** are available, because it gives a direct link between the survey respondent records and the population totals in each domain. If the domain size is unknown, [alternative direct estimation methods](direct-estimation.qmd) may be used. Otherwise, the estimand may also be redefined (e.g., coarser geography, less specific target population).
 :::
 
 ## Select covariates
 
-SAE improves precision by "borrowing strength" from auxiliary variables (i.e., covariates). This is critical for domains with sparse or non-existent survey data. 
+SAE improves precision by "borrowing strength" from auxiliary variables (i.e., covariates). This is critical for estimation areas with sparse or non-existent survey data. 
 
-Domain-level covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across domains. 
+Area-level covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across estimation areas. 
 
-- **Coverage:** each covariate should be available for all target domains.
+- **Coverage:** each covariate should be available for all estimation areas.
 - **Alignment:** match geography, definition, and reference period to the survey indicator.
 - **Relevance:** keep variables with a clear substantive link to the outcome and avoid including many weak predictors.
-- **Predictive:** choose covariates that improve domain-level prediction and are easy to explain.
+- **Predictive:** choose covariates that improve area-level prediction and are easy to explain.
 
 For example, some common covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessibility metrics, car ownership, etc.
 
@@ -84,15 +105,9 @@ For example, some common covariates when estimating transport-related indicators
 
 Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:
 
-| # | Estimand | Indicator | Coding rule | Target domain | Domain size | Weight | Prelim. Covariates |
+| # | Estimand | Indicator | Variable coding rule | Measure | Estimation geography | Weight variable | Covariates |
 |---|---|---|---|---|---|---|---|
-| 1 | Share of adults who use the train weekly across MSOAs | `is_freq_train_user` | Binary: `1` if `TrainUseFreq = 1`; `0` if adult does not use the train weekly; `null` for invalid or refused responses | MSOA | Adult population aged 16+ by MSOA | `AdultWeight`; applies to all adult respondents; grossing weight | `age`,`income`,`own_carvan`, etc. |
-| 2 | Mean leisure travel distance among retirees across Wards | `leisure_travel_distance` | Continuous: numeric miles from `TravelWorkDistance`; only retirees with valid leisure travel distance are in scope | Ward | Worker population by Ward | `LeisureTravelModuleWeight`; applies to leisure travel module respondents (a subsample) |`income`,`own_home`,`own_carvan`, etc. |
-
-By the end, each estimand should have enough information to create:
-
-1.  a survey indicator file with *one row per sampled unit*;
-2. a covariate file with *one row per domain (area-level SAE)* or *per population unit (unit-level SAE)*, aggregating all the preliminary covariates chosen; 
-3. a domain size file with *one row per domain*, only required if estimands have known domain sizes;
+| 1 | Share of adults who use the train weekly across MSOAs | `is_freq_train_user` | Binary: `1` if `TrainUseFreq = 1`; `0` if adult does not use the train weekly; `null` for invalid or refused responses | Share | MSOA | `SampleAdultWeight` | `age`,`income`,`own_carvan`, etc. |
+| 2 | Mean leisure travel distance among retirees across Wards | `leisure_travel_distance` | Continuous: numeric miles from `TravelWorkDistance`; only retirees with valid leisure travel distance are in scope | Mean | Ward | `LeisureTravelModuleWeight` |`income`,`own_home`,`own_carvan`, etc. |
 
 The next workbook will demonstrate a worked example using a **simulated National Survey for Wales 2022-2023** respondent microdata.

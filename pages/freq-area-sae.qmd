@@ -4,11 +4,11 @@ execute:
   eval: true
 ---
 
-Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct estimates with domain-level covariates to improve precision.
+Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are estimation areas with weak survey information. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct estimates with area-level covariates to improve precision.
 
 ## Understanding the Fay-Herriot model
 
-Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :
+Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the area-level direct estimates are:
 
 $$
 \hat{\theta}^{DIR}_d =
@@ -47,7 +47,7 @@ In this **frequentist** FH workflow, the main outputs are the model-based estima
 :::{.callout-tip}
 Use [`sae::eblupFH()`](https://search.r-project.org/CRAN/refmans/sae/html/eblupFH.html) to fit a frequentist Fay-Herriot model and [`sae::mseFH()`](https://search.r-project.org/CRAN/refmans/sae/html/mseFH.html) to estimate uncertainty. 
 
-`sae` does not handle out-of-sample domains (i.e., domains without respondent records) automatically. These domains require separate model-based predictions from the fitted covariate relationship.
+`sae` does not handle out-of-sample areas (i.e., estimation areas without respondent records) automatically. These areas require separate model-based predictions from the fitted covariate relationship.
 :::
 
 ### Worked Example

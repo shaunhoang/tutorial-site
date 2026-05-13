@@ -2,20 +2,20 @@
 title: "Unit-Level Estimation"
 ---
 
-Unit-level SAE models use survey microdata directly rather than starting from domain-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models. 
+Unit-level SAE models use survey microdata directly rather than starting from area-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models. 
 
 ## Understanding Unit-Level Estimation
 
-In area-level Small Area Estimation, the model starts from one direct estimate per domain. In unit-level Small Area Estimation, the model starts from individual or household survey records:
+In area-level Small Area Estimation, the model starts from one direct estimate per estimation area. In unit-level Small Area Estimation, the model starts from individual or household survey records:
 
 $$
 y_{di} =
 x_{di}^{\top}\beta + u_d + e_{di},
 $$
 
-where $y_{di}$ is the outcome for unit $i$ in domain $d$, $x_{di}$ is a vector of unit-level covariates, $u_d$ is the area effect, and $e_{di}$ is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.
+where $y_{di}$ is the outcome for unit $i$ in estimation area $d$, $x_{di}$ is a vector of unit-level covariates, $u_d$ is the area effect, and $e_{di}$ is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.
 
-The domain estimate is then built by predicting or simulating values for the population units in each domain and aggregating them:
+The area estimate is then built by predicting or simulating values for the population units in each estimation area and aggregating them:
 
 $$
 \theta_d =
@@ -23,7 +23,7 @@ $$
 \sum_{i \in U_d} y_{di}.
 $$
 
-This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the geographic domain of choice.
+This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the chosen estimation geography.
 
 [ADD IMAGE]
 
@@ -44,7 +44,7 @@ Unit-level SAE is useful when the survey and population data share comparable in
 - More technically demanding, especially in terms of privacy/access 
 :::
 
-In general, prefer **Area-level SAE** when only domain-level covariates are available. **Unit-level SAE** is more realistic when suitable population microdata, or a validated **synthetic population** can provide the prediction population.
+In general, prefer **Area-level SAE** when only area-level covariates are available. **Unit-level SAE** is more realistic when suitable population microdata, or a validated **synthetic population** can provide the prediction population.
 
 
 ## Code Implementation

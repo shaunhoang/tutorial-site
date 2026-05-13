@@ -4,13 +4,13 @@ execute:
   eval: true
 ---
 
-Area-level SAE improves direct estimates that are too noisy, unstable, or unavailable for some domains. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct survey estimates with domain-level covariates to improve precision.
+Area-level estimation improves direct estimates that are too noisy, unstable, or unavailable for some areas. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct survey estimates with area-level covariates to improve precision.
 
 ## Understanding the basic Fay-Herriot model
 
-The Fay-Herriot model is an **area-level small area estimation model**. It combines two sources of information for each domain:
+The Fay-Herriot model is an **area-level small area estimation model**. It combines two sources of information for each estimation area:
 
-1. the **direct survey estimate** for the domain, and  
+1. the **direct survey estimate** for the estimation area, and  
 2. the **model-based prediction** from covariates.
 
 Their relationship can be written as:
@@ -21,9 +21,9 @@ $$
 
 where:
 
-- $\hat{\theta}^{DIR}_d$ is the direct survey estimate for domain $d$;
+- $\hat{\theta}^{DIR}_d$ is the direct survey estimate for area $d$;
 - $x_d^\top \beta$ is the part explained by covariates (i.e., model prediction);
-- $u_d$ is the domain-specific unexplained effect;
+- $u_d$ is the area-specific unexplained effect;
 - $e_d$ is the survey sampling error.
 
 The **Fay-Herriot estimate** is then a weighted average between the direct estimate and the model-based prediction:
@@ -35,12 +35,12 @@ $$
 (1-\gamma_d)x_d^\top\hat{\beta}
 $$
 
-The **shrinkage weight** $\gamma_d =\frac{\sigma_u^2}{\sigma_u^2 + \psi_d}$ controls how much the final estimate relies on the direct survey estimate versus the model-based prediction, using sampling variance $\psi_d$ and between-domain unexplained variance $\sigma_u^2$ (i.e., variance of $u_d$).
+The **shrinkage weight** $\gamma_d =\frac{\sigma_u^2}{\sigma_u^2 + \psi_d}$ controls how much the final estimate relies on the direct survey estimate versus the model-based prediction, using sampling variance $\psi_d$ and between-area unexplained variance $\sigma_u^2$ (i.e., variance of $u_d$).
 
 - If $\psi_d$ is small (the direct estimate is precise), $\gamma_d$ is closer to 1 and the FH estimate stays close to the direct estimate;
 - If $\psi_d$ is large (the direct estimate is noisy), $\gamma_d$ is closer to 0 and the FH estimate is pulled more strongly toward the model-based prediction;
-- If $\sigma_u^2$ is large (strong remaining differences among domains), the FH estimate gives more weight to the direct estimate.
-- If $\sigma_u^2$ is small (weak remaining differences among domains), the FH estimate is pulled more strongly toward the model-based prediction.
+- If $\sigma_u^2$ is large (strong remaining differences among areas), the FH estimate gives more weight to the direct estimate.
+- If $\sigma_u^2$ is small (weak remaining differences among areas), the FH estimate is pulled more strongly toward the model-based prediction.
 
 Essentially, the Fay-Herriot model evaluates how reliable the direct estimates are. Reliable direct estimates are mostly preserved, while noisy direct estimates borrow more information from the model.
 
@@ -50,9 +50,9 @@ The Bayesian approach treats the unknown quantities as uncertain. Instead of est
 
 As a result, the Bayesian FH estimate is usually reported as the **posterior mean of a distribution** of plausible true values with a **credible interval**. 
 
-> E.g., a **95% credible interval** represents the range within which the true domain value lies with 95% probability.
+> E.g., a **95% credible interval** represents the range within which the true area value lies with 95% probability.
 
-The Bayesian approach is also flexible when dealing with domains with little or no survey data. If a domain has no direct estimate, the model can still predict a plausible value using its covariates and the patterns learned from other domains. That said, these estimates will be by design more model-dependent and usually have wider credible intervals.
+The Bayesian approach is also flexible when dealing with areas with little or no survey data. If an area has no direct estimate, the model can still predict a plausible value using its covariates and the patterns learned from other areas. That said, these estimates will be, by design, more model-dependent and usually have wider credible intervals, i.e, more imprecise.
 
 [ADD IMAGE - credible intervals]
 
@@ -75,18 +75,20 @@ where:
 
 [ADD IMAGE - spatial weight matrix]
 
-Essentially, the model informed by $W$ tries to relate the unexplained effect in one area to the unexplained effects in nearby areas. The strength of this spatial relationship is estimated by the model:
+The weight matrix $W$ defines which areas are treated as neighbours. The spatial Fay-Herriot model then estimates whether the unexplained effects in neighbouring areas tend to be similar.
 
-- if nearby areas have similar unexplained effects, $\rho$ will indicate stronger spatial dependence, and the model applies more spatial smoothing;
-- if nearby areas are not strongly related, the spatial effect contributes less, and the model behaves more like the non-spatial Fay-Herriot model.
+- If neighbouring areas have similar unexplained effects, the model estimates stronger spatial dependence. For noisy areas, the final estimate is shifted toward values suggested by neighbouring areas and the model prediction. This is also called *spatial smoothing*.
+- If neighbouring areas do not have similar unexplained effects, the spatial component has little influence. The model behaves more like a non-spatial Fay-Herriot model.
 
 ## Code Implementation
 
 :::{.callout-tip}
-For Bayesian area-level SAE, the main package used here is [`SUMMER`](https://cran.r-project.org/package=SUMMER). It fits area-level smoothing models using INLA, and can work either from direct estimates or from survey microdata, greatly simplifying the implementation of the Bayesian approach and adding spatial structure in Area-Level SAE.
+For Bayesian area-level SAE, the main package used here is [`SUMMER`](https://cran.r-project.org/package=SUMMER). It fits area-level smoothing models using INLA. This greatly simplifies the implementation of the Bayesian approach and adding a spatial structure.
 
 - Use [`SUMMER::smoothArea()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothArea.html) when you already have direct estimates and their variances. 
-- Use [`SUMMER::smoothSurvey()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html) when you want `SUMMER` to calculate design-adjusted direct estimates from survey microdata before smoothing. 
+
+If the survey design is more complex (e.g., stratified sampling):
+- Use [`SUMMER::smoothSurvey()`](https://search.r-project.org/CRAN/refmans/SUMMER/html/smoothSurvey.html) when you want `SUMMER` to calculate design-adjusted direct estimates from survey microdata.
 :::
 
 ### Worked Example

@@ -243,14 +243,14 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
+  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Unit-Level Estimation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Unit-Level Estimation</span></a>
+  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
   </div>
 </li>
       </ul>
@@ -318,10 +318,10 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are domains with weak survey information. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct estimates with domain-level covariates to improve precision.</p>
+<p>Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are estimation areas with weak survey information. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct estimates with area-level covariates to improve precision.</p>
 <section id="understanding-the-fay-herriot-model" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="understanding-the-fay-herriot-model"><span class="header-section-number">1</span> Understanding the Fay-Herriot model</h2>
-<p>Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the domain direct estimates are :</p>
+<p>Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the area-level direct estimates are:</p>
 <p><span class="math display">\[
 \hat{\theta}^{DIR}_d =
 x_d^\top\beta + u_d + e_d.
@@ -373,7 +373,7 @@ Tip
 </div>
 <div class="callout-body-container callout-body">
 <p>Use <a href="https://search.r-project.org/CRAN/refmans/sae/html/eblupFH.html"><code>sae::eblupFH()</code></a> to fit a frequentist Fay-Herriot model and <a href="https://search.r-project.org/CRAN/refmans/sae/html/mseFH.html"><code>sae::mseFH()</code></a> to estimate uncertainty.</p>
-<p><code>sae</code> does not handle out-of-sample domains (i.e., domains without respondent records) automatically. These domains require separate model-based predictions from the fitted covariate relationship.</p>
+<p><code>sae</code> does not handle out-of-sample areas (i.e., estimation areas without respondent records) automatically. These areas require separate model-based predictions from the fitted covariate relationship.</p>
 </div>
 </div>
 <section id="worked-example" class="level3" data-number="2.1">
