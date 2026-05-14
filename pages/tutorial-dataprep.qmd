@@ -1,31 +1,31 @@
 ---
-title: "Worked Example"
+title: "Example"
 execute:
   eval: true
 ---
 
 This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) methods to follow. In the process, we will also address the various decisions that researchers need to make.
 
-## Setup
+## Preparation
 
-### Understanding the tutorial datasets
+### Understanding the tutorial dataset
 
-The [*National Survey for Wales 2022-23*](https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details) is a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language. 
+The survey dataset used in this tutorial is a simulated dataset based on the [*National Survey for Wales 2022-23*](https://datacatalogue.ukdataservice.ac.uk/studies/study/9144#details)-a cross-sectional survey, conducted annually to provide a snapshot of the Welsh population, covering topics include health, education, climate change, visits to the outdoors, public service satisfaction, material deprivation, internet access, and the Welsh language. 
 
-The survey dataset used in this tutorial simulates the NSW microdata by treating it with *stratified randomisation* and *randomised upsampling* to both ensure data privacy and create a more granular spatial identifier for tutorial purposes, since estimation cannot be performed at a finer spatial scale than what the survey provides.
+by treating it with *stratified randomisation* and *randomised upsampling* 
 
 :::{.callout-note}
-In the original dataset, the Local Authority (LA) is the sole spatial identifier and the survey's stratification variable. The example simulated dataset was created using:
+In the original NSW dataset, obtained via UK Data Service, the Local Authority (LA) is the sole spatial identifier and the survey's sampling stratification variable. To both ensure data privacy and create a more granular spatial identifier for tutorial purposes, the example simulated dataset was created using:
 
 - **Stratified randomisation:** Survey responses were first split by Local Authority and their variables were randomised column-wise to preserve totals by Local Authority.
 - **Randomised upsampling:** Survey responses were assigned a random MSOA that intersects with their recorded Local Authority to simulate a higher-resolution dataset for tutorial purposes.
-::: 
 
 ![](../assets/la_msoa_n.png)
+::: 
 
 ### Defining the estimands
 
-The most important first step is to define the **estimands**, i.e. what is being estimated, for which population, and at what geography. For this tutorial, we specifically want to estimate indicators related to *commuting, bus usage, and active travel behaviour in Wales*. The estimands could be expressed like this:
+The most important first step is to define the **estimands**, i.e. what is being estimated, for which population, and at what geography. For this tutorial, we specifically want to estimate indicators related to *commuting, bus transport, and walking/cycling behaviour in Wales*. The estimands could be expressed like this:
 
 |Est. #| Measure | Outcome | Target population | Estimation geography |
 |---|---|---|---|---|
@@ -33,17 +33,13 @@ The most important first step is to define the **estimands**, i.e. what is being
 |2| Share | Dissatisfaction with bus services | Adults who rode a bus in the last 12 months | MSOAs in Wales |
 |3| Rate | Walking as main transport daily per 1,000 residents | All residents | MSOAs in Wales |
 
-Specifying these elements early is critical as they dictate the technical requirements for the estimation process. 
+Specifying these elements early is critical as they dictate the technical requirements for the estimation process. For example:
 
-For example:
+- **Measure:** Estimating a `mean` or `share` can be done directly with a compatible analysis weight. Estimating a population `rate` (per 1k) requires a compatible grossing weight and/or known domain sizes (residents per MSOA).
+- **Weight:** Estimating the share of recent adult bus riders dissatisfied with bus services requires a weight calibrated for the adult population, since applying a general population weight would bias the result by including children.
+- **Geography:** With a sample size of 11,000 respondents in Wales, if we chose to estimate at the OA level (~10,000 small areas) instead of MSOA, we could leave the vast majority of OAs with zero or one respondent.
 
-- **Measure:** Estimating a *mean* or *share* can be done directly with a compatible analysis weight. Estimating a population rate with a known denominator requires a grossing weight, so the weighted total can be divided by the known domain size.
-- **Weight:** Estimating *the share of recent adult bus riders dissatisfied with bus services* requires a weight calibrated for the adult population, since applying a general population weight would bias the result by including children.
-- **Geography:** With a sample size of 11,000 respondents in Wales, if we choose to estimate at the OA level (~10,000 small areas), we could leave the vast majority of OAs with zero or one respondent.
-
-:::{.callout-tip}
 In practice, this step is reiterative based on data availability and other restrictions. It is worth starting out with the most relevant estimands and refining them further after diagnosing the quality of the estimation results.
-:::
 
 ### Preparing indicators and weight variables
 
@@ -53,30 +49,23 @@ The next stage involves preparing the indicator variables and aligning them with
 |---|---|---|---|---|---|
 |1| `commute_distance` | [`TravWkDist`] Numeric commute distance in miles, non-commuters are coded `NA` | Mean | MSOA | `SampleAdultWeight`, analysis weight |
 |2| `bus_nosat` | [`BusOverSat`, `Bus12M`] Binary: `1` if rode a bus in the last 12 months and is fairly or very dissatisfied; `0` if rode a bus in the last 12 months and is not dissatisfied; `NA` otherwise | Share | MSOA | `SampleAdultWeight`, analysis weight |
-|3| `freq_walker` | [`AtFrqWlk10`] Binary: `1` if walking for transport daily | Rate (per 1k)| MSOA | `SampleTravelWeight`, analysis weight; scaled to an MSOA grossing weight during direct estimation |
-
-As a reminder, analysis weights support weighted means and proportions. A grossing weight scales survey respondents up to a known population total. In this dataset, weight variables are chosen for each indicator based on definitional compatibility:
-
-- `SampleAdultWeight`: an analysis weight that adjusts for sample design bias to reflect real-world means and proportions. It is used here for `commute_distance` and `bus_nosat`.
-- `SampleTravelWeight`: an analysis weight for the active-travel module. It is exported for `freq_walker`, then scaled to an MSOA grossing weight during direct estimation.
+|3| `freq_walker` | [`AtFrqWlk10`] Binary: `1` if walking for transport daily | Rate (per 1k)| MSOA | `SampleTravelWeight`, analysis weight, to be scaled to an MSOA-level grossing weight |
 
 ### Selecting covariates
 
 Covariates, or auxiliary variables, are the backbone of SAE because they lend information to areas with low or no survey data to improve their precision. Covariates should be available for every estimation areas and should have a clear relationship to the estimands. 
 
-The [Census 2021 bulk downloads](https://www.nomisweb.co.uk/sources/census_2021_bulk) are a practical starting point because they provide rich and consistent datasets aggregated at all UK geographies.
+For this worked example, The [Census 2021 bulk downloads](https://www.nomisweb.co.uk/sources/census_2021_bulk) are a practical starting point because they provide rich and consistent datasets aggregated at all UK geographies. Each indicator will have at its disposal covariates that are its most logical predictors, as follows: 
 
-For this worked example, each indicator will have at its disposal covariates that are its most logical predictors, as follows: 
-
-|Est. #| Indicator | Covariates (from UK Census '21)|| Geography 
+|Est. #| Indicator | Covariates (from UK Census '21)| Geography |
 |---|---|---|---|
-|1| `commute_distance` | | - Population density (`TS006`)<br>- Share of commute by car/van (`TS061`)<br>- Share of households with car/van (`TS045`)  | MSOA
-|2| `bus_nosat` | - Population density (`TS006`)<br>- Share of commute by bus/minibus (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of households deprived in 2+ dimensions (`TS011`) | MSOA
-|3| `freq_walker` | - Population density (`TS006`)<br>- Share of commute by bike/walk (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of population in good health (`TS037`) | MSOA
+|1| `commute_distance` | - Population density (`TS006`)<br>- Share of commute by car/van (`TS061`)<br>- Share of households with car/van (`TS045`)  | MSOA |
+|2| `bus_nosat` | - Population density (`TS006`)<br>- Share of commute by bus/minibus (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of households deprived in 2+ dimensions (`TS011`) | MSOA |
+|3| `freq_walker` | - Population density (`TS006`)<br>- Share of commute by bike/walk (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of population in good health (`TS037`) | MSOA |
 
-With this information we can proceed to process the survey dataset to produce inputs necessary for the workflow.
+With this information we can proceed to process the raw survey dataset to produce inputs necessary for the estimation pipeline.
 
-## Processing
+## Practical: Code Implementation
 
 ```{r}
 library(dplyr)
@@ -92,38 +81,64 @@ unzip(zip_tmp, exdir = tempdir())
 base_path <- file.path(tempdir(), "raw")
 ```
 ### Load survey data 
-Load the survey datasets and identify the unique identifier of survey respondents, and recode it as `unit_id` for easier handling downstream.
-
+Load the survey datasets and identify the unique identifier of survey respondents, and recode it as `unit_id` for easier handling downstream. For each respondent, the simulated survey microdata also provides two spatial identifiers: Local Authority and MSOA of residence. The three estimands are estimated at MSOA level, while Local Authority remains useful as the survey stratification variable.
 ```{r}
+# Load dataset
 nsw_raw <- read_csv(
   file.path(base_path, "nsw_2223_msoa_la.csv")
 ) |>
   rename(unit_id = CaseNo)
-```
 
-For each respondent, the survey provides two spatial identifiers: Local Authority and MSOA. The three estimands are estimated at MSOA level, while Local Authority remains useful as the survey stratification variable.
-
-The survey is stratified by Local Authority, so `la_domain_id` is also used as the `strata` column in the exported indicator files. If a survey has no stratification variable, set `strata = "all"` instead.
-
-```{r}
+# tibble of la and msoa code
 survey_spatial_ids <- nsw_raw |>
-  transmute(
-    unit_id,
-    la_domain_id = la_code,
-    msoa_domain_id = msoa_code
-  )
+  select(unit_id,la_code,msoa_code)
 
 head(survey_spatial_ids)
 ```
 
-### Load MSOA population totals
+### Construct Indicators
 
-Next, load the Census population totals for Welsh MSOAs.
+Next, we can start constructing the indicators from the variables based on the coding rules set out above.
 
-In this exercise, `freq_walker` uses the MSOA population as the known denominator. The same file also gives us the full list of target MSOAs and provides a useful population covariate.
-
-- Total population by MSOA
 ```{r}
+# Construct the three indicators
+survey_indicators <- nsw_raw |>
+  transmute(
+    unit_id,
+    commute_distance = as.numeric(TravWkDist),
+    bus_nosat = case_when(
+      Bus12M != 1 ~ NA_real_,
+      BusOverSat %in% c(4, 5) ~ 1,  # Fairly or very dissatisfied
+      !is.na(BusOverSat) ~ 0,
+      TRUE ~ NA_real_
+    ),
+    freq_walker = case_when(
+      is.na(AtFrqWlk10) ~ NA_real_,
+      AtFrqWlk10 %in% 1 ~ 1,        # Walk at least daily
+      TRUE ~ 0
+    )
+  )
+head(survey_indicators)
+```
+
+### Select weight variables
+
+Next, filter for the relevant weight variables from the survey relevant to our estimands.
+
+```{r}
+survey_weights <- nsw_raw |>
+  transmute(
+    unit_id,
+    msoa_code,
+    SampleAdultWeight,
+    SampleTravelWeight
+  )
+```
+
+`SampleTravelWeight` is the analysis weight for the subsampled active-travel module, from which `freq_walker` was derived. This weight variable was designed to represent the general population of Wales. To estimate the number of freq_walker per 1,000 residents, these analysis weights should be scaled to grossing weights (i.e., `WalesTravelWeight`) using population totals per MSOA available in the UK Census 2021 data as domain sizes.
+
+```{r}
+# Load the Welsh MSOA population totals as the domain sizes
 domain_sizes_population_msoa <- read_csv(
   file.path(base_path, "census2021-ts007-msoa.csv"),
   show_col_types = FALSE
@@ -136,57 +151,34 @@ domain_sizes_population_msoa <- read_csv(
   )
   
 head(domain_sizes_population_msoa)
-```
-### Construct Indicators
 
-Next, we can start constructing the indicators from the variables based on the coding rules set out above.
-
-```{r}
-# Construct the three analysis indicators
-survey_indicators <- nsw_raw |>
-  transmute(
-    unit_id,
-    commute_distance = as.numeric(TravWkDist),
-
-    bus_nosat = case_when(
-      Bus12M != 1 ~ NA_real_,
-      BusOverSat %in% c(4, 5) ~ 1, # Fairly or very dissatisfied
-      !is.na(BusOverSat) ~ 0,
-      TRUE ~ NA_real_
-    ),
-
-    freq_walker = case_when(
-      is.na(AtFrqWlk10) ~ NA_real_,
-      AtFrqWlk10 %in% 1 ~ 1, # daily
-      TRUE ~ 0
+# Scaling analysis weight into grossing weight (see formula in the previous chapter)
+survey_weights <- survey_weights |>
+  left_join(
+    domain_sizes_population_msoa |>
+      select(domain_id, domain_size),
+    by = c("msoa_code" = "domain_id")
+  ) |>
+  group_by(msoa_code) |>
+  mutate(
+    travel_weight_sum = sum(SampleTravelWeight, na.rm = TRUE),
+    WalesTravelWeight = if_else(
+      !is.na(SampleTravelWeight) & travel_weight_sum != 0, SampleTravelWeight * domain_size / travel_weight_sum,
+      NA_real_
     )
-  )
+  ) |>
+  ungroup() |>
+  select(unit_id, SampleAdultWeight, SampleTravelWeight, WalesTravelWeight)
 
-
-head(survey_indicators)
+head(survey_weights)
 ```
-
-### Select weight variables
-
-Next, filter for the relevant weight variables from the survey relevant to our estimands.
-
-```{r}
-survey_weights <- nsw_raw |>
-  transmute(
-    unit_id,
-    SampleAdultWeight,
-    SampleTravelWeight
-  )
-```
-
-`SampleTravelWeight` is an analysis weight for the active-travel module (subsampled). The survey user guide describes it as adjusting the active-travel sample to have the same age/sex distribution as the general population. For `freq_walker`, the direct-estimation workbook scales it within each sampled MSOA so that the grossing weight sums to the known MSOA population.
 
 ### Check missingness
 
 For each indicator, check for missingness overall (number of null values) and whether there are areas with no respondents.
 
 ```{r}
-# Join the coded indicators and calculated weights together
+# Join the spatial identifiers, coded indicators and calculated weights together
 survey_inputs <- survey_spatial_ids |>
   left_join(survey_indicators, by = "unit_id") |>
   left_join(survey_weights, by = "unit_id")
@@ -196,23 +188,23 @@ indicator_observations <- bind_rows(
   survey_inputs |>
     transmute(
       indicator = "commute_distance",
-      domain_id = msoa_domain_id,
+      domain_id = msoa_code,
       value = commute_distance,
       weight = SampleAdultWeight
     ),
   survey_inputs |>
     transmute(
       indicator = "bus_nosat",
-      domain_id = msoa_domain_id,
+      domain_id = msoa_code,
       value = bus_nosat,
       weight = SampleAdultWeight
     ),
   survey_inputs |>
     transmute(
       indicator = "freq_walker",
-      domain_id = msoa_domain_id,
+      domain_id = msoa_code,
       value = freq_walker,
-      weight = SampleTravelWeight
+      weight = WalesTravelWeight
     )
 )
 
@@ -247,13 +239,11 @@ ggplot(indicator_area_counts, aes(x = non_missing)) +
   theme_minimal()
 ```
 
-This is consistent with the fact that the active-travel questions used to construct `freq_walker` were only asked to a subsample. It will probably benefit the most from model-based estimation later, although the final decision is best made after looking at the direct estimates and their uncertainty. 
+This is consistent with the fact that the active-travel questions used to construct `freq_walker` were only asked to a subsample. It will probably benefit the most from model-based estimation later, although the final decision is best made after looking at the direct estimates and their uncertainty in the next step.
 
 ### Aggregate covariates
 
 The final preparation step is to assemble the covariates chosen previously for each estimand and aggregate them to the estimation geography required (in our case, MSOA).
-
-Because all three indicators are estimated at MSOA level, their covariates can be combined into one.
 
 ```{r}
 # Read a Census 2021 aggregate table and keep Welsh areas only
@@ -377,7 +367,7 @@ Indicator microdata with weight and survey strata
 
 - `ind_weight_commute_distance.csv`, with analysis adult weight;
 - `ind_weight_bus_nosat.csv`, with analysis adult weight;
-- `ind_weight_freq_walker.csv`, with active-travel module analysis weight, which will be scaled to an MSOA grossing weight during direct estimation.
+- `ind_weight_freq_walker.csv`, with `WalesTravelWeight`, an MSOA-level grossing weight for the active-travel module.
 
 Each indicator microdata file contains the same key columns:
 
@@ -385,19 +375,13 @@ Each indicator microdata file contains the same key columns:
 |---|---|
 | `unit_id` | Survey respondent identifier. |
 | `domain_id` | Estimation area ID. |
-| `strata` | Survey stratification variable. In this tutorial, this is `la_domain_id`. |
+| `strata` | Survey stratification variable. For NSW, this is the Local Authority, `la_code`. |
 | `indicator` | Coded outcome variable. |
 | `weight` | Survey weight matched to the estimand. |
 
 Covariates by estimation area
 
 - `covariates_msoa.csv`, with MSOA-level covariates for all three indicators;
-
-Domain list, denominator, and covariate input
-
-- `domain_sizes_population_msoa.csv`, for the full list of target MSOAs, the `freq_walker` denominator, and the total-population covariate.
-
-The same files are then bundled into `data/tutorial-clean-data.zip`, with the files stored inside the archive as `clean/*.csv`.
 
 ```{r}
 #| eval: false
@@ -407,8 +391,8 @@ dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 ind_weight_commute_distance <- survey_inputs |>
   transmute(
     unit_id,
-    domain_id = msoa_domain_id,
-    strata = la_domain_id,
+    domain_id = msoa_code,
+    strata = la_code,
     indicator = commute_distance,
     weight = SampleAdultWeight
   )
@@ -416,8 +400,8 @@ ind_weight_commute_distance <- survey_inputs |>
 ind_weight_bus_nosat <- survey_inputs |>
   transmute(
     unit_id,
-    domain_id = msoa_domain_id,
-    strata = la_domain_id,
+    domain_id = msoa_code,
+    strata = la_code,
     indicator = bus_nosat,
     weight = SampleAdultWeight
   )
@@ -425,10 +409,10 @@ ind_weight_bus_nosat <- survey_inputs |>
 ind_weight_freq_walker <- survey_inputs |>
   transmute(
     unit_id,
-    domain_id = msoa_domain_id,
-    strata = la_domain_id,
+    domain_id = msoa_code,
+    strata = la_code,
     indicator = freq_walker,
-    weight = SampleTravelWeight
+    weight = WalesTravelWeight
   )
 
 write_csv(
@@ -444,13 +428,6 @@ write_csv(
 write_csv(
   ind_weight_freq_walker,
   file.path(output_dir, "ind_weight_freq_walker.csv")
-)
-
-write_csv(
-  domain_sizes_population_msoa |>
-    select(domain_id, domain_size) |>
-    as.data.frame(),
-  file.path(output_dir, "domain_sizes_population_msoa.csv")
 )
 
 write_csv(

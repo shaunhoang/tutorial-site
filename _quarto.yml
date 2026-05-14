@@ -22,17 +22,20 @@ website:
           - text: "I. Preparation"
           - text: "1. Overview"
             href: pages/prepare-inputs.qmd
-          - text: "2. Worked example"
+          - text: "2. Example"
             href: pages/tutorial-dataprep.qmd
           - text: "II. Estimation"
           - text: "1. Direct estimation"
             href: pages/direct-estimation.qmd
           - text: "2. Area-level estimation"
             href: pages/bayesian-area-sae.qmd
-          - text: "3. Unit-level estimation"
-            href: pages/unit-level-sae.qmd
-          - text: "4. Diagnostics and reporting"
+          - text: "3. Diagnostics and reporting"
             href: pages/diagnostics.qmd
+          - text: "III. Extended Topics"
+          - text: "1. A frequentist approach to SAE"
+            href: pages/freq-area-sae.qmd
+          - text: "2. Unit-level estimation and MRP"
+            href: pages/unit-level-sae.qmd
       - text: "Resources"
         menu:
           - text: "SAE Toolkit"
@@ -60,8 +63,11 @@ website:
             contents:
               - pages/direct-estimation.qmd
               - pages/bayesian-area-sae.qmd
-              - pages/unit-level-sae.qmd
               - pages/diagnostics.qmd
+          - section: "III. Extended Topics"
+            contents:
+              - pages/freq-area-sae.qmd
+              - pages/unit-level-sae.qmd
       - section: "Resources"
         contents:
           - pages/sae-toolkit.qmd

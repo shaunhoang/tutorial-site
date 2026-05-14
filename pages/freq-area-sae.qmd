@@ -1,5 +1,5 @@
 ---
-title: "[WIP] Area-Level Estimation (Frequentist)"
+title: "Area-Level Estimation (Frequentist)"
 execute:
   eval: true
 ---
@@ -49,7 +49,3 @@ Use [`sae::eblupFH()`](https://search.r-project.org/CRAN/refmans/sae/html/eblupF
 
 `sae` does not handle out-of-sample areas (i.e., estimation areas without respondent records) automatically. These areas require separate model-based predictions from the fitted covariate relationship.
 :::
-
-### Worked Example
-
-Lorem Ipsum - share real example National Survey of Wales
