@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Area-Level Estimation (Frequentist)</title>
+<title>Small Area Estimation for Urban Analytics - Frequentist Approaches to SAE</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -119,8 +119,8 @@ ul.task-list li input[type="checkbox"] {
   </li>  
         <li class="dropdown-header">III. Extended Topics</li>
         <li>
-    <a class="dropdown-item" href="../pages/freq-area-sae.html" rel="" target="">
- <span class="dropdown-text">1. A frequentist approach to SAE</span></a>
+    <a class="dropdown-item" href="../pages/frequentist-sae.html" rel="" target="">
+ <span class="dropdown-text">1. Frequentist approaches to SAE</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../pages/unit-level-sae.html" rel="" target="">
@@ -158,7 +158,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/freq-area-sae.html">III. Extended Topics</a></li><li class="breadcrumb-item"><a href="../pages/freq-area-sae.html">Area-Level Estimation (Frequentist)</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/frequentist-sae.html">III. Extended Topics</a></li><li class="breadcrumb-item"><a href="../pages/frequentist-sae.html">Frequentist Approaches to SAE</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -245,7 +245,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Area-Level Estimation (Bayesian)</span></a>
+ <span class="menu-text">Area-Level Estimation (Fay-Herriot)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -267,8 +267,8 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Area-Level Estimation (Frequentist)</span></a>
+  <a href="../pages/frequentist-sae.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Frequentist Approaches to SAE</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -324,7 +324,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Area-Level Estimation (Frequentist)</h1>
+<h1 class="title">Frequentist Approaches to SAE</h1>
 </div>
 
 
@@ -339,7 +339,7 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are estimation areas with weak survey information. The standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct estimates with area-level covariates to improve precision.</p>
+<p>Frequentist SAE refers to model-based small area estimation methods where unknown model quantities are estimated as fixed but unknown parameters. For area-level SAE, the standard starting point is the <em>Fay-Herriot (FH) model</em>, which combines direct estimates with area-level covariates to improve precision when direct estimates are too noisy, unstable, or unavailable for some areas.</p>
 <section id="understanding-the-fay-herriot-model" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="understanding-the-fay-herriot-model"><span class="header-section-number">1</span> Understanding the Fay-Herriot model</h2>
 <p>Both frequentist and Bayesian area-level SAE start from the same basic Fay-Herriot idea that the area-level direct estimates are:</p>
@@ -362,7 +362,6 @@ x_d^\top\beta + u_d + e_d.
 <li>In the <strong>Bayesian</strong> approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries.</li>
 </ul>
 <p>This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.</p>
-<p>Therefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

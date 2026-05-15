@@ -1,10 +1,10 @@
 ---
-title: "Area-Level Estimation (Frequentist)"
+title: "Frequentist Approaches to SAE"
 execute:
   eval: true
 ---
 
-Frequentist area-level SAE is the next step when direct estimates are too noisy or unstable, or when there are estimation areas with weak survey information. The standard starting point is the *Fay-Herriot (FH) model*, which combines direct estimates with area-level covariates to improve precision.
+Frequentist SAE refers to model-based small area estimation methods where unknown model quantities are estimated as fixed but unknown parameters. For area-level SAE, the standard starting point is the *Fay-Herriot (FH) model*, which combines direct estimates with area-level covariates to improve precision when direct estimates are too noisy, unstable, or unavailable for some areas.
 
 ## Understanding the Fay-Herriot model
 
@@ -32,8 +32,6 @@ The difference is how the unknown quantities are estimated and how uncertainty i
 - In the **Bayesian** approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries. 
 
 This means that, with a Bayesian approach, each area has a distribution of plausible values. This makes it natural to report a central estimate, an uncertainty interval, and probability-style summaries, such as how likely an area is to be above a certain policy threshold.
-
-Therefore, in practice, there is little need to perform Area-Level SAE using both approaches sequentially, especially when there are suitable R packages that have simplified the more complex implementation of the Bayesian approach.
 
 :::{.callout-note}
 In this **frequentist** FH workflow, the main outputs are the model-based estimate (**EBLUP**) and its uncertainty (**RMSE**). 

@@ -30,11 +30,7 @@ Use the direct estimates and sampling variances to decide whether direct reporti
 | All areas have direct estimates with acceptable sample sizes, and uncertainty | Direct estimates may be enough for reporting. |
 | Most areas have direct estimates, albeit imprecise. Spatial effects matter. | Fit a [Area-Level Estimation Model](bayesian-area-sae.qmd) model to borrow strength from covariates and neighbouring areas. |
 
-## Pratical: Code Implementation
-
-:::{.callout-tip}
-Use `survey::svyby()` for flexible calculation of direct estimates using any estimator and input survey design elements such as strata.
-:::
+## [Pratical] Direct Estimation
 
 ### Setup
 ```{r}
@@ -148,29 +144,23 @@ Direct estimation itself is prone to be insufficient. To assess the quality of t
 - Next, assess whether the available direct estimates are precise enough to report by looking at metrics such as `median_cv` and `median_ci_width`.
 
 ```{r}
-# Plot estimate and CV
+# Plot estimate and CI width
 walk_map_data <- msoa_boundaries |>
   left_join(dir_est_walk, by = "domain_id")
 
 walk_estimate_map <- ggplot(walk_map_data) +
-  geom_sf(aes(fill = direct), colour = "white", linewidth = 0.25) +
-  scale_fill_distiller(palette = "YlGnBu", direction = 1, na.value = "grey85") +
-  labs(
-    fill = "Estimate",
-    title = "Direct estimate"
-  ) +
+  geom_sf(aes(fill = direct)) +
+  scale_fill_distiller(palette = "Blues", direction = 1, na.value = "grey85") +
+  labs(title = "Direct estimate", fill = "Estimate") +
   theme_void()
 
-walk_cv_map <- ggplot(walk_map_data) +
-  geom_sf(aes(fill = cv), colour = "white", linewidth = 0.25) +
-  scale_fill_distiller(palette = "OrRd", direction = 1, na.value = "grey85") +
-  labs(
-    fill = "CV",
-    title = "Coefficient of Variation"
-  ) +
+walk_ci_map <- ggplot(walk_map_data) +
+  geom_sf(aes(fill = ci_width)) +
+  scale_fill_distiller(palette = "Reds", direction = 1, na.value = "grey85") +
+  labs(title = "CI width", fill = "CI width") +
   theme_void()
 
-walk_estimate_map + walk_cv_map +
+walk_estimate_map + walk_ci_map +
   plot_annotation(
     title = "Residents walking daily as main transport mode per 1,000 residents by MSOA"
   )
@@ -200,7 +190,7 @@ msoa_domains |>
   )
 ```
 
-The direct direct estimates appear weak with the maps show many areas with high uncertainty, The diagnostics confirm that this is driven by sparse subsampled active-travel module data: several MSOAs have no usable observations, more have fewer than two observations, and the median CV is high. This makes it a strong candidate for model-based estimation, where covariates and spatial structure can help stabilise estimates for areas with little direct survey evidence.
+The direct estimates appear weak, with many areas showing wide confidence intervals. The diagnostics confirm that this is driven by sparse subsampled active-travel module data: several MSOAs have no usable observations, more have fewer than two observations, and the median CI width is high. This makes it a strong candidate for model-based estimation, where covariates and spatial structure can help stabilise estimates for areas with little direct survey evidence.
 
 ### Mean commute distance among commuters by MSOA
 #### Direct Estimation
@@ -262,26 +252,20 @@ commute_map_data <- msoa_boundaries |>
   )
 
 commute_estimate_map <- ggplot(commute_map_data) +
-  geom_sf(aes(fill = direct), colour = "white", linewidth = 0.25) +
-  scale_fill_distiller(palette = "YlGnBu", direction = 1, na.value = "grey85") +
-  labs(
-    fill = "Estimate",
-    title = "Direct estimate"
-  ) +
+  geom_sf(aes(fill = direct)) +
+  scale_fill_distiller(palette = "Blues", direction = 1, na.value = "grey85") +
+  labs(title = "Direct estimate", fill = "Estimate") +
   theme_void()
 
-commute_cv_map <- ggplot(commute_map_data) +
-  geom_sf(aes(fill = cv), colour = "white", linewidth = 0.25) +
-  scale_fill_distiller(palette = "OrRd", direction = 1, na.value = "grey85") +
-  labs(
-    fill = "CV",
-    title = "Coefficient of Variation"
-  ) +
+commute_ci_map <- ggplot(commute_map_data) +
+  geom_sf(aes(fill = ci_width)) +
+  scale_fill_distiller(palette = "Reds", direction = 1, na.value = "grey85") +
+  labs(title = "CI width", fill = "CI width") +
   theme_void()
 
-commute_estimate_map + commute_cv_map +
+commute_estimate_map + commute_ci_map +
   plot_annotation(
-    title = "Mean Commute Distance among commuters by MSOA"
+    title = "Mean commute distance among commuters by MSOA"
   )
 ```
 
@@ -373,26 +357,20 @@ bus_map_data <- msoa_boundaries |>
   )
 
 bus_estimate_map <- ggplot(bus_map_data) +
-  geom_sf(aes(fill = direct), colour = "white", linewidth = 0.25) +
-  scale_fill_distiller(palette = "YlGnBu", direction = 1, na.value = "grey85") +
-  labs(
-    fill = "Estimate",
-    title = "Direct estimate"
-  ) +
+  geom_sf(aes(fill = direct)) +
+  scale_fill_distiller(palette = "Blues", direction = 1, na.value = "grey85") +
+  labs(title = "Direct estimate", fill = "Estimate") +
   theme_void()
 
-bus_cv_map <- ggplot(bus_map_data) +
-  geom_sf(aes(fill = cv), colour = "white", linewidth = 0.25) +
-  scale_fill_distiller(palette = "OrRd", direction = 1, na.value = "grey85") +
-  labs(
-    fill = "CV",
-    title = "Coefficient of Variation"
-  ) +
+bus_ci_map <- ggplot(bus_map_data) +
+  geom_sf(aes(fill = ci_width)) +
+  scale_fill_distiller(palette = "Reds", direction = 1, na.value = "grey85") +
+  labs(title = "CI width", fill = "CI width") +
   theme_void()
 
-bus_estimate_map + bus_cv_map +
+bus_estimate_map + bus_ci_map +
   plot_annotation(
-    title = "Prevalence of dissatisfaction with bus services among recent adult bus riders by MSOA"
+    title = "Dissatisfied recent adult bus riders by MSOA"
   )
 ```
 
@@ -420,7 +398,7 @@ msoa_domains |>
   )
 ```
 
-The direct estimates have reasonable geographic coverage, and slightly larger median sample size per MSOA. but they remain imprecise because the estimand is restricted to adults who rode a bus in the last 12 months. This smaller eligible group reduces the effective sample size within many MSOAs, which is reflected in the CV map and summary diagnostics. The direct estimates are useful for diagnosing the pattern of evidence, but model-based estimation is likely to produce more stable local estimates.
+The direct estimates have reasonable geographic coverage and a slightly larger median sample size per MSOA, but they remain imprecise because the estimand is restricted to adults who rode a bus in the last 12 months. This smaller eligible group reduces the effective sample size within many MSOAs, which is reflected in the CI-width map and summary diagnostics. The direct estimates are useful for diagnosing the pattern of evidence, but model-based estimation is likely to produce more stable local estimates.
 
 ### Final thoughts
 Even though direct estimation does not involve modelling, it is where we stress-test the raw data. It shows how much survey evidence we actually have in each area, how uncertain the estimates are, and whether the direct estimates and sampling variances are robust enough to feed into the modelled-estimation step in the next workbook.

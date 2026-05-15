@@ -153,8 +153,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
         <li class="dropdown-header">III. Extended Topics</li>
         <li>
-    <a class="dropdown-item" href="../pages/freq-area-sae.html" rel="" target="">
- <span class="dropdown-text">1. A frequentist approach to SAE</span></a>
+    <a class="dropdown-item" href="../pages/frequentist-sae.html" rel="" target="">
+ <span class="dropdown-text">1. Frequentist approaches to SAE</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../pages/unit-level-sae.html" rel="" target="">
@@ -279,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/bayesian-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Area-Level Estimation (Bayesian)</span></a>
+ <span class="menu-text">Area-Level Estimation (Fay-Herriot)</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -301,8 +301,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/freq-area-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Area-Level Estimation (Frequentist)</span></a>
+  <a href="../pages/frequentist-sae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Frequentist Approaches to SAE</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -350,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#direct-estimator-and-sampling-variances" id="toc-direct-estimator-and-sampling-variances" class="nav-link active" data-scroll-target="#direct-estimator-and-sampling-variances"><span class="header-section-number">1</span> Direct Estimator and Sampling Variances</a></li>
   <li><a href="#evaluate-direct-estimates" id="toc-evaluate-direct-estimates" class="nav-link" data-scroll-target="#evaluate-direct-estimates"><span class="header-section-number">2</span> Evaluate direct estimates</a></li>
-  <li><a href="#pratical-code-implementation" id="toc-pratical-code-implementation" class="nav-link" data-scroll-target="#pratical-code-implementation"><span class="header-section-number">3</span> Pratical: Code Implementation</a>
+  <li><a href="#pratical-direct-estimation" id="toc-pratical-direct-estimation" class="nav-link" data-scroll-target="#pratical-direct-estimation"><span class="header-section-number">3</span> [Pratical] Direct Estimation</a>
   <ul class="collapse">
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">3.1</span> Setup</a></li>
   <li><a href="#frequent-walkers-per-1000-residents-by-msoa" id="toc-frequent-walkers-per-1000-residents-by-msoa" class="nav-link" data-scroll-target="#frequent-walkers-per-1000-residents-by-msoa"><span class="header-section-number">3.2</span> Frequent walkers per 1,000 residents by MSOA</a></li>
@@ -450,21 +450,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="pratical-code-implementation" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="pratical-code-implementation"><span class="header-section-number">3</span> Pratical: Code Implementation</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use <code>survey::svyby()</code> for flexible calculation of direct estimates using any estimator and input survey design elements such as strata.</p>
-</div>
-</div>
+<section id="pratical-direct-estimation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="pratical-direct-estimation"><span class="header-section-number">3</span> [Pratical] Direct Estimation</h2>
 <section id="setup" class="level3" data-number="3.1">
 <h3 data-number="3.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">3.1</span> Setup</h3>
 <div class="cell">
@@ -592,32 +579,26 @@ Tip
 <li>Next, assess whether the available direct estimates are precise enough to report by looking at metrics such as <code>median_cv</code> and <code>median_ci_width</code>.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot estimate and CV</span></span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot estimate and CI width</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>walk_map_data <span class="ot">&lt;-</span> msoa_boundaries <span class="sc">|&gt;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(dir_est_walk, <span class="at">by =</span> <span class="st">"domain_id"</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>walk_estimate_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(walk_map_data) <span class="sc">+</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> direct), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"YlGnBu"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Estimate"</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Direct estimate"</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>walk_cv_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(walk_map_data) <span class="sc">+</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> cv), <span class="at">colour =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"OrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"CV"</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Coefficient of Variation"</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>walk_estimate_map <span class="sc">+</span> walk_cv_map <span class="sc">+</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residents walking daily as main transport mode per 1,000 residents by MSOA"</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> direct)) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"Blues"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Direct estimate"</span>, <span class="at">fill =</span> <span class="st">"Estimate"</span>) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>walk_ci_map <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(walk_map_data) <span class="sc">+</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> ci_width)) <span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"Reds"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CI width"</span>, <span class="at">fill =</span> <span class="st">"CI width"</span>) <span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>walk_estimate_map <span class="sc">+</span> walk_ci_map <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residents walking daily as main transport mode per 1,000 residents by MSOA"</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="direct-estimation_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -656,7 +637,7 @@ Tip
 6 median_ci_width    260.   </code></pre>
 </div>
 </div>
-<p>The direct direct estimates appear weak with the maps show many areas with high uncertainty, The diagnostics confirm that this is driven by sparse subsampled active-travel module data: several MSOAs have no usable observations, more have fewer than two observations, and the median CV is high. This makes it a strong candidate for model-based estimation, where covariates and spatial structure can help stabilise estimates for areas with little direct survey evidence.</p>
+<p>The direct estimates appear weak, with many areas showing wide confidence intervals. The diagnostics confirm that this is driven by sparse subsampled active-travel module data: several MSOAs have no usable observations, more have fewer than two observations, and the median CI width is high. This makes it a strong candidate for model-based estimation, where covariates and spatial structure can help stabilise estimates for areas with little direct survey evidence.</p>
 </section>
 </section>
 <section id="mean-commute-distance-among-commuters-by-msoa" class="level3" data-number="3.3">
@@ -828,7 +809,7 @@ Tip
 6 median_ci_width      0.428</code></pre>
 </div>
 </div>
-<p>The direct estimates have reasonable geographic coverage, and slightly larger median sample size per MSOA. but they remain imprecise because the estimand is restricted to adults who rode a bus in the last 12 months. This smaller eligible group reduces the effective sample size within many MSOAs, which is reflected in the CV map and summary diagnostics. The direct estimates are useful for diagnosing the pattern of evidence, but model-based estimation is likely to produce more stable local estimates.</p>
+<p>The direct estimates have reasonable geographic coverage and a slightly larger median sample size per MSOA, but they remain imprecise because the estimand is restricted to adults who rode a bus in the last 12 months. This smaller eligible group reduces the effective sample size within many MSOAs, which is reflected in the CI-width map and summary diagnostics. The direct estimates are useful for diagnosing the pattern of evidence, but model-based estimation is likely to produce more stable local estimates.</p>
 </section>
 </section>
 <section id="final-thoughts" class="level3" data-number="3.5">
@@ -1102,7 +1083,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="../pages/bayesian-area-sae.html" class="pagination-link">
-        <span class="nav-page-text">[WIP] Area-Level Estimation (Bayesian)</span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">Area-Level Estimation (Fay-Herriot)</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
