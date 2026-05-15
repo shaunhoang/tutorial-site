@@ -502,7 +502,6 @@ Tip
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We will first focus on producing and evaluating the estimates using the indicator <code>freq_walker</code> before replicating the process for <code>bus_nosat</code> and <code>commute_distance</code>.</p>
 </section>
 <section id="frequent-walkers-per-1000-residents-by-msoa" class="level3" data-number="3.2">
 <h3 data-number="3.2" class="anchored" data-anchor-id="frequent-walkers-per-1000-residents-by-msoa"><span class="header-section-number">3.2</span> Frequent walkers per 1,000 residents by MSOA</h3>
@@ -512,21 +511,11 @@ Tip
 <blockquote class="blockquote">
 <p><strong>Rate per 1,000 residents</strong> walking as main transport mode daily across <strong>MSOAs</strong></p>
 </blockquote>
-<p><code>freq_walker</code> is a binary survey indicator for whether a respondent walks for transport daily. Our estimand is a <code>rate</code> estimand (per 1k), so we need the HT direct estimator approach. More specifically, the estimate is equal to a population-weighted total of frequent walkers per MSOA, divided by total population in each MSOA. The ratio is then multiplied by 1000 to represent rate per 1k.</p>
-<p>To achieve the weighted total in the numerator, we multiple the binary indicator with its companion grossing weight. For domain sizes in the denominator, i.e., total population per MSOA, we can simply sum the grossing <code>weight</code> within each MSOA.</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This shortcut is only appropriate because <code>WalesTravelWeight</code> was explicitly scaled using the MSOA domain sizes in the previous workbook. In practice, some surveys provide grossing weights directly, and these may not sum to the target denominator needed for a specific small-area estimand. In that case, use the actual domain sizes as the denominator instead.</p>
-</div>
-</div>
+<p><code>freq_walker</code> is a binary survey indicator for whether a respondent walks for transport daily. Our estimand is a rate estimand (per 1k), so we need the HT direct estimator approach. More specifically, the estimate is equal to a population-weighted total of frequent walkers per MSOA, divided by total population in each MSOA (HT estimator). The ratio is then multiplied by 1000 to represent rate per 1k.</p>
+<ul>
+<li>For the weighted total in the numerator, we multiple the binary indicator with its companion grossing weight.</li>
+<li>For domain sizes in the denominator, i.e., total population per MSOA, we can simply sum the grossing <code>weight</code> within each MSOA. This is appropriate because the grossing weight we have was explicitly scaled from the analysis weight using the MSOA domain sizes in the previous workbook. In practice, some surveys provide grossing weights directly, and these may not sum to the target denominator needed. In that case, use the actual domain sizes as the denominator instead.</li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the active-travel indicator with its grossing weight</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
@@ -538,42 +527,45 @@ Warning
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(weight),</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_id),</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(strata)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(domain_id) <span class="sc">|&gt;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grossed_domain_size =</span> <span class="fu">sum</span>(weight, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the survey design</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>design_walk <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator_walk</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the weighted total in each MSOA</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>walk_total <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id <span class="sc">+</span> grossed_domain_size,</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_walk,</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svytotal,</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide by the grossed MSOA denominator and keep the uncertainty on the same scale</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>dir_est_walk <span class="ot">&lt;-</span> walk_total <span class="sc">|&gt;</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    domain_id,</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> (indicator <span class="sc">/</span> grossed_domain_size) <span class="sc">*</span> <span class="dv">1000</span>,</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> ((se <span class="sc">/</span> grossed_domain_size) <span class="sc">*</span> <span class="dv">1000</span>)<span class="sc">^</span><span class="dv">2</span>,</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_walk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate sum of grossing weight to be used as domain sizes (denominator)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>survey_indicator_walk <span class="ot">&lt;-</span> survey_indicator_walk <span class="sc">|&gt;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(domain_id) <span class="sc">|&gt;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">domain_size =</span> <span class="fu">sum</span>(weight, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the survey design</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>design_walk <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> <span class="sc">~</span>weight,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> survey_indicator_walk</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate the weighted total in each MSOA (numerator)</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>walk_total <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svyby</span>(</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="sc">~</span>indicator,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="sc">~</span>domain_id <span class="sc">+</span> domain_size,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">design =</span> design_walk,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> survey<span class="sc">::</span>svytotal,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">vartype =</span> <span class="st">"se"</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Divide by the denominator and keep the uncertainty on the same scale</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>dir_est_walk <span class="ot">&lt;-</span> walk_total <span class="sc">|&gt;</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    domain_id,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">direct =</span> (indicator <span class="sc">/</span> domain_size) <span class="sc">*</span> <span class="dv">1000</span>,</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">variance =</span> ((se <span class="sc">/</span> domain_size) <span class="sc">*</span> <span class="dv">1000</span>)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv =</span> <span class="fu">if_else</span>(direct <span class="sc">==</span> <span class="dv">0</span>, <span class="cn">NA_real_</span>, <span class="fu">abs</span>(<span class="fu">sqrt</span>(variance) <span class="sc">/</span> direct)),</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">ci_width =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fl">1.96</span> <span class="sc">*</span> <span class="fu">sqrt</span>(variance)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dir_est_walk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
   domain_id direct variance    cv ci_width
@@ -664,6 +656,7 @@ Warning
 6 median_ci_width    260.   </code></pre>
 </div>
 </div>
+<p>The direct direct estimates appear weak with the maps show many areas with high uncertainty, The diagnostics confirm that this is driven by sparse subsampled active-travel module data: several MSOAs have no usable observations, more have fewer than two observations, and the median CV is high. This makes it a strong candidate for model-based estimation, where covariates and spatial structure can help stabilise estimates for areas with little direct survey evidence.</p>
 </section>
 </section>
 <section id="mean-commute-distance-among-commuters-by-msoa" class="level3" data-number="3.3">
@@ -730,6 +723,7 @@ Warning
 </section>
 <section id="evaluation-1" class="level4" data-number="3.3.2">
 <h4 data-number="3.3.2" class="anchored" data-anchor-id="evaluation-1"><span class="header-section-number">3.3.2</span> Evaluation</h4>
+<p>The codes to summarise and plot direct estimates and uncertainity measures mirror the ones above and have been hidden.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="direct-estimation_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
@@ -748,6 +742,7 @@ Warning
 6 median_ci_width     11.9  </code></pre>
 </div>
 </div>
+<p>The direct estimates are more stable, where most MSOAs have at least some usable commuter observations, and the median sample size is higher. Even so, the confidence intervals remain fairly wide in practical terms, so the direct estimates should still be treated as noisy area-level summaries rather than precise local values.</p>
 </section>
 </section>
 <section id="dissatisfied-bus-users-among-recent-adult-bus-riders-by-msoa" class="level3" data-number="3.4">
@@ -814,6 +809,7 @@ Warning
 </section>
 <section id="evaluation-2" class="level4" data-number="3.4.2">
 <h4 data-number="3.4.2" class="anchored" data-anchor-id="evaluation-2"><span class="header-section-number">3.4.2</span> Evaluation</h4>
+<p>The codes to summarise and plot direct estimates and uncertainity measures mirror the ones above and have been hidden.</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="direct-estimation_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
@@ -832,6 +828,7 @@ Warning
 6 median_ci_width      0.428</code></pre>
 </div>
 </div>
+<p>The direct estimates have reasonable geographic coverage, and slightly larger median sample size per MSOA. but they remain imprecise because the estimand is restricted to adults who rode a bus in the last 12 months. This smaller eligible group reduces the effective sample size within many MSOAs, which is reflected in the CV map and summary diagnostics. The direct estimates are useful for diagnosing the pattern of evidence, but model-based estimation is likely to produce more stable local estimates.</p>
 </section>
 </section>
 <section id="final-thoughts" class="level3" data-number="3.5">
@@ -839,17 +836,11 @@ Warning
 <p>Even though direct estimation does not involve modelling, it is where we stress-test the raw data. It shows how much survey evidence we actually have in each area, how uncertain the estimates are, and whether the direct estimates and sampling variances are robust enough to feed into the modelled-estimation step in the next workbook.</p>
 <p>The <strong>direct estimate calculation</strong> should follow the measure and the estimand:</p>
 <ul>
-<li><code>freq_walker</code> is a population rate per 1,000 residents, so the estimate is the weighted total divided by the MSOA population, times 1,000.</li>
-<li><code>commute_distance</code> is a mean distance among commuter respondents.</li>
-<li><code>bus_nosat</code> is a share among adults who rode a bus in the last 12 months.</li>
+<li>For the estimand based on <code>freq_walker</code>, the estimate is a <strong>population rate</strong>: the number of frequent walkers divided by the MSOA population, multiplied by 1,000. This requires grossing weights so the survey responses can be scaled to population totals.</li>
+<li>For the estimand based on <code>commute_distance</code>, the estimate is the <strong>mean</strong> commute distance among commuter respondents.</li>
+<li>For the estimand based on <code>bus_nosat</code>, the estimate is the <strong>share</strong> of recent adult bus riders who are dissatisfied with bus services.</li>
 </ul>
-<p>The <strong>uncertainty diagnostics</strong> above show different levels of uncertainty across the three examples.</p>
-<ul>
-<li><code>freq_walker</code> is the most fragile, due to being derived from a subsampled survey question: 5 MSOAs have no data, 30 have fewer than 2 obs, and the median CV is around 1 (high). This is an example of an indicator that is likely to benefit the most from model-based estimation.</li>
-<li><code>commute_distance</code> looks more stable, with only 1 area with no data, 2 areas with fewer than two observations, a median sample size of 8.5, and a CI width of 11 (miles).</li>
-<li><code>bus_nosat</code> has reasonable area coverage, but the median CV and CI width are still high, reflecting the smaller eligible group of recent bus riders rendering the direct estimates imprecise.</li>
-</ul>
-<p>Model-based estimation in the next steps can then improve the estimates by reducing uncertainty and producing statistically informed estimates for areas with little or no survey data by borrowing power from the covariates and spatial structure.</p>
+<p>The <strong>uncertainty diagnostics</strong> above show different levels of uncertainty across the three examples. Model-based estimation in the next steps can improve the estimates by reducing uncertainty and producing statistically informed estimates for areas with little or no survey data by borrowing strength from covariates and spatial structure.</p>
 
 
 </section>

@@ -73,8 +73,6 @@ msoa_domains <- msoa_boundaries |>
   select(domain_id)
 ```
 
-We will first focus on producing and evaluating the estimates using the indicator `freq_walker` before replicating the process for `bus_nosat` and `commute_distance`.
-
 ### Frequent walkers per 1,000 residents by MSOA
 #### Direct Estimation
 
@@ -82,13 +80,10 @@ Keep in mind that with `freq_walker`, we are estimating:
 
 > **Rate per 1,000 residents** walking as main transport mode daily across **MSOAs**
 
-`freq_walker` is a binary survey indicator for whether a respondent walks for transport daily. Our estimand is a `rate` estimand (per 1k), so we need the HT direct estimator approach. More specifically, the estimate is equal to a population-weighted total of frequent walkers per MSOA, divided by total population in each MSOA. The ratio is then multiplied by 1000 to represent rate per 1k.
+`freq_walker` is a binary survey indicator for whether a respondent walks for transport daily. Our estimand is a rate estimand (per 1k), so we need the HT direct estimator approach. More specifically, the estimate is equal to a population-weighted total of frequent walkers per MSOA, divided by total population in each MSOA (HT estimator). The ratio is then multiplied by 1000 to represent rate per 1k.
 
-To achieve the weighted total in the numerator, we multiple the binary indicator with its companion grossing weight. For domain sizes in the denominator, i.e., total population per MSOA, we can simply sum the grossing `weight` within each MSOA.
-
-:::{.callout-warning}
-This shortcut is only appropriate because `WalesTravelWeight` was explicitly scaled using the MSOA domain sizes in the previous workbook. In practice, some surveys provide grossing weights directly, and these may not sum to the target denominator needed for a specific small-area estimand. In that case, use the actual domain sizes as the denominator instead.
-:::
+- For the weighted total in the numerator, we multiple the binary indicator with its companion grossing weight. 
+- For domain sizes in the denominator, i.e., total population per MSOA, we can simply sum the grossing `weight` within each MSOA. This is appropriate because the grossing weight we have was explicitly scaled from the analysis weight using the MSOA domain sizes in the previous workbook. In practice, some surveys provide grossing weights directly, and these may not sum to the target denominator needed. In that case, use the actual domain sizes as the denominator instead.
 
 ```{r}
 # Load the active-travel indicator with its grossing weight
@@ -101,9 +96,12 @@ survey_indicator_walk <- read_csv(
     !is.na(weight),
     !is.na(domain_id),
     !is.na(strata)
-  ) |>
+  )
+
+# Calculate sum of grossing weight to be used as domain sizes (denominator)
+survey_indicator_walk <- survey_indicator_walk |>
   group_by(domain_id) |>
-  mutate(grossed_domain_size = sum(weight, na.rm = TRUE)) |>
+  mutate(domain_size = sum(weight, na.rm = TRUE)) |>
   ungroup()
 
 # Set up the survey design
@@ -114,10 +112,10 @@ design_walk <- survey::svydesign(
   data = survey_indicator_walk
 )
 
-# Estimate the weighted total in each MSOA
+# Estimate the weighted total in each MSOA (numerator)
 walk_total <- survey::svyby(
   formula = ~indicator,
-  by = ~domain_id + grossed_domain_size,
+  by = ~domain_id + domain_size,
   design = design_walk,
   FUN = survey::svytotal,
   vartype = "se",
@@ -126,12 +124,12 @@ walk_total <- survey::svyby(
   as.data.frame() |>
   tibble::as_tibble()
 
-# Divide by the grossed MSOA denominator and keep the uncertainty on the same scale
+# Divide by the denominator and keep the uncertainty on the same scale
 dir_est_walk <- walk_total |>
   transmute(
     domain_id,
-    direct = (indicator / grossed_domain_size) * 1000,
-    variance = ((se / grossed_domain_size) * 1000)^2,
+    direct = (indicator / domain_size) * 1000,
+    variance = ((se / domain_size) * 1000)^2,
     cv = if_else(direct == 0, NA_real_, abs(sqrt(variance) / direct)),
     ci_width = 2 * 1.96 * sqrt(variance)
   )
@@ -202,6 +200,8 @@ msoa_domains |>
   )
 ```
 
+The direct direct estimates appear weak with the maps show many areas with high uncertainty, The diagnostics confirm that this is driven by sparse subsampled active-travel module data: several MSOAs have no usable observations, more have fewer than two observations, and the median CV is high. This makes it a strong candidate for model-based estimation, where covariates and spatial structure can help stabilise estimates for areas with little direct survey evidence.
+
 ### Mean commute distance among commuters by MSOA
 #### Direct Estimation
 The indicator `commute_distance` is continuous, so the direct estimate is simply the weighted mean commute distance among available commuter respondents (Hajek estimator).
@@ -252,7 +252,7 @@ dir_est_commute <- commute_mean |>
 head(dir_est_commute)
 ```
 #### Evaluation
-
+The codes to summarise and plot direct estimates and uncertainity measures mirror the ones above and have been hidden.
 ```{r}
 #| echo: false
 commute_map_data <- msoa_boundaries |>
@@ -309,6 +309,8 @@ msoa_domains |>
   )
 ```
 
+The direct estimates are more stable, where most MSOAs have at least some usable commuter observations, and the median sample size is higher. Even so, the confidence intervals remain fairly wide in practical terms, so the direct estimates should still be treated as noisy area-level summaries rather than precise local values.
+
 ### Dissatisfied bus users among recent adult bus riders by MSOA
 
 #### Direct Estimation
@@ -361,7 +363,7 @@ dir_est_bus <- bus_mean |>
 head(dir_est_bus)
 ```
 #### Evaluation
-
+The codes to summarise and plot direct estimates and uncertainity measures mirror the ones above and have been hidden.
 ```{r}
 #| echo: false
 bus_map_data <- msoa_boundaries |>
@@ -418,19 +420,15 @@ msoa_domains |>
   )
 ```
 
+The direct estimates have reasonable geographic coverage, and slightly larger median sample size per MSOA. but they remain imprecise because the estimand is restricted to adults who rode a bus in the last 12 months. This smaller eligible group reduces the effective sample size within many MSOAs, which is reflected in the CV map and summary diagnostics. The direct estimates are useful for diagnosing the pattern of evidence, but model-based estimation is likely to produce more stable local estimates.
+
 ### Final thoughts
 Even though direct estimation does not involve modelling, it is where we stress-test the raw data. It shows how much survey evidence we actually have in each area, how uncertain the estimates are, and whether the direct estimates and sampling variances are robust enough to feed into the modelled-estimation step in the next workbook.
 
 The **direct estimate calculation** should follow the measure and the estimand:
 
-- `freq_walker` is a population rate per 1,000 residents, so the estimate is the weighted total divided by the MSOA population, times 1,000. 
-- `commute_distance` is a mean distance among commuter respondents.
-- `bus_nosat` is a share among adults who rode a bus in the last 12 months.
+- For the estimand based on `freq_walker`, the estimate is a **population rate**: the number of frequent walkers divided by the MSOA population, multiplied by 1,000. This requires grossing weights so the survey responses can be scaled to population totals.
+- For the estimand based on `commute_distance`, the estimate is the **mean** commute distance among commuter respondents.
+- For the estimand based on `bus_nosat`, the estimate is the **share** of recent adult bus riders who are dissatisfied with bus services.
 
-The **uncertainty diagnostics** above show different levels of uncertainty across the three examples. 
-
-- `freq_walker` is the most fragile, due to being derived from a subsampled survey question: 5 MSOAs have no data, 30 have fewer than 2 obs, and the median CV is around 1 (high). This is an example of an indicator that is likely to benefit the most from model-based estimation. 
-- `commute_distance` looks more stable, with only 1 area with no data, 2 areas with fewer than two observations, a median sample size of 8.5, and a CI width of 11 (miles). 
-- `bus_nosat` has reasonable area coverage, but the median CV and CI width are still high, reflecting the smaller eligible group of recent bus riders rendering the direct estimates imprecise.
-
-Model-based estimation in the next steps can then improve the estimates by reducing uncertainty and producing statistically informed estimates for areas with little or no survey data by borrowing power from the covariates and spatial structure.
+The **uncertainty diagnostics** above show different levels of uncertainty across the three examples. Model-based estimation in the next steps can improve the estimates by reducing uncertainty and producing statistically informed estimates for areas with little or no survey data by borrowing strength from covariates and spatial structure.
