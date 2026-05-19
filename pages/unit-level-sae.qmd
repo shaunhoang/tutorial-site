@@ -1,51 +1,125 @@
 ---
-title: "Unit-Level Estimation"
+title: "[WIP] Unit-Level Estimation and MRP"
 ---
 
-Unit-level SAE models use survey microdata directly rather than starting from area-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models. 
+Unit-level small area estimation (SAE) models the survey microdata directly. Instead of first calculating one direct estimate per area, the model uses individual or household records, predicts outcomes for the target population, and then aggregates those predictions to the small-area geography.
 
-## Understanding Unit-Level Estimation
+For example, suppose the estimand is:
 
-In area-level Small Area Estimation, the model starts from one direct estimate per estimation area. In unit-level Small Area Estimation, the model starts from individual or household survey records:
+> **Share of recent adult bus riders dissatisfied with bus services by MSOA**
+
+The survey records might contain each respondent's bus dissatisfaction status, age group, disability status, employment status, car access, and location. A unit-level model can use those respondent-level predictors directly.
+
+## Unit-Level vs Area-Level SAE
+
+Area-level and unit-level SAE are different ways to organise the data before modelling.
+
+| Approach | Model input | What gets modelled | How the area estimate is produced |
+|---|---|---|---|
+| Area-level SAE | One direct estimate per area | Area-level estimates | Direct estimates are smoothed using area covariates |
+| Unit-level SAE | Survey records | Individual or household outcomes | Predicted unit outcomes are aggregated to areas |
+
+In an **area-level model**, the bus dissatisfaction survey data would first be collapsed into one direct estimate for each MSOA. The model would then use MSOA-level covariates, such as car ownership, population density, deprivation, or public transport access.
+
+In a **unit-level model**, the survey stays at respondent level. The model can learn, for example, whether dissatisfaction differs by age group, disability status, employment status, or car access. Those predictions are then combined with population data to estimate each MSOA.
+
+The basic unit-level structure is:
 
 $$
 y_{di} =
 x_{di}^{\top}\beta + u_d + e_{di},
 $$
 
-where $y_{di}$ is the outcome for unit $i$ in estimation area $d$, $x_{di}$ is a vector of unit-level covariates, $u_d$ is the area effect, and $e_{di}$ is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.
+where $y_{di}$ is the outcome for person $i$ in area $d$, $x_{di}$ contains individual or household predictors, and $u_d$ is an area effect.
 
-The area estimate is then built by predicting or simulating values for the population units in each estimation area and aggregating them:
+After fitting the model, the small-area estimate is produced by averaging predicted outcomes over the target population:
 
 $$
 \theta_d =
 \frac{1}{N_d}
-\sum_{i \in U_d} y_{di}.
+\sum_{i \in U_d} \hat{y}_{di}.
 $$
 
-This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the chosen estimation geography.
+This is why unit-level SAE is often described as a bottom-up approach: model people or households first, then aggregate to places.
 
-[ADD IMAGE]
+## Two Ways to Aggregate Unit-Level Predictions
 
-## Caveats with Unit-Level Estimation
+Once a unit-level model has been fitted to the survey records, the next question is how to apply the model to the target population. There are two common routes:
 
-Unit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.
+| Route | Population data needed | Basic idea |
+|---|---|---|
+| Full population prediction | Population microdata or a synthetic population | Predict for every population unit, then average within each area |
+| MRP | Counts for population cells | Predict for each cell, then weight by cell counts |
 
-:::{.callout}
-**Pros:**
+The model itself can still include individual predictors, household predictors, area predictors, and area random effects. The distinction here is not the model structure; it is the format of the population data used to turn predictions into area estimates.
 
-- Uses individual or household covariates directly, rather than area averages
-- Can aggregate to several geographic scales<br> 
+## Full Population Prediction
 
-**Cons:**
+The most direct route is to predict for every person or household in the target population.
 
-- Survey and population datasets need to be harmonised and include the same covariates
-- More sensitive estimates because predictions are made for many non-sampled units and scaled up to population level
-- More technically demanding, especially in terms of privacy/access 
-:::
+For the bus dissatisfaction example, this would require a population or synthetic population file where each row is a person or household, with the same variables used in the survey model: age group, disability status, employment status, car access, and MSOA.
 
-In general, prefer **Area-level SAE** when only area-level covariates are available. **Unit-level SAE** is more realistic when suitable population microdata, or a validated **synthetic population** can provide the prediction population.
+The workflow is:
 
+1. Fit the model using survey respondents.
+2. Predict bus dissatisfaction for every population record.
+3. Average the predictions within each MSOA.
+
+This approach is intuitive, but it requires detailed population microdata. In many applied settings, those data are unavailable, restricted, or only available through a synthetic population.
+
+## MRP
+
+MRP stands for **Multilevel Regression and Poststratification**. It uses population cell counts instead of full population microdata.
+
+The regression part models the survey outcome using individual predictors and, often, area effects. The poststratification part applies those predictions to the known population composition of each area.
+
+For example, a population cell might be:
+
+> Recent adult bus riders aged 25-34, employed, without car access, living in MSOA W02000001
+
+The model predicts the dissatisfaction rate for that cell. The population table gives the number of people in that cell. The MSOA estimate is then a weighted average across all cells:
+
+$$
+\theta_d =
+\frac{1}{N_d}
+\sum_{j \in J_d} N_{dj}\hat{y}_{dj},
+$$
+
+where $j$ indexes population cells, $N_{dj}$ is the number of people in cell $j$ in area $d$, and $\hat{y}_{dj}$ is the model prediction for that cell.
+
+MRP is useful when individual-level predictors matter, but the population data are available as cross-tabulated counts rather than a row-by-row population file. It is best understood as a practical implementation of unit-level SAE under a different population-data format.
+
+## When Unit-Level SAE Helps
+
+Unit-level SAE is most useful when:
+
+- the outcome is strongly related to individual or household characteristics;
+- the survey and population data share comparable covariates;
+- population microdata, a synthetic population, or reliable cell counts are available;
+- estimates are needed for multiple geographies or population subgroups.
+
+For bus dissatisfaction, unit-level SAE could be useful if dissatisfaction varies strongly by age, disability status, employment, or car access, and if those variables are also available in the population data.
+
+Area-level SAE is usually more appropriate when:
+
+- only area-level covariates are available;
+- the outcome is mainly explained by area context;
+- the workflow needs to be simpler and easier to audit;
+- population microdata or population cell counts are unavailable.
+
+## Main Caveat
+
+Unit-level SAE and MRP can be powerful, but they depend heavily on alignment between the survey and population data.
+
+The main risks are:
+
+- survey and population variables are defined differently;
+- important predictors are missing from the population data;
+- population cells become too sparse after crossing many variables;
+- the model predicts for population groups that are poorly represented in the survey;
+- privacy or access restrictions limit the usable population data.
+
+The choice between area-level SAE, full population prediction, and MRP should be driven by the available auxiliary data and by what explains the outcome: area context, population composition, or both.
 
 ## Code Implementation
 

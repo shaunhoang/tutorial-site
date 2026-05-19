@@ -1,10 +1,8 @@
 ---
 title: "Area-Level Estimation (Fay-Herriot)"
-execute:
-  eval: true
 ---
 
-The *Fay-Herriot (FH) model* for area-level estimation improves direct estimates that are too noisy, unstable, or unavailable for some areas by borrowing strengths from area-level covariates and the spatial structure. 
+The *Fay-Herriot (FH) model* for area-level estimation improves direct estimates that are too noisy, unstable, or unavailable for some areas by borrowing strength from area-level covariates and the spatial structure.
 
 ## Understanding the basic Fay-Herriot model
 
@@ -44,6 +42,17 @@ The **shrinkage weight** $\gamma_d =\frac{\sigma_u^2}{\sigma_u^2 + \psi_d}$ cont
 
 Essentially, the Fay-Herriot model evaluates how reliable the direct estimates are. Reliable direct estimates are mostly preserved, while noisy direct estimates borrow more information from the model.
 
+## Select covariates
+
+SAE improves precision of the estimates by "borrowing strength" from auxiliary variables (i.e., covariates). This is critical for estimation areas with sparse or no survey data. Covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across estimation areas.
+
+The key attributes of good covariates are:
+
+- **Coverage:** each covariate should be available for all estimation areas.
+- **Alignment:** match geography, definition, and reference period to the survey indicator.
+- **Relevance:** keep variables with a clear substantive link to the outcome and avoid including many weak predictors.
+- **Predictive:** choose covariates that improve area-level prediction and are easy to explain.
+
 ## Spatial structure
 
 The basic Fay-Herriot model usually assumes that the unexplained area effects $u_d$ are **independent** after accounting for covariates. In urban research, this assumption is often unrealistic. Nearby areas may share infrastructure, socio-demographic profiles, transport conditions, etc. As a result, neighbouring areas may still have **similar unexplained effects** even after covariates have been included.
@@ -70,28 +79,25 @@ There are several ways to define the spatial weights matrix $W$. The most common
 
 ![Example of spatial weight matrix by adjacency](../assets/spatial_weights_example.png)
 
-In practice, the spatial weights matrix is a modelling assumption. It should be checked carefully, especially for islands, coastal areas, or fragmented geographies, because isolated areas or unusual neighbour links can strongly affect spatial smoothing.
+:::{.callout-warning}
+The spatial weights matrix is another modelling assumption. It should be checked carefully, especially for islands, coastal areas, or fragmented geographies, because isolated areas or unusual neighbour links can strongly affect spatial smoothing.
+:::
 
 ## Bayesian vs. Frequentist approach in SAE
 
-In small-area estiomation, there are two statistical approaches in treating unknown quantities such as $\beta$, $\sigma_u^2$, and $\gamma_d$, specificially how they are estimated and how uncertainty is interpreted. 
+In small-area estimation, there are two statistical approaches to treating unknown quantities such as $\beta$, $\sigma_u^2$, and $\gamma_d$, specifically how they are estimated and how uncertainty is interpreted.
 
-- In the **frequentist** approach, unknown quantities such as $\beta$, $\sigma_u^2$, and $u_d$ are estimated as fixed unknowns. Typical outputs are one point estimate per area (EBLUP), uncertainty measures such as RMSE, and confidence intervals.
-- In the **Bayesian** approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries. 
+- In the **frequentist** approach, unknown quantities such as $\beta$, $\sigma_u^2$, and $u_d$ are estimated as fixed unknowns. Typical outputs are one point estimate per area, uncertainty measures such as RMSE, and confidence intervals.
+- In the **Bayesian** approach, these unknown quantities are instead treated as uncertain and assigned prior distributions. Typical outputs are posterior means, credible intervals, and probability summaries.
 
 ![The difference in uncertainty treatment between Bayesian and Frequentist approaches](../assets/bayesian-frequentist.png)
 
-In practice, the Bayesian approach is preferred for many reasons:
-- It is more flexible when dealing with areas with little or no survey data. If an area has no direct estimate, the model can still predict a plausible value's probability distribution. In a freqeuentist approach, the estimates for no-data areas are simply the modelled prediction based on the covariates.
-- Reporting uncertainty as propability distributions faciliates communication in policy settings and more useful for decision-making.
+In practice, the Bayesian approach is preferred since reporting uncertainty as probability distributions facilitates communication in policy settings and is more useful for decision-making.
 
-## [Pratical] Area-Level Estimation
+## Practical tutorial
 
-In this workbook, we fit Bayesian area-level FH models for the **mean commute distance among commuters by MSOA** estimand using the indicator `commute_distance`.
+In this workbook, we fit Bayesian area-level FH models for the **mean commute distance among commuters by MSOA** estimand using the indicator `commute_distance`. We first recreate the direct estimates and their sampling variances, then pass those area-level inputs into `SUMMER::smoothArea()` with MSOA-level covariates.
 
-The workflow starts from the same survey indicator file used in direct estimation. We first recreate the direct estimates and their sampling variances, then pass those area-level inputs into `SUMMER::smoothArea()` with MSOA-level covariates.
-
-### Setup
 
 ```{r}
 library(dplyr)
@@ -100,7 +106,6 @@ library(stringr)
 library(tidyr)
 library(sf)
 library(ggplot2)
-library(patchwork)
 library(survey)
 library(SUMMER)
 library(spdep)
@@ -110,7 +115,14 @@ zip_tmp <- tempfile(fileext = ".zip")
 url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-clean-data.zip"
 download.file(url, zip_tmp, mode = "wb")
 unzip(zip_tmp, exdir = tempdir())
-base_path <- file.path(tempdir(), "clean")
+base_path <- file.path(tempdir())
+
+# Load Census files into a temp folder
+census_zip_tmp <- tempfile(fileext = ".zip")
+census_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-census-data.zip"
+download.file(census_url, census_zip_tmp, mode = "wb")
+unzip(census_zip_tmp, exdir = tempdir())
+census_path <- file.path(tempdir())
 
 # Load shapefiles for plotting
 boundary_zip <- tempfile(fileext = ".zip")
@@ -130,8 +142,7 @@ msoa_domains <- msoa_boundaries |>
   select(domain_id) |>
   arrange(domain_id)
 ```
-
-### Load Indicator and Covariates
+### Load Indicator
 
 Load the `commute_distance` indicator file. This indicator is continuous and is defined among respondents with a valid commute distance.
 
@@ -148,27 +159,112 @@ survey_indicator_commute <- read_csv(
   )
 ```
 
-Next, load the MSOA-level covariates. For this estimand, we use variables that plausibly relate to commute distance: population density, the share of commuters travelling by car or van, and the share of households with access to a car or van. These are loaded on their original scale first, then standardised before model fitting.
+### Select and aggregate covariates
+
+For `commute_distance`, useful area-level covariates should capture urban-rural structure, commuting mode, car access, housing form, and the local employment mix. [The Census 2021](https://www.nomisweb.co.uk/sources/census_2021_bulk) gives us several candidate covariates at MSOA level.
+
+| Covariate | Census table | Why it may explain commute distance |
+|---|---|---|
+| `cov_pop_density` | TS006 | Dense urban areas tend to have shorter trips and more nearby jobs/services. |
+| `cov_share_work_home` | TS061 | Areas with more home-working may have a different commuter composition. |
+| `cov_share_hh_withcar` | TS045 | Household car access indicates ability to travel longer distances. |
+| `cov_share_detached` | TS044 | Detached housing is a proxy for lower-density suburban/rural settlement. |
+| `cov_share_higher_managerial` | TS062 | Occupational structure may reflect access to different labour markets. |
+
+:::{.callout-note}
+We do not use Census commute-distance table `TS058` as a covariate because it is reserved later as an external validation benchmark for this tutorial.
+:::
 
 ```{r}
-covariates_commute <- read_csv(
-  file.path(base_path, "covariates_msoa.csv"),
-  show_col_types = FALSE
-) |>
+# Read a Census 2021 aggregate table and keep Welsh areas only
+read_census <- function(topic_code) {
+  file_name <- paste0("census2021-", topic_code, "-msoa.csv")
+  read_csv(file.path(census_path, file_name), show_col_types = FALSE) |>
+    filter(str_starts(`geography code`, "W")) |>
+    rename(domain_id = `geography code`)
+}
+
+# Population density (TS006)
+msoa_density <- read_census("ts006") |>
   transmute(
     domain_id,
-    cov_pop_density,
-    cov_share_car_commute,
-    cov_share_hh_withcar
-  ) |>
-  arrange(domain_id)
+    cov_pop_density = `Population Density: Persons per square kilometre; measures: Value`
+  )
 
-head(covariates_commute)
+# Travel to work (TS061)
+msoa_travel <- read_census("ts061") |>
+  transmute(
+    domain_id,
+    commute_total = `Method of travel to workplace: Total: All usual residents aged 16 years and over in employment the week before the census`,
+    cov_share_work_home = if_else(
+      commute_total > 0,
+      `Method of travel to workplace: Work mainly at or from home` / commute_total,
+      NA_real_
+    )
+  ) |>
+  select(-commute_total)
+
+# Car availability (TS045)
+msoa_cars <- read_census("ts045") |>
+  transmute(
+    domain_id,
+    household_total = `Number of cars or vans: Total: All households`,
+    cov_share_hh_withcar = if_else(
+      household_total > 0,
+      (household_total - `Number of cars or vans: No cars or vans in household`) / household_total,
+      NA_real_
+    )
+  ) |>
+  select(-household_total)
+
+# Housing type (TS044)
+msoa_housing <- read_census("ts044") |>
+  transmute(
+    domain_id,
+    household_total = `Accommodation type: Total: All households`,
+    cov_share_detached = if_else(
+      household_total > 0,
+      `Accommodation type: Detached` / household_total,
+      NA_real_
+    )
+  ) |>
+  select(-household_total)
+
+# Occupation structure (TS062)
+msoa_nssec <- read_census("ts062") |>
+  transmute(
+    domain_id,
+    nssec_total = `National Statistics Socio-economic Classification (NS-SEC): Total: All usual residents aged 16 years and over`,
+    cov_share_higher_managerial = if_else(
+      nssec_total > 0,
+      `National Statistics Socio-economic Classification (NS-SEC): L1, L2 and L3 Higher managerial, administrative and professional occupations` / nssec_total,
+      NA_real_
+    )
+  ) |>
+  select(-nssec_total)
+
+covariates_commute_summer <- msoa_density |>
+  left_join(msoa_travel, by = "domain_id") |>
+  left_join(msoa_cars, by = "domain_id") |>
+  left_join(msoa_housing, by = "domain_id") |>
+  left_join(msoa_nssec, by = "domain_id")
+```
+Finally, we rescale the covariates to prepare them as inputs for the FH model.
+```{r}
+covariates_commute_summer <- covariates_commute_summer |>
+  transmute(
+    domain_id,
+    cov_pop_density = as.numeric(scale(cov_pop_density)),
+    cov_share_work_home = as.numeric(scale(cov_share_work_home)),
+    cov_share_hh_withcar = as.numeric(scale(cov_share_hh_withcar)),
+    cov_share_detached = as.numeric(scale(cov_share_detached)),
+    cov_share_higher_managerial = as.numeric(scale(cov_share_higher_managerial))
+  )
 ```
 
 ### Direct Estimates
 
-The direct estimate is recreated here so the Bayesian FH model receives the direct estimate and its sampling variance in the format expected by `smoothArea()`. Because this estimand is a mean, we use the Hájek-style weighted mean from the survey design.
+The direct estimate is recreated here so the Bayesian FH model receives the direct estimate and its sampling variance in the format expected by `smoothArea()`.
 
 ```{r}
 design_commute <- survey::svydesign(
@@ -200,12 +296,13 @@ direct_est_commute <- commute_mean |>
 
 head(direct_est_commute)
 ```
-
 ### Fit Fay-Herriot Model
 
-The model below is a non-spatial Bayesian Fay-Herriot model with covariates. For `smoothArea()`, the direct-estimate input must have the domain ID in the first column, the direct estimate in the second column, and the sampling variance in the third column.
+With all the components ready, we can now proceed to fitting a Fay-Herriot model on our estimates. For `smoothArea()`, we need to standardise the direct estimates. After fitting, the FH estimates are transformed back to the original reporting scale, and we can also extract the posterior variance, and 95% credible interval for each MSOA.
 
-Before fitting the FH model, we standardise the direct estimates and the covariates. This keeps the Gaussian area-level model on a numerically stable scale. After fitting, the FH estimates are transformed back to the original reporting scale: mean commute distance in miles.
+:::{.callout-note}
+For `smoothArea()`, the direct-estimate input must have the domain ID in the first column, the direct estimate in the second column, and the sampling variance in the third column.
+:::
 
 ```{r}
 direct_center <- mean(direct_est_commute$direct, na.rm = TRUE)
@@ -218,18 +315,14 @@ direct_est_summer <- direct_est_commute |>
     variance = variance / direct_scale^2
   )
 
-covariates_commute_summer <- covariates_commute |>
-  transmute(
-    domain_id,
-    cov_pop_density_z = as.numeric(scale(cov_pop_density)),
-    cov_share_car_commute_z = as.numeric(scale(cov_share_car_commute)),
-    cov_share_hh_withcar_z = as.numeric(scale(cov_share_hh_withcar))
-  )
+fh_formula <- direct ~ cov_pop_density +
+  cov_share_work_home +
+  cov_share_hh_withcar +
+  cov_share_detached +
+  cov_share_higher_managerial
 
 fh_commute_fit <- SUMMER::smoothArea(
-  formula = direct ~ cov_pop_density_z +
-    cov_share_car_commute_z +
-    cov_share_hh_withcar_z,
+  formula = fh_formula,
   domain = ~domain_id,
   direct.est = direct_est_summer,
   X.domain = covariates_commute_summer,
@@ -237,17 +330,12 @@ fh_commute_fit <- SUMMER::smoothArea(
   transform = "identity",
   level = 0.95
 )
-```
 
-Extract the posterior mean, posterior variance, and 95% credible interval for each MSOA.
-
-```{r}
 fh_est_commute <- fh_commute_fit$iid.model.est |>
   tibble::as_tibble() |>
   transmute(
     domain_id = domain,
     fh_mean = (mean * direct_scale) + direct_center,
-    fh_variance = var * direct_scale^2,
     fh_lower = (lower * direct_scale) + direct_center,
     fh_upper = (upper * direct_scale) + direct_center,
     fh_ci_width = fh_upper - fh_lower
@@ -256,30 +344,83 @@ fh_est_commute <- fh_commute_fit$iid.model.est |>
 head(fh_est_commute)
 ```
 
-Check that the modelled estimates are on the expected reporting scale.
+Mapping the fitted estimates, we see that the direct estimates vary sharply across Wales, while the FH model pulls many areas toward values supported by the covariates and the overall area-level distribution.
 
 ```{r}
-bind_rows(
-  direct_est_commute |>
-    summarise(
-      method = "Direct",
-      min = min(direct, na.rm = TRUE),
-      median = median(direct, na.rm = TRUE),
-      max = max(direct, na.rm = TRUE)
-    ),
-  fh_est_commute |>
-    summarise(
-      method = "Non-spatial FH",
-      min = min(fh_mean, na.rm = TRUE),
-      median = median(fh_mean, na.rm = TRUE),
-      max = max(fh_mean, na.rm = TRUE)
-    )
-)
+commute_comparison <- msoa_domains |>
+  left_join(direct_est_commute, by = "domain_id") |>
+  left_join(fh_est_commute, by = "domain_id") |>
+  mutate(
+    has_direct = !is.na(direct),
+    has_fh = !is.na(fh_mean)
+  )
+
+commute_map_data <- msoa_boundaries |>
+  left_join(commute_comparison, by = "domain_id")
+
+fh_estimate_map <- commute_map_data |>
+  select(direct, fh_mean, geometry) |>
+  rename(
+    `Direct estimate` = direct,
+    `Fay-Herriot estimate` = fh_mean
+  ) |>
+  pivot_longer(
+    cols = c(`Direct estimate`, `Fay-Herriot estimate`),
+    names_to = "method",
+    values_to = "estimate"
+  )
+
+ggplot(fh_estimate_map) +
+  geom_sf(aes(fill = estimate), colour = "white", linewidth = 0.05) +
+  facet_wrap(~method) +
+  scale_fill_distiller(palette = "Blues", direction = 1, na.value = "grey85") +
+  labs(
+    title = "Mean commute distance by MSOA",
+    fill = "Miles"
+  ) +
+  theme_void()
+```
+
+The reason for this drastic shrinkage is easier to see when the estimates are ranked by the direct estimate and shown with their original uncertainty intervals. Areas with wide direct-estimate confidence intervals contribute less direct survey evidence, so their FH estimates are pulled more strongly toward the model prediction.
+
+```{r}
+ranked_commute <- commute_comparison |>
+  filter(has_direct) |>
+  arrange(direct, domain_id) |>
+  mutate(direct_estimate_rank = row_number())
+
+ggplot(ranked_commute, aes(x = direct_estimate_rank)) +
+  geom_ribbon(aes(ymin = direct_lower, ymax = direct_upper), fill = "blue", alpha = 0.16) +
+  geom_ribbon(aes(ymin = fh_lower, ymax = fh_upper), fill = "#54A24B", alpha = 0.16) +
+  geom_line(aes(y = direct, colour = "Direct"), linewidth = 0.45, na.rm = TRUE) +
+  geom_line(aes(y = fh_mean, colour = "Fay-Herriot"), linewidth = 0.45) +
+  scale_colour_manual(values = c(
+    "Direct" = "blue",
+    "Fay-Herriot" = "#54A24B"
+  )) +
+  labs(
+    title = "Direct vs. Fay-Herriot estimates and CIs\nMean Commute Distance",
+    x = "MSOAs (ranked by direct estimate)",
+    y = "Mean commute distance (miles)",
+    colour = NULL
+  ) +
+  theme_minimal()
+```
+
+FH also provides estimates for areas without any direct survey estimate. These estimates come from the covariate relationship learned from areas with direct estimates and the estimated between-area variation.
+
+```{r}
+commute_comparison |>
+  filter(!has_direct, has_fh) |>
+  arrange(desc(fh_mean)) |>
+  select(domain_id, fh_mean, fh_lower, fh_upper, fh_ci_width)
 ```
 
 ### Fit Spatial Fay-Herriot Model
 
-The non-spatial FH model assumes that the remaining unexplained area effects are independent after accounting for covariates. We can relax this by adding a spatial adjacency matrix. Here, we use **queen adjacency**, where two MSOAs are neighbours if they share either a boundary segment or a point.
+The non-spatial FH model borrows strength from covariates and the overall distribution of MSOAs, but it does not use the fact that MSOAs are geographically connected. For transport outcomes, this independence assumption may be unrealistic. We therefore fit a spatial FH model as a sensitivity extension. It asks whether allowing neighbouring MSOAs to have similar unexplained area effects changes the estimates or their uncertainty.
+
+First, we create a spatial weights matrix using queen contiguity, where two MSOAs are neighbours if they share either a boundary segment or a point.
 
 ```{r}
 msoa_boundaries_ordered <- msoa_boundaries |>
@@ -300,14 +441,10 @@ adjacency_matrix <- spdep::nb2mat(
 rownames(adjacency_matrix) <- msoa_boundaries_ordered$domain_id
 colnames(adjacency_matrix) <- msoa_boundaries_ordered$domain_id
 ```
-
-The spatial FH model uses the same direct estimates and covariates as the non-spatial model, but adds the adjacency matrix through `adj.mat`.
-
+Next, we refit the FH model, now specifying `adj.mat` in the `smoothArea()` function call.
 ```{r}
 spatial_fh_commute_fit <- SUMMER::smoothArea(
-  formula = direct ~ cov_pop_density_z +
-    cov_share_car_commute_z +
-    cov_share_hh_withcar_z,
+  formula = fh_formula,
   domain = ~domain_id,
   direct.est = direct_est_summer,
   X.domain = covariates_commute_summer,
@@ -315,176 +452,206 @@ spatial_fh_commute_fit <- SUMMER::smoothArea(
   transform = "identity",
   level = 0.95
 )
-```
 
-Extract the posterior estimates from the spatial model.
-
-```{r}
 spatial_fh_est_commute <- spatial_fh_commute_fit$bym2.model.est |>
   tibble::as_tibble() |>
   transmute(
     domain_id = domain,
     spatial_fh_mean = (mean * direct_scale) + direct_center,
-    spatial_fh_variance = var * direct_scale^2,
     spatial_fh_lower = (lower * direct_scale) + direct_center,
-    spatial_fh_upper = (upper * direct_scale) + direct_center,
-    spatial_fh_ci_width = spatial_fh_upper - spatial_fh_lower
+    spatial_fh_upper = (upper * direct_scale) + direct_center
   )
 
 head(spatial_fh_est_commute)
 ```
 
-### Compare Direct and FH Estimates
-
-The comparison below checks whether the two FH models fill the coverage gap left by direct estimation and whether their uncertainty intervals are narrower than the direct-estimate intervals for areas where direct estimates are available.
+We can now compare the FH estimates before and after spatial information to see whether adding adjacency changes the estimates or uncertainty enough to matter.
 
 ```{r}
-commute_comparison <- msoa_domains |>
-  left_join(direct_est_commute, by = "domain_id") |>
-  left_join(fh_est_commute, by = "domain_id") |>
-  left_join(spatial_fh_est_commute, by = "domain_id") |>
-  mutate(
-    has_direct = !is.na(direct),
-    has_fh = !is.na(fh_mean),
-    has_spatial_fh = !is.na(spatial_fh_mean),
-    fh_ci_width_change = fh_ci_width - direct_ci_width,
-    spatial_fh_ci_width_change = spatial_fh_ci_width - direct_ci_width,
-    spatial_minus_nonspatial_ci_width = spatial_fh_ci_width - fh_ci_width
-  )
+commute_comparison <- commute_comparison |>
+  left_join(spatial_fh_est_commute, by = "domain_id")
 
-commute_comparison |>
-  summarise(
-    areas_total = n(),
-    areas_with_direct = sum(has_direct),
-    areas_with_nonspatial_fh = sum(has_fh),
-    areas_with_spatial_fh = sum(has_spatial_fh),
-    median_direct_ci_width = median(direct_ci_width, na.rm = TRUE),
-    median_fh_ci_width = median(fh_ci_width[has_direct], na.rm = TRUE),
-    median_spatial_fh_ci_width = median(spatial_fh_ci_width[has_direct], na.rm = TRUE),
-    median_nonspatial_ci_width_change = median(fh_ci_width_change, na.rm = TRUE),
-    median_spatial_ci_width_change = median(spatial_fh_ci_width_change, na.rm = TRUE),
-    median_spatial_minus_nonspatial_ci_width = median(spatial_minus_nonspatial_ci_width, na.rm = TRUE)
-  ) |>
-  pivot_longer(
-    cols = everything(),
-    names_to = "diagnostic",
-    values_to = "value"
-  )
-```
-
-The FH models improve the direct-estimation results by filling any no-data gaps and reducing uncertainty for many areas with weak direct evidence. The spatial model adds one further assumption: neighbouring MSOAs may have similar unexplained effects after accounting for covariates. If the spatial CI widths are smaller than the non-spatial FH widths, the adjacency structure is adding useful information. If the spatial and non-spatial results are very similar, most of the improvement is coming from the covariates and the general area-level random effect rather than from spatial smoothing.
-
-### Visualise Estimates and Uncertainty
-
-The maps below **compare the estimates** improvements, from direct estimates to non-spatial FH estimates, then to spatial FH estimates.
-```{r}
-commute_map_data <- msoa_boundaries |>
-  left_join(commute_comparison, by = "domain_id")
-
-commute_estimate_direct_fh <- commute_map_data |>
-  select(direct, fh_mean, geometry) |>
-  rename(
-    `Direct` = direct,
-    `Non-spatial FH` = fh_mean
-  ) |>
-  pivot_longer(
-    cols = c(`Direct`, `Non-spatial FH`),
-    names_to = "method",
-    values_to = "estimate"
-  )
-
-ggplot(commute_estimate_direct_fh) +
-  geom_sf(aes(fill = estimate)) +
-  facet_wrap(~method) +
-  scale_fill_distiller(palette = "Blues", direction = 1, na.value = "grey85") +
-  labs(title = "Direct vs non-spatial FH estimate", fill = "Miles") +
-  theme_void()
-```
-
-```{r}
-commute_estimate_fh_spatial <- commute_map_data |>
+fh_spatial_compare_map <- msoa_boundaries |>
+  left_join(commute_comparison, by = "domain_id") |>
   select(fh_mean, spatial_fh_mean, geometry) |>
   rename(
-    `Non-spatial FH` = fh_mean,
-    `Spatial FH` = spatial_fh_mean
+    `FH` = fh_mean,
+    `FH (+Spatial)` = spatial_fh_mean
   ) |>
-  pivot_longer(
-    cols = c(`Non-spatial FH`, `Spatial FH`),
-    names_to = "method",
-    values_to = "estimate"
-  )
+  pivot_longer(c(`FH`, `FH (+Spatial)`), names_to = "method", values_to = "estimate")
 
-ggplot(commute_estimate_fh_spatial) +
-  geom_sf(aes(fill = estimate)) +
+ggplot(fh_spatial_compare_map) +
+  geom_sf(aes(fill = estimate), colour = "white", linewidth = 0.05) +
   facet_wrap(~method) +
   scale_fill_distiller(palette = "Blues", direction = 1, na.value = "grey85") +
-  labs(title = "Non-spatial vs spatial FH estimate", fill = "Miles") +
+  labs(title = "Mean commute distance by MSOA", fill = "Miles") +
   theme_void()
 ```
 
-Next **compare the uncertainities (CI widths)** in the same two steps. 
-```{r}
-commute_uncertainty_direct_fh <- commute_map_data |>
-  select(direct_ci_width, fh_ci_width, geometry) |>
-  rename(
-    `Direct` = direct_ci_width,
-    `Non-spatial FH` = fh_ci_width
-  ) |>
-  pivot_longer(
-    cols = c(`Direct`, `Non-spatial FH`),
-    names_to = "method",
-    values_to = "ci_width"
-  )
+In this example, the spatial model does not cause a major shift. This suggests that most of the improvement over direct estimation comes from covariates and general FH shrinkage, while the added adjacency structure has limited additional influence for this estimand.
 
-ggplot(commute_uncertainty_direct_fh) +
-  geom_sf(aes(fill = ci_width)) +
-  facet_wrap(~method) +
-  scale_fill_distiller(palette = "Reds", direction = 1, na.value = "grey85") +
-  labs(title = "Direct vs non-spatial FH uncertainty", fill = "CI width") +
-  theme_void()
-```
-
-```{r}
-commute_uncertainty_fh_spatial <- commute_map_data |>
-  select(fh_ci_width, spatial_fh_ci_width, geometry) |>
-  rename(
-    `Non-spatial FH` = fh_ci_width,
-    `Spatial FH` = spatial_fh_ci_width
-  ) |>
-  pivot_longer(
-    cols = c(`Non-spatial FH`, `Spatial FH`),
-    names_to = "method",
-    values_to = "ci_width"
-  )
-
-ggplot(commute_uncertainty_fh_spatial) +
-  geom_sf(aes(fill = ci_width)) +
-  facet_wrap(~method) +
-  scale_fill_distiller(palette = "Reds", direction = 1, na.value = "grey85") +
-  labs(title = "Non-spatial vs spatial FH uncertainty", fill = "CI width") +
-  theme_void()
-```
-
-Finally, inspect the areas that had no direct estimate but now have FH estimates.
-
-```{r}
-commute_comparison |>
-  filter(!has_direct, has_spatial_fh) |>
-  arrange(desc(spatial_fh_mean)) |>
-  select(
-    domain_id,
-    fh_mean,
-    fh_lower,
-    fh_upper,
-    fh_ci_width,
-    spatial_fh_mean,
-    spatial_fh_lower,
-    spatial_fh_upper,
-    spatial_fh_ci_width
-  )
-```
 ### Validation
 
+In practice, we usually do not have a true area-level value to validate SAE estimates against; if we did, there would be no need to use SAE! However, for this tutorial, UK Census 2021 provides an external benchmark for commute distance, so we can use it to check how close the FH estimates get to an independent area-level measure.
+
+That said, census data is binned into categories and in kilometres. Therefore, we first use category midpoints to approximate the benchmark mean commute distance for each MSOA, then convert kilometres to miles to match the FH estimates.
+
+```{r}
+benchmark_commute_distance <- read_csv(
+  file.path(census_path, "census2021-ts058-msoa.csv"),
+  show_col_types = FALSE
+) |>
+  filter(str_starts(`geography code`, "W")) |>
+  transmute(
+    domain_id = `geography code`,
+    benchmark_commute_distance =
+      (
+        `Distance travelled to work: Less than 2km` * 1 +
+          `Distance travelled to work: 2km to less than 5km` * 3.5 +
+          `Distance travelled to work: 5km to less than 10km` * 7.5 +
+          `Distance travelled to work: 10km to less than 20km` * 15 +
+          `Distance travelled to work: 20km to less than 30km` * 25 +
+          `Distance travelled to work: 30km to less than 40km` * 35 +
+          `Distance travelled to work: 40km to less than 60km` * 50 +
+          `Distance travelled to work: 60km and over` * 75
+      ) /
+      (
+        `Distance travelled to work: Less than 2km` +
+          `Distance travelled to work: 2km to less than 5km` +
+          `Distance travelled to work: 5km to less than 10km` +
+          `Distance travelled to work: 10km to less than 20km` +
+          `Distance travelled to work: 20km to less than 30km` +
+          `Distance travelled to work: 30km to less than 40km` +
+          `Distance travelled to work: 40km to less than 60km` +
+          `Distance travelled to work: 60km and over`
+      ) * 0.621371
+  )
+```
+Then we will plot the direct and (spatial) FH estimates against the benchmark.
+```{r}
+validation_commute <- commute_comparison |>
+  left_join(benchmark_commute_distance, by = "domain_id") |>
+  select(benchmark_commute_distance, direct, spatial_fh_mean) |>
+  pivot_longer(
+    cols = -benchmark_commute_distance,
+    names_to = "method",
+    values_to = "estimate"
+  ) |>
+  mutate(
+    method = recode(
+      method,
+      direct = "Direct",
+      spatial_fh_mean = "Fay-Herriot (+Spatial)"
+    )
+  )
+
+ggplot(validation_commute, aes(x = benchmark_commute_distance, y = estimate)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0) +
+  facet_wrap(~method) +
+  labs(
+    title = "FH estimates vs. Benchmark",
+    x = "Benchmark mean commute distance (miles)",
+    y = "Estimated mean commute distance (miles)"
+  ) +
+  theme_minimal()
+```
+
+Compared with the direct estimates, the FH estimates align much more closely with the benchmark. However, the FH estimates still show clusters of underestimation and overestimation, with many MSOAs sitting below or above the parity line. By mapping the difference, we see a spatial pattern in these 'errors':
+
+- Rural long-distance commuting is underpredicted
+- Urban commute distance is overpredicted
+- There may be omitted covariates that capture more than spatial proximity.
+
+
+```{r}
+validation_map <- msoa_boundaries |>
+  left_join(commute_comparison, by = "domain_id") |>
+  left_join(benchmark_commute_distance, by = "domain_id") |>
+  mutate(fh_minus_benchmark = spatial_fh_mean - benchmark_commute_distance)
+
+ggplot(validation_map) +
+  geom_sf(aes(fill = fh_minus_benchmark), colour = "white", linewidth = 0.05) +
+  scale_fill_gradient2(
+    low = "blue",
+    mid = "white",
+    high = "red",
+    midpoint = 0,
+    na.value = "grey85"
+  ) +
+  labs(
+    title = "FH estimate minus Benchmark",
+    fill = "Miles"
+  ) +
+  theme_void()
+```
+
+This suggests that the current FH model does not fully capture the urban-rural structure of commute distance. Candidate covariates could include rural-urban classification, employment accessibility, local job density, or distance to major employment centres. Covariate selection therefore needs to happen as a separate parallel workflow before fitting the final FH model. This process is iterative and should also reflect domain knowledge about the outcome and the geography.
+
+That said, when visualised together on a graph, the benchmark values seem to fall within the 95% FH credible intervals for many areas, lending confidence in the fitted model's uncertainty intervals.
+
+```{r}
+validation_ranked <- commute_comparison |>
+  left_join(benchmark_commute_distance, by = "domain_id") |>
+  filter(!is.na(benchmark_commute_distance), !is.na(spatial_fh_mean)) |>
+  arrange(benchmark_commute_distance, domain_id) |>
+  mutate(benchmark_rank = row_number())
+
+ggplot(validation_ranked, aes(x = benchmark_rank)) +
+  geom_ribbon(
+    aes(ymin = spatial_fh_lower, ymax = spatial_fh_upper),
+    fill = "red",
+    alpha = 0.16
+  ) +
+  geom_line(aes(y = spatial_fh_mean, colour = "Fay-Herriot (+Spatial)"), linewidth = 0.45) +
+  geom_line(aes(y = benchmark_commute_distance, colour = "Benchmark"), linewidth = 0.45) +
+  scale_colour_manual(values = c(
+    "Fay-Herriot (+Spatial)" = "red",
+    "Benchmark" = "blue"
+  )) +
+  labs(
+    title = "Mean commute distance\nFH estimates vs. Benchmark",
+    x = "MSOAs (ranked by benchmark)",
+    y = "Mean commute distance (miles)",
+    colour = NULL
+  ) +
+  theme_minimal()
+```
 
 ### Final thoughts
-The FH models do not create new survey observations. Instead, they produce statistically informed estimates for weak-data or no-data areas by combining the covariate relationship learned from observed areas with estimated between-area variation. The spatial model further adds neighbourhood structure on top of this.
+
+The SAE workflow starts by extracting the **direct estimates** and their sampling variances for the estimation areas. The Fay-Herriot model then uses **area-level covariates** to adjust the final estimates: Areas with precise direct estimates remain close to their observed values. Areas with noisy or missing direct estimates borrow more strength from the model. Finally, the **spatial Fay-Herriot model** adds one further assumption: neighbouring MSOAs may share similar unexplained patterns after accounting for covariates.
+
+In this example, adding covariates drastically improved the estimates, though adding spatial structure does not. This suggests that most of the improvement comes from the covariates and general FH shrinkage rather than from spatial smoothing.
+
+```{r}
+#| echo: false
+estimate_summary <- commute_comparison |>
+  left_join(benchmark_commute_distance, by = "domain_id") |>
+  transmute(
+    domain_id,
+    benchmark_commute_distance,
+    direct_estimate = direct,
+    direct_ci_lower = direct_lower,
+    direct_ci_upper = direct_upper,
+    direct_ci_width,
+    fh_estimate = fh_mean,
+    fh_ci_lower = fh_lower,
+    fh_ci_upper = fh_upper,
+    fh_ci_width,
+    spatial_fh_estimate = spatial_fh_mean,
+    spatial_fh_ci_lower = spatial_fh_lower,
+    spatial_fh_ci_upper = spatial_fh_upper,
+    spatial_fh_ci_width = spatial_fh_upper - spatial_fh_lower
+  )
+
+write_csv(
+  estimate_summary,
+  file.path("..","data", "bayesian_area_sae_commute_estimates.csv")
+)
+
+write_csv(
+  covariates_commute_summer,
+  file.path("..", "data", "bayesian_area_sae_commute_covariates.csv")
+)
+```

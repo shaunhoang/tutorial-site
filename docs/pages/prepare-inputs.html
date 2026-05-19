@@ -114,8 +114,8 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">2. Area-level estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../pages/diagnostics.html" rel="" target="">
- <span class="dropdown-text">3. Diagnostics and reporting</span></a>
+    <a class="dropdown-item" href="../pages/reporting.html" rel="" target="">
+ <span class="dropdown-text">3. Reporting and visualisation</span></a>
   </li>  
         <li class="dropdown-header">III. Extended Topics</li>
         <li>
@@ -250,8 +250,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
+  <a href="../pages/reporting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Reporting and Visualisation</span></a>
   </div>
 </li>
       </ul>
@@ -320,8 +320,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#measure-outcome" id="toc-measure-outcome" class="nav-link" data-scroll-target="#measure-outcome"><span class="header-section-number">1.2</span> Measure &amp; Outcome</a></li>
   </ul></li>
   <li><a href="#weights-and-domain-sizes" id="toc-weights-and-domain-sizes" class="nav-link" data-scroll-target="#weights-and-domain-sizes"><span class="header-section-number">2</span> Weights and domain sizes</a></li>
-  <li><a href="#select-covariates" id="toc-select-covariates" class="nav-link" data-scroll-target="#select-covariates"><span class="header-section-number">3</span> Select covariates</a></li>
-  <li><a href="#preparation-summary" id="toc-preparation-summary" class="nav-link" data-scroll-target="#preparation-summary"><span class="header-section-number">4</span> Preparation Summary</a></li>
+  <li><a href="#preparation-summary" id="toc-preparation-summary" class="nav-link" data-scroll-target="#preparation-summary"><span class="header-section-number">3</span> Preparation Summary</a></li>
   </ul>
 </nav>
     </div>
@@ -461,31 +460,18 @@ w^G_{di} = w^A_{di} \times \frac{N_d}{\sum_{i \in d} w^A_{di}}
 </div>
 </div>
 </section>
-<section id="select-covariates" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="select-covariates"><span class="header-section-number">3</span> Select covariates</h2>
-<p>SAE improves precision of the estimates by “borrowing strength” from auxiliary variables (i.e., covariates). This is critical for estimation areas with sparse or no survey data. Covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across estimation areas.</p>
-<p>The key attributes of good covariates are:</p>
-<ul>
-<li><strong>Coverage:</strong> each covariate should be available for all estimation areas.</li>
-<li><strong>Alignment:</strong> match geography, definition, and reference period to the survey indicator.</li>
-<li><strong>Relevance:</strong> keep variables with a clear substantive link to the outcome and avoid including many weak predictors.</li>
-<li><strong>Predictive:</strong> choose covariates that improve area-level prediction and are easy to explain.</li>
-</ul>
-<p>For example, some common covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessibility metrics, car ownership, etc.</p>
-</section>
-<section id="preparation-summary" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="preparation-summary"><span class="header-section-number">4</span> Preparation Summary</h2>
+<section id="preparation-summary" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="preparation-summary"><span class="header-section-number">3</span> Preparation Summary</h2>
 <p>Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:</p>
 <table class="table">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
-<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -496,7 +482,6 @@ w^G_{di} = w^A_{di} \times \frac{N_d}{\sum_{i \in d} w^A_{di}}
 <th>Measure</th>
 <th>Estimation geography</th>
 <th>Weight variable</th>
-<th>Covariates</th>
 </tr>
 </thead>
 <tbody>
@@ -508,7 +493,6 @@ w^G_{di} = w^A_{di} \times \frac{N_d}{\sum_{i \in d} w^A_{di}}
 <td>Share</td>
 <td>MSOA</td>
 <td><code>SampleAdultWeight</code></td>
-<td><code>age</code>,<code>income</code>,<code>own_carvan</code>, etc.</td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -517,8 +501,7 @@ w^G_{di} = w^A_{di} \times \frac{N_d}{\sum_{i \in d} w^A_{di}}
 <td>Continuous: numeric miles from <code>TravelWorkDistance</code>; only retirees with valid leisure travel distance are in scope</td>
 <td>Mean</td>
 <td>Ward</td>
-<td><code>LeisureTravelModuleWeight</code></td>
-<td><code>income</code>,<code>own_home</code>,<code>own_carvan</code>, etc.</td>
+<td></td>
 </tr>
 </tbody>
 </table>

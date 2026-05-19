@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Small Area Estimation for Urban Analytics - Unit-Level Estimation</title>
+<title>Small Area Estimation for Urban Analytics - [WIP] Unit-Level Estimation and MRP</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -114,8 +114,8 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">2. Area-level estimation</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../pages/diagnostics.html" rel="" target="">
- <span class="dropdown-text">3. Diagnostics and reporting</span></a>
+    <a class="dropdown-item" href="../pages/reporting.html" rel="" target="">
+ <span class="dropdown-text">3. Reporting and visualisation</span></a>
   </li>  
         <li class="dropdown-header">III. Extended Topics</li>
         <li>
@@ -158,7 +158,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/frequentist-sae.html">III. Extended Topics</a></li><li class="breadcrumb-item"><a href="../pages/unit-level-sae.html">Unit-Level Estimation</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Tutorial</li><li class="breadcrumb-item"><a href="../pages/frequentist-sae.html">III. Extended Topics</a></li><li class="breadcrumb-item"><a href="../pages/unit-level-sae.html">[WIP] Unit-Level Estimation and MRP</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -250,8 +250,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/diagnostics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">[WIP] Diagnostics and Reporting</span></a>
+  <a href="../pages/reporting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Reporting and Visualisation</span></a>
   </div>
 </li>
       </ul>
@@ -268,13 +268,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/frequentist-sae.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Frequentist Approaches to SAE</span></a>
+ <span class="menu-text">[WIP] Frequentist Approach to SAE</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Unit-Level Estimation</span></a>
+ <span class="menu-text">[WIP] Unit-Level Estimation and MRP</span></a>
   </div>
 </li>
       </ul>
@@ -314,9 +314,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#understanding-unit-level-estimation" id="toc-understanding-unit-level-estimation" class="nav-link active" data-scroll-target="#understanding-unit-level-estimation"><span class="header-section-number">1</span> Understanding Unit-Level Estimation</a></li>
-  <li><a href="#caveats-with-unit-level-estimation" id="toc-caveats-with-unit-level-estimation" class="nav-link" data-scroll-target="#caveats-with-unit-level-estimation"><span class="header-section-number">2</span> Caveats with Unit-Level Estimation</a></li>
-  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">3</span> Code Implementation</a></li>
+  <li><a href="#unit-level-vs-area-level-sae" id="toc-unit-level-vs-area-level-sae" class="nav-link active" data-scroll-target="#unit-level-vs-area-level-sae"><span class="header-section-number">1</span> Unit-Level vs Area-Level SAE</a></li>
+  <li><a href="#ways-to-do-unit-level-estimation" id="toc-ways-to-do-unit-level-estimation" class="nav-link" data-scroll-target="#ways-to-do-unit-level-estimation"><span class="header-section-number">2</span> Ways to Do Unit-Level Estimation</a></li>
+  <li><a href="#full-population-prediction" id="toc-full-population-prediction" class="nav-link" data-scroll-target="#full-population-prediction"><span class="header-section-number">3</span> Full Population Prediction</a></li>
+  <li><a href="#mrp" id="toc-mrp" class="nav-link" data-scroll-target="#mrp"><span class="header-section-number">4</span> MRP</a></li>
+  <li><a href="#when-unit-level-sae-helps" id="toc-when-unit-level-sae-helps" class="nav-link" data-scroll-target="#when-unit-level-sae-helps"><span class="header-section-number">5</span> When Unit-Level SAE Helps</a></li>
+  <li><a href="#main-caveat" id="toc-main-caveat" class="nav-link" data-scroll-target="#main-caveat"><span class="header-section-number">6</span> Main Caveat</a></li>
+  <li><a href="#code-implementation" id="toc-code-implementation" class="nav-link" data-scroll-target="#code-implementation"><span class="header-section-number">7</span> Code Implementation</a></li>
   </ul>
 </nav>
     </div>
@@ -325,7 +329,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unit-Level Estimation</h1>
+<h1 class="title">[WIP] Unit-Level Estimation and MRP</h1>
 </div>
 
 
@@ -340,51 +344,159 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>Unit-level SAE models use survey microdata directly rather than starting from area-level direct estimates. They can be powerful, but they require much stronger data conditions than area-level Fay-Herriot models.</p>
-<section id="understanding-unit-level-estimation" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="understanding-unit-level-estimation"><span class="header-section-number">1</span> Understanding Unit-Level Estimation</h2>
-<p>In area-level Small Area Estimation, the model starts from one direct estimate per estimation area. In unit-level Small Area Estimation, the model starts from individual or household survey records:</p>
+<p>Unit-level small area estimation (SAE) models the survey microdata directly. Instead of first calculating one direct estimate per area, the model uses individual or household records, predicts outcomes for the target population, and then aggregates those predictions to the small-area geography.</p>
+<p>For example, suppose the estimand is:</p>
+<blockquote class="blockquote">
+<p><strong>Share of recent adult bus riders dissatisfied with bus services by MSOA</strong></p>
+</blockquote>
+<p>The survey records might contain each respondent’s bus dissatisfaction status, age group, disability status, employment status, car access, and location. A unit-level model can use those respondent-level predictors directly.</p>
+<section id="unit-level-vs-area-level-sae" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="unit-level-vs-area-level-sae"><span class="header-section-number">1</span> Unit-Level vs Area-Level SAE</h2>
+<p>Area-level and unit-level SAE are not competing labels for the same method. They are different ways to organise the data before modelling.</p>
+<table class="table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Model input</th>
+<th>What gets modelled</th>
+<th>How the area estimate is produced</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Area-level SAE</td>
+<td>One direct estimate per area</td>
+<td>Area-level estimates</td>
+<td>Direct estimates are smoothed using area covariates</td>
+</tr>
+<tr class="even">
+<td>Unit-level SAE</td>
+<td>Survey records</td>
+<td>Individual or household outcomes</td>
+<td>Predicted unit outcomes are aggregated to areas</td>
+</tr>
+</tbody>
+</table>
+<p>In an area-level model, the bus dissatisfaction survey data would first be collapsed into one direct estimate for each MSOA. The model would then use MSOA-level covariates, such as car ownership, population density, deprivation, or public transport access.</p>
+<p>In a unit-level model, the survey stays at respondent level. The model can learn, for example, whether dissatisfaction differs by age group, disability status, employment status, or car access. Those predictions are then combined with population data to estimate each MSOA.</p>
+<p>The basic unit-level structure is:</p>
 <p><span class="math display">\[
 y_{di} =
 x_{di}^{\top}\beta + u_d + e_{di},
 \]</span></p>
-<p>where <span class="math inline">\(y_{di}\)</span> is the outcome for unit <span class="math inline">\(i\)</span> in estimation area <span class="math inline">\(d\)</span>, <span class="math inline">\(x_{di}\)</span> is a vector of unit-level covariates, <span class="math inline">\(u_d\)</span> is the area effect, and <span class="math inline">\(e_{di}\)</span> is unit-level noise. For binary outcomes, the model is usually written as a logistic or probit mixed model.</p>
-<p>The area estimate is then built by predicting or simulating values for the population units in each estimation area and aggregating them:</p>
+<p>where <span class="math inline">\(y_{di}\)</span> is the outcome for person <span class="math inline">\(i\)</span> in area <span class="math inline">\(d\)</span>, <span class="math inline">\(x_{di}\)</span> contains individual or household predictors, and <span class="math inline">\(u_d\)</span> is an area effect.</p>
+<p>After fitting the model, the small-area estimate is produced by averaging predicted outcomes over the target population:</p>
 <p><span class="math display">\[
 \theta_d =
 \frac{1}{N_d}
-\sum_{i \in U_d} y_{di}.
+\sum_{i \in U_d} \hat{y}_{di}.
 \]</span></p>
-<p>This makes unit-level SAE a bottom-up approach: model people or households first, predict for the whole target population, and then aggregate to the chosen estimation geography.</p>
-<p>[ADD IMAGE]</p>
+<p>This is why unit-level SAE is often described as a bottom-up approach: model people or households first, then aggregate to places.</p>
 </section>
-<section id="caveats-with-unit-level-estimation" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="caveats-with-unit-level-estimation"><span class="header-section-number">2</span> Caveats with Unit-Level Estimation</h2>
-<p>Unit-level SAE is useful when the survey and population data share comparable individual, household, and covariates. It is most appropriate when the outcome is strongly related to person- or household-level characteristics rather than to an area, or when estimates may need to be aggregated to more than one geography.</p>
-<div class="callout callout-style-simple callout-none no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<p><strong>Pros:</strong></p>
-<ul>
-<li>Uses individual or household covariates directly, rather than area averages</li>
-<li>Can aggregate to several geographic scales<br></li>
-</ul>
-<p><strong>Cons:</strong></p>
-<ul>
-<li>Survey and population datasets need to be harmonised and include the same covariates</li>
-<li>More sensitive estimates because predictions are made for many non-sampled units and scaled up to population level</li>
-<li>More technically demanding, especially in terms of privacy/access</li>
-</ul>
-</div>
-</div>
-</div>
-<p>In general, prefer <strong>Area-level SAE</strong> when only area-level covariates are available. <strong>Unit-level SAE</strong> is more realistic when suitable population microdata, or a validated <strong>synthetic population</strong> can provide the prediction population.</p>
+<section id="ways-to-do-unit-level-estimation" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="ways-to-do-unit-level-estimation"><span class="header-section-number">2</span> Ways to Do Unit-Level Estimation</h2>
+<p>There are several ways to turn unit-level predictions into small-area estimates. The difference is mainly the form of the population data used after fitting the model.</p>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Population data needed</th>
+<th>Basic idea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Full population prediction</td>
+<td>A population microdata file or synthetic population</td>
+<td>Predict for every population unit, then average within each area</td>
+</tr>
+<tr class="even">
+<td>MRP</td>
+<td>Counts for population cells</td>
+<td>Predict for each cell, then weight by cell counts</td>
+</tr>
+<tr class="odd">
+<td>Unit-level mixed model with area effects</td>
+<td>Survey microdata plus population covariates</td>
+<td>Use individual predictors and area random effects to stabilise area estimates</td>
+</tr>
+</tbody>
+</table>
+<p>These are not entirely separate families. MRP is one way to operationalise unit-level SAE when the population is available as grouped cell counts rather than as individual records.</p>
 </section>
-<section id="code-implementation" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">3</span> Code Implementation</h2>
+<section id="full-population-prediction" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="full-population-prediction"><span class="header-section-number">3</span> Full Population Prediction</h2>
+<p>The most direct unit-level workflow is to predict for every person or household in the target population.</p>
+<p>For the bus dissatisfaction example, this would require a population or synthetic population file where each row is a person or household, with the same variables used in the survey model: age group, disability status, employment status, car access, and MSOA.</p>
+<p>The workflow is:</p>
+<ol type="1">
+<li>Fit the model using survey respondents.</li>
+<li>Predict bus dissatisfaction for every population record.</li>
+<li>Average the predictions within each MSOA.</li>
+</ol>
+<p>This approach is intuitive, but it requires detailed population microdata. In many applied settings, those data are unavailable, restricted, or only available through a synthetic population.</p>
+</section>
+<section id="mrp" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="mrp"><span class="header-section-number">4</span> MRP</h2>
+<p>MRP stands for <strong>Multilevel Regression and Poststratification</strong>. It is a unit-level SAE approach that uses population cell counts instead of full population microdata.</p>
+<p>The regression part models the survey outcome using individual predictors and, often, area effects. The poststratification part applies those predictions to the known population composition of each area.</p>
+<p>For example, a population cell might be:</p>
+<blockquote class="blockquote">
+<p>Recent adult bus riders aged 25-34, employed, without car access, living in MSOA W02000001</p>
+</blockquote>
+<p>The model predicts the dissatisfaction rate for that cell. The population table gives the number of people in that cell. The MSOA estimate is then a weighted average across all cells:</p>
+<p><span class="math display">\[
+\theta_d =
+\frac{1}{N_d}
+\sum_{j \in J_d} N_{dj}\hat{y}_{dj},
+\]</span></p>
+<p>where <span class="math inline">\(j\)</span> indexes population cells, <span class="math inline">\(N_{dj}\)</span> is the number of people in cell <span class="math inline">\(j\)</span> in area <span class="math inline">\(d\)</span>, and <span class="math inline">\(\hat{y}_{dj}\)</span> is the model prediction for that cell.</p>
+<p>MRP is useful when individual-level predictors matter, but the population data are available as cross-tabulated counts rather than a row-by-row population file.</p>
+</section>
+<section id="when-unit-level-sae-helps" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="when-unit-level-sae-helps"><span class="header-section-number">5</span> When Unit-Level SAE Helps</h2>
+<p>Unit-level SAE is most useful when:</p>
+<ul>
+<li>the outcome is strongly related to individual or household characteristics;</li>
+<li>the survey and population data share comparable covariates;</li>
+<li>population microdata, a synthetic population, or reliable cell counts are available;</li>
+<li>estimates are needed for multiple geographies or population subgroups.</li>
+</ul>
+<p>For bus dissatisfaction, unit-level SAE could be useful if dissatisfaction varies strongly by age, disability status, employment, or car access, and if those variables are also available in the population data.</p>
+<p>Area-level SAE is usually more appropriate when:</p>
+<ul>
+<li>only area-level covariates are available;</li>
+<li>the outcome is mainly explained by area context;</li>
+<li>the workflow needs to be simpler and easier to audit;</li>
+<li>population microdata or population cell counts are unavailable.</li>
+</ul>
+</section>
+<section id="main-caveat" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="main-caveat"><span class="header-section-number">6</span> Main Caveat</h2>
+<p>Unit-level SAE and MRP can be powerful, but they depend heavily on alignment between the survey and population data.</p>
+<p>The main risks are:</p>
+<ul>
+<li>survey and population variables are defined differently;</li>
+<li>important predictors are missing from the population data;</li>
+<li>population cells become too sparse after crossing many variables;</li>
+<li>the model predicts for population groups that are poorly represented in the survey;</li>
+<li>privacy or access restrictions limit the usable population data.</li>
+</ul>
+<p>The choice between area-level SAE, full population prediction, and MRP should be driven by the available auxiliary data and by what explains the outcome: area context, population composition, or both.</p>
+</section>
+<section id="code-implementation" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="code-implementation"><span class="header-section-number">7</span> Code Implementation</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -653,7 +765,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../pages/frequentist-sae.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Frequentist Approaches to SAE</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">[WIP] Frequentist Approach to SAE</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

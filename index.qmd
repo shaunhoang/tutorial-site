@@ -32,7 +32,7 @@ The workflow
 | 2 |**[Direct estimation](pages/direct-estimation.qmd)** | Estimate area-level indicators directly from the survey mnicrodata and assess their precision. |
 | 3 |**[Area-Level estimation with Spatial](pages/bayesian-area-sae.qmd)** | Fit a Fay-Herriot model that improves direct estimates by borrowing strength from area-level covariates and spatial structure (Bayesian approach).  |
 | 3* |**[Unit-Level estimation](pages/unit-level-sae.qmd)** | A bottom-up approach to SAE using highly granular population unit data. |
-| 4 |**[Diagnose and Report](pages/diagnostics.qmd)** | Check model performance, report uncertainty, and present estimates. |
+| 4 |**[Report and Visualise](pages/reporting.qmd)** | Present estimates, uncertainty, and model diagnostics clearly. |
 
 ## Resources
 \[draft\] 

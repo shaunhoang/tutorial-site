@@ -1,7 +1,5 @@
 ---
 title: "Example"
-execute:
-  eval: true
 ---
 
 This work example demonstrates the step-by-step of creating the appropriate input files for the Small-Area Estimation (SAE) methods to follow. In the process, we will also address the various decisions that researchers need to make.
@@ -51,18 +49,6 @@ The next stage involves preparing the indicator variables and aligning them with
 |2| `bus_nosat` | [`BusOverSat`, `Bus12M`] Binary: `1` if rode a bus in the last 12 months and is fairly or very dissatisfied; `0` if rode a bus in the last 12 months and is not dissatisfied; `NA` otherwise | Share | MSOA | `SampleAdultWeight`, analysis weight |
 |3| `freq_walker` | [`AtFrqWlk10`] Binary: `1` if walking for transport daily | Rate (per 1k)| MSOA | `SampleTravelWeight`, analysis weight, to be scaled to an MSOA-level grossing weight |
 
-### Selecting covariates
-
-Covariates, or auxiliary variables, are the backbone of SAE because they lend information to areas with low or no survey data to improve their precision. Covariates should be available for every estimation areas and should have a clear relationship to the estimands. 
-
-For this worked example, The [Census 2021 bulk downloads](https://www.nomisweb.co.uk/sources/census_2021_bulk) are a practical starting point because they provide rich and consistent datasets aggregated at all UK geographies. Each indicator will have at its disposal covariates that are its most logical predictors, as follows: 
-
-|Est. #| Indicator | Covariates (from UK Census '21)| Geography |
-|---|---|---|---|
-|1| `commute_distance` | - Population density (`TS006`)<br>- Share of commute by car/van (`TS061`)<br>- Share of households with car/van (`TS045`)  | MSOA |
-|2| `bus_nosat` | - Population density (`TS006`)<br>- Share of commute by bus/minibus (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of households deprived in 2+ dimensions (`TS011`) | MSOA |
-|3| `freq_walker` | - Population density (`TS006`)<br>- Share of commute by bike/walk (`TS061`)<br>- Share of households without car/van (`TS045`)<br>- Share of population in good health (`TS037`) | MSOA |
-
 With this information we can proceed to process the raw survey dataset to produce inputs necessary for the estimation pipeline.
 
 ## Practical: Code Implementation
@@ -73,19 +59,25 @@ library(readr)
 library(stringr)
 library(ggplot2)
 
-# Download raw input files into a temp folder
-zip_tmp <- tempfile(fileext = ".zip")
-url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-raw-data.zip"
-download.file(url, zip_tmp, mode = "wb")
-unzip(zip_tmp, exdir = tempdir())
-base_path <- file.path(tempdir(), "raw")
+# Download the simulated survey microdata into a temp file
+survey_file <- file.path(tempdir(), "nsw_2223_msoa_la.csv")
+survey_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/nsw_2223_msoa_la.csv"
+download.file(survey_url, survey_file, mode = "wb")
+
+# Download Census data files into a temp folder
+census_zip <- tempfile(fileext = ".zip")
+census_url <- "https://raw.githubusercontent.com/shaunhoang/tutorial-site/main/data/tutorial-census-data.zip"
+download.file(census_url, census_zip, mode = "wb")
+unzip(census_zip, exdir = tempdir())
+census_path <- tempdir()
 ```
 ### Load survey data 
 Load the survey datasets and identify the unique identifier of survey respondents, and recode it as `unit_id` for easier handling downstream. For each respondent, the simulated survey microdata also provides two spatial identifiers: Local Authority and MSOA of residence. The three estimands are estimated at MSOA level, while Local Authority remains useful as the survey stratification variable.
 ```{r}
 # Load dataset
 nsw_raw <- read_csv(
-  file.path(base_path, "nsw_2223_msoa_la.csv")
+  survey_file,
+  show_col_types = FALSE
 ) |>
   rename(unit_id = CaseNo)
 
@@ -140,7 +132,7 @@ survey_weights <- nsw_raw |>
 ```{r}
 # Load the Welsh MSOA population totals as the domain sizes
 domain_sizes_population_msoa <- read_csv(
-  file.path(base_path, "census2021-ts007-msoa.csv"),
+  file.path(census_path, "census2021-ts007-msoa.csv"),
   show_col_types = FALSE
 ) |>
   filter(str_starts(`geography code`, "W")) |>
@@ -241,124 +233,6 @@ ggplot(indicator_area_counts, aes(x = non_missing)) +
 
 This is consistent with the fact that the active-travel questions used to construct `freq_walker` were only asked to a subsample. It will probably benefit the most from model-based estimation later, although the final decision is best made after looking at the direct estimates and their uncertainty in the next step.
 
-### Aggregate covariates
-
-The final preparation step is to assemble the covariates chosen previously for each estimand and aggregate them to the estimation geography required (in our case, MSOA).
-
-```{r}
-# Read a Census 2021 aggregate table and keep Welsh areas only
-read_census <- function(topic_code, geo_level) {
-  file_name <- paste0("census2021-", topic_code, "-", geo_level, ".csv")
-  
-  read_csv(file.path(base_path, file_name), show_col_types = FALSE) |>
-    filter(str_starts(`geography code`, "W")) |>
-    rename(domain_id = `geography code`, domain_name = geography)
-}
-```
-```{r}
-# Total population (TS007)
-msoa_population <- domain_sizes_population_msoa |>
-  transmute(
-    domain_id,
-    cov_total_population = domain_size
-  )
-
-# Population density (TS006)
-msoa_density <- read_census("ts006", "msoa") |>
-  transmute(
-    domain_id,
-    domain_name,
-    cov_pop_density = `Population Density: Persons per square kilometre; measures: Value`
-  )
-
-# Travel to work (TS061)
-msoa_travel <- read_census("ts061", "msoa") |>
-  transmute(
-    domain_id,
-    commute_total = `Method of travel to workplace: Total: All usual residents aged 16 years and over in employment the week before the census`,
-    commute_car = `Method of travel to workplace: Driving a car or van` +
-      `Method of travel to workplace: Passenger in a car or van`,
-    commute_bus = `Method of travel to workplace: Bus, minibus or coach`,
-    commute_bikewalk = `Method of travel to workplace: Bicycle` +
-      `Method of travel to workplace: On foot`,
-    cov_share_car_commute = if_else(commute_total > 0, commute_car / commute_total, NA_real_),
-    cov_share_bus_commute = if_else(commute_total > 0, commute_bus / commute_total, NA_real_),
-    cov_share_commute_bikewalk = if_else(commute_total > 0, commute_bikewalk / commute_total, NA_real_)
-  ) |>
-  select(
-    domain_id,
-    cov_share_car_commute,
-    cov_share_bus_commute,
-    cov_share_commute_bikewalk
-  )
-
-# Car availability (TS045)
-msoa_cars <- read_census("ts045", "msoa") |>
-  transmute(
-    domain_id,
-    household_total = `Number of cars or vans: Total: All households`,
-    households_no_car = `Number of cars or vans: No cars or vans in household`,
-    cov_share_hh_nocar = if_else(
-      household_total > 0,
-      households_no_car / household_total,
-      NA_real_
-    ),
-    cov_share_hh_withcar = if_else(
-      household_total > 0,
-      (household_total - households_no_car) / household_total,
-      NA_real_
-    )
-  ) |>
-  select(
-    domain_id,
-    cov_share_hh_nocar,
-    cov_share_hh_withcar
-  )
-
-# Household deprivation (TS011)
-msoa_deprivation <- read_census("ts011", "msoa") |>
-  transmute(
-    domain_id,
-    household_total = `Household deprivation: Total: All households; measures: Value`,
-    households_deprived = `Household deprivation: Household is deprived in two dimensions; measures: Value` +
-      `Household deprivation: Household is deprived in three dimensions; measures: Value` +
-      `Household deprivation: Household is deprived in four dimensions; measures: Value`,
-    cov_share_hh_deprived = if_else(
-      household_total > 0,
-      households_deprived / household_total,
-      NA_real_
-    )
-  ) |>
-  select(domain_id, cov_share_hh_deprived)
-
-# Health (TS037)
-msoa_health <- read_census("ts037", "msoa") |>
-  transmute(
-    domain_id,
-    health_total = `General health: Total: All usual residents`,
-    good_health = `General health: Very good health` + `General health: Good health`,
-    cov_share_good_health = if_else(
-      health_total > 0,
-      good_health / health_total,
-      NA_real_
-    )
-  ) |>
-  select(domain_id, cov_share_good_health)
-
-covariates_msoa <- list(
-  msoa_density,
-  msoa_population,
-  msoa_travel,
-  msoa_cars,
-  msoa_deprivation,
-  msoa_health
-) |>
-  purrr::reduce(left_join, by = "domain_id")
-
-covariates_msoa
-```
-
-
 ### Export
 
 The next workbooks do not depend on local exports from this workbook. However, if preferred, export into your `data/clean/` folder the following components:
@@ -379,13 +253,9 @@ Each indicator microdata file contains the same key columns:
 | `indicator` | Coded outcome variable. |
 | `weight` | Survey weight matched to the estimand. |
 
-Covariates by estimation area
-
-- `covariates_msoa.csv`, with MSOA-level covariates for all three indicators;
-
 ```{r}
-#| eval: false
-output_dir <- file.path("..", "data", "clean")
+#| echo: false
+output_dir <- file.path("..", "data")
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 ind_weight_commute_distance <- survey_inputs |>
@@ -430,11 +300,6 @@ write_csv(
   file.path(output_dir, "ind_weight_freq_walker.csv")
 )
 
-write_csv(
-  as.data.frame(covariates_msoa),
-  file.path(output_dir, "covariates_msoa.csv")
-)
-
 # Create data/tutorial-clean-data.zip
 data_dir <- file.path("..", "data")
 old_wd <- setwd(data_dir)
@@ -447,7 +312,7 @@ tryCatch(
 
     utils::zip(
       zipfile = "tutorial-clean-data.zip",
-      files = list.files("clean", pattern = "\\.csv$", full.names = TRUE)
+      files = list.files(pattern = "\\.csv$", full.names = TRUE)
     )
   },
   finally = setwd(old_wd)

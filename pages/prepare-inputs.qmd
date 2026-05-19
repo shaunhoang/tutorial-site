@@ -84,26 +84,13 @@ $$
 where $w^A_{di}$ is the analysis weight for sampled unit $i$ in domain $d$, $w^G_{di}$ is the corresponding grossing weight, and $N_d$ is that domain's size.
 :::
 
-## Select covariates
-
-SAE improves precision of the estimates by "borrowing strength" from auxiliary variables (i.e., covariates). This is critical for estimation areas with sparse or no survey data. Covariates can often be found via census data and other population-level aggregate statistics. Choose covariates with emphasis on coverage and comparability across estimation areas. 
-
-The key attributes of good covariates are:
-
-- **Coverage:** each covariate should be available for all estimation areas.
-- **Alignment:** match geography, definition, and reference period to the survey indicator.
-- **Relevance:** keep variables with a clear substantive link to the outcome and avoid including many weak predictors.
-- **Predictive:** choose covariates that improve area-level prediction and are easy to explain.
-
-For example, some common covariates when estimating transport-related indicators are: age, income, employment profile, population density, housing mix, deprivation, urban/rural classification, transport accessibility metrics, car ownership, etc.
-
 ## Preparation Summary
 
 Putting everything together, each of the estimands of interest should have a short record as follows that will guide how we prepare input datasets for the SAE workflow. For example, a compact record could be written as:
 
-| # | Estimand | Indicator | Variable coding rule | Measure | Estimation geography | Weight variable | Covariates |
-|---|---|---|---|---|---|---|---|
-| 1 | Share of adults who use the train weekly across MSOAs | `is_freq_train_user` | Binary: `1` if `TrainUseFreq = 1`; `0` if adult does not use the train weekly; `null` for invalid or refused responses | Share | MSOA | `SampleAdultWeight` | `age`,`income`,`own_carvan`, etc. |
-| 2 | Mean leisure travel distance among retirees across Wards | `leisure_travel_distance` | Continuous: numeric miles from `TravelWorkDistance`; only retirees with valid leisure travel distance are in scope | Mean | Ward | `LeisureTravelModuleWeight` |`income`,`own_home`,`own_carvan`, etc. |
+| # | Estimand | Indicator | Variable coding rule | Measure | Estimation geography | Weight variable | 
+|---|---|---|---|---|---|---|
+| 1 | Share of adults who use the train weekly across MSOAs | `is_freq_train_user` | Binary: `1` if `TrainUseFreq = 1`; `0` if adult does not use the train weekly; `null` for invalid or refused responses | Share | MSOA | `SampleAdultWeight` | 
+| 2 | Mean leisure travel distance among retirees across Wards | `leisure_travel_distance` | Continuous: numeric miles from `TravelWorkDistance`; only retirees with valid leisure travel distance are in scope | Mean | Ward | 
 
 The next workbook will demonstrate a worked example using a **simulated National Survey for Wales 2022-2023** respondent microdata.

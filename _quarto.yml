@@ -29,8 +29,8 @@ website:
             href: pages/direct-estimation.qmd
           - text: "2. Area-level estimation"
             href: pages/bayesian-area-sae.qmd
-          - text: "3. Diagnostics and reporting"
-            href: pages/diagnostics.qmd
+          - text: "3. Reporting and visualisation"
+            href: pages/reporting.qmd
           - text: "III. Extended Topics"
           - text: "1. Frequentist approaches to SAE"
             href: pages/frequentist-sae.qmd
@@ -63,7 +63,7 @@ website:
             contents:
               - pages/direct-estimation.qmd
               - pages/bayesian-area-sae.qmd
-              - pages/diagnostics.qmd
+              - pages/reporting.qmd
           - section: "III. Extended Topics"
             contents:
               - pages/frequentist-sae.qmd
@@ -77,6 +77,7 @@ format:
   html:
     theme: cosmo
     css: styles.css
+    df-print: kable
     toc: true
     toc-depth: 3
     number-sections: true
@@ -86,7 +87,7 @@ format:
     fig-cap-location: bottom
 
 execute:
-  eval: false
+  eval: true
   warning: false
   message: false
   freeze: false
