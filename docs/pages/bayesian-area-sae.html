@@ -491,6 +491,8 @@ Warning
 <h2 data-number="5" class="anchored" data-anchor-id="practical-tutorial"><span class="header-section-number">5</span> Practical tutorial</h2>
 <p>In this workbook, we fit Bayesian area-level FH models for the <strong>mean commute distance among commuters by MSOA</strong> estimand using the indicator <code>commute_distance</code>. We first recreate the direct estimates and their sampling variances, then pass those area-level inputs into <code>SUMMER::smoothArea()</code> with MSOA-level covariates.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
@@ -532,11 +534,14 @@ Warning
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id) <span class="sc">|&gt;</span></span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(domain_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <section id="load-indicator" class="level3" data-number="5.1">
 <h3 data-number="5.1" class="anchored" data-anchor-id="load-indicator"><span class="header-section-number">5.1</span> Load Indicator</h3>
 <p>Load the <code>commute_distance</code> indicator file. This indicator is continuous and is defined among respondents with a valid commute distance.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>survey_indicator_commute <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(base_path, <span class="st">"ind_weight_commute_distance.csv"</span>),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
@@ -547,6 +552,7 @@ Warning
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(domain_id),</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(strata)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="select-and-aggregate-covariates" class="level3" data-number="5.2">
@@ -607,6 +613,8 @@ Note
 </div>
 </div>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read a Census 2021 aggregate table and keep Welsh areas only</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>read_census <span class="ot">&lt;-</span> <span class="cf">function</span>(topic_code) {</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  file_name <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"census2021-"</span>, topic_code, <span class="st">"-msoa.csv"</span>)</span>
@@ -679,9 +687,12 @@ Note
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(msoa_cars, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(msoa_housing, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(msoa_nssec, <span class="at">by =</span> <span class="st">"domain_id"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Finally, we rescale the covariates to prepare them as inputs for the FH model.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>covariates_commute_summer <span class="ot">&lt;-</span> covariates_commute_summer <span class="sc">|&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    domain_id,</span>
@@ -691,12 +702,15 @@ Note
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cov_share_detached =</span> <span class="fu">as.numeric</span>(<span class="fu">scale</span>(cov_share_detached)),</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cov_share_higher_managerial =</span> <span class="fu">as.numeric</span>(<span class="fu">scale</span>(cov_share_higher_managerial))</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="direct-estimates" class="level3" data-number="5.3">
 <h3 data-number="5.3" class="anchored" data-anchor-id="direct-estimates"><span class="header-section-number">5.3</span> Direct Estimates</h3>
 <p>The direct estimate is recreated here so the Bayesian FH model receives the direct estimate and its sampling variance in the format expected by <code>smoothArea()</code>.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>design_commute <span class="ot">&lt;-</span> survey<span class="sc">::</span><span class="fu">svydesign</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="sc">~</span>strata,</span>
@@ -725,6 +739,7 @@ Note
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(direct_est_commute)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="table table-sm table-striped small">
@@ -818,6 +833,8 @@ Note
 </div>
 </div>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>direct_center <span class="ot">&lt;-</span> <span class="fu">mean</span>(direct_est_commute<span class="sc">$</span>direct, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>direct_scale <span class="ot">&lt;-</span> <span class="fu">sd</span>(direct_est_commute<span class="sc">$</span>direct, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -843,10 +860,13 @@ Note
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">"identity"</span>,</span>
 <span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span></span>
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>There are domains in X.domain not in design/direct estimates. 
 Generating estimates for all domains in X.domain.</code></pre>
 </div>
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fh_est_commute <span class="ot">&lt;-</span> fh_commute_fit<span class="sc">$</span>iid.model.est <span class="sc">|&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
@@ -858,6 +878,7 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fh_est_commute)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="table table-sm table-striped small">
@@ -873,45 +894,45 @@ Generating estimates for all domains in X.domain.</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">W02000001</td>
-<td style="text-align: right;">9.663918</td>
-<td style="text-align: right;">5.710310</td>
-<td style="text-align: right;">13.61189</td>
-<td style="text-align: right;">7.901579</td>
+<td style="text-align: right;">9.839279</td>
+<td style="text-align: right;">6.516020</td>
+<td style="text-align: right;">13.44616</td>
+<td style="text-align: right;">6.930137</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000002</td>
-<td style="text-align: right;">10.976453</td>
-<td style="text-align: right;">8.672897</td>
-<td style="text-align: right;">13.52224</td>
-<td style="text-align: right;">4.849344</td>
+<td style="text-align: right;">10.934607</td>
+<td style="text-align: right;">8.724935</td>
+<td style="text-align: right;">13.00324</td>
+<td style="text-align: right;">4.278306</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000003</td>
-<td style="text-align: right;">9.633723</td>
-<td style="text-align: right;">5.768596</td>
-<td style="text-align: right;">13.51950</td>
-<td style="text-align: right;">7.750903</td>
+<td style="text-align: right;">9.859043</td>
+<td style="text-align: right;">6.171122</td>
+<td style="text-align: right;">14.01888</td>
+<td style="text-align: right;">7.847760</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000004</td>
-<td style="text-align: right;">9.914408</td>
-<td style="text-align: right;">4.446789</td>
-<td style="text-align: right;">14.48151</td>
-<td style="text-align: right;">10.034723</td>
+<td style="text-align: right;">9.701078</td>
+<td style="text-align: right;">3.198599</td>
+<td style="text-align: right;">15.76512</td>
+<td style="text-align: right;">12.566522</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000005</td>
-<td style="text-align: right;">10.485653</td>
-<td style="text-align: right;">5.040639</td>
-<td style="text-align: right;">15.86807</td>
-<td style="text-align: right;">10.827430</td>
+<td style="text-align: right;">10.022082</td>
+<td style="text-align: right;">5.449707</td>
+<td style="text-align: right;">16.29283</td>
+<td style="text-align: right;">10.843127</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000006</td>
-<td style="text-align: right;">10.181308</td>
-<td style="text-align: right;">5.033922</td>
-<td style="text-align: right;">15.20544</td>
-<td style="text-align: right;">10.171515</td>
+<td style="text-align: right;">9.995434</td>
+<td style="text-align: right;">4.207757</td>
+<td style="text-align: right;">16.09866</td>
+<td style="text-align: right;">11.890901</td>
 </tr>
 </tbody>
 </table>
@@ -920,6 +941,8 @@ Generating estimates for all domains in X.domain.</code></pre>
 </div>
 <p>Mapping the fitted estimates, we see that the direct estimates vary sharply across Wales, while the FH model pulls many areas toward values supported by the covariates and the overall area-level distribution.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>commute_comparison <span class="ot">&lt;-</span> msoa_domains <span class="sc">|&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(direct_est_commute, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(fh_est_commute, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
@@ -952,12 +975,15 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Miles"</span></span>
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="bayesian-area-sae_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The reason for this drastic shrinkage is easier to see when the estimates are ranked by the direct estimate and shown with their original uncertainty intervals. Areas with wide direct-estimate confidence intervals contribute less direct survey evidence, so their FH estimates are pulled more strongly toward the model prediction.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ranked_commute <span class="ot">&lt;-</span> commute_comparison <span class="sc">|&gt;</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(has_direct) <span class="sc">|&gt;</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(direct, domain_id) <span class="sc">|&gt;</span></span>
@@ -979,16 +1005,20 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="cn">NULL</span></span>
 <span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="bayesian-area-sae_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>FH also provides estimates for areas without any direct survey estimate. These estimates come from the covariate relationship learned from areas with direct estimates and the estimated between-area variation.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>commute_comparison <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>has_direct, has_fh) <span class="sc">|&gt;</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(fh_mean)) <span class="sc">|&gt;</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(domain_id, fh_mean, fh_lower, fh_upper, fh_ci_width)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="table table-sm table-striped small">
@@ -1004,10 +1034,10 @@ Generating estimates for all domains in X.domain.</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">W02000004</td>
-<td style="text-align: right;">9.914408</td>
-<td style="text-align: right;">4.446789</td>
-<td style="text-align: right;">14.48151</td>
-<td style="text-align: right;">10.03472</td>
+<td style="text-align: right;">9.701078</td>
+<td style="text-align: right;">3.198599</td>
+<td style="text-align: right;">15.76512</td>
+<td style="text-align: right;">12.56652</td>
 </tr>
 </tbody>
 </table>
@@ -1020,6 +1050,8 @@ Generating estimates for all domains in X.domain.</code></pre>
 <p>The non-spatial FH model borrows strength from covariates and the overall distribution of MSOAs, but it does not use the fact that MSOAs are geographically connected. For transport outcomes, this independence assumption may be unrealistic. We therefore fit a spatial FH model as a sensitivity extension. It asks whether allowing neighbouring MSOAs to have similar unexplained area effects changes the estimates or their uncertainty.</p>
 <p>First, we create a spatial weights matrix using queen contiguity, where two MSOAs are neighbours if they share either a boundary segment or a point.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>msoa_boundaries_ordered <span class="ot">&lt;-</span> msoa_boundaries <span class="sc">|&gt;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(domain_id)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1037,9 +1069,12 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(adjacency_matrix) <span class="ot">&lt;-</span> msoa_boundaries_ordered<span class="sc">$</span>domain_id</span>
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(adjacency_matrix) <span class="ot">&lt;-</span> msoa_boundaries_ordered<span class="sc">$</span>domain_id</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Next, we refit the FH model, now specifying <code>adj.mat</code> in the <code>smoothArea()</code> function call.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>spatial_fh_commute_fit <span class="ot">&lt;-</span> SUMMER<span class="sc">::</span><span class="fu">smoothArea</span>(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> fh_formula,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">domain =</span> <span class="sc">~</span>domain_id,</span>
@@ -1049,10 +1084,13 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">transform =</span> <span class="st">"identity"</span>,</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="fl">0.95</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>There are domains in X.domain not in design/direct estimates. 
 Generating estimates for all domains in X.domain.</code></pre>
 </div>
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>spatial_fh_est_commute <span class="ot">&lt;-</span> spatial_fh_commute_fit<span class="sc">$</span>bym2.model.est <span class="sc">|&gt;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
@@ -1063,6 +1101,7 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(spatial_fh_est_commute)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="table table-sm table-striped small">
@@ -1077,39 +1116,39 @@ Generating estimates for all domains in X.domain.</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">W02000001</td>
-<td style="text-align: right;">9.865533</td>
-<td style="text-align: right;">6.628669</td>
-<td style="text-align: right;">14.26572</td>
+<td style="text-align: right;">9.901177</td>
+<td style="text-align: right;">6.326313</td>
+<td style="text-align: right;">13.90447</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000002</td>
-<td style="text-align: right;">10.993742</td>
-<td style="text-align: right;">8.556960</td>
-<td style="text-align: right;">13.61585</td>
+<td style="text-align: right;">10.885139</td>
+<td style="text-align: right;">8.371127</td>
+<td style="text-align: right;">13.63092</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000003</td>
-<td style="text-align: right;">10.124914</td>
-<td style="text-align: right;">5.679357</td>
-<td style="text-align: right;">14.35077</td>
+<td style="text-align: right;">10.055790</td>
+<td style="text-align: right;">6.018214</td>
+<td style="text-align: right;">14.04548</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000004</td>
-<td style="text-align: right;">10.382367</td>
-<td style="text-align: right;">4.125078</td>
-<td style="text-align: right;">16.75095</td>
+<td style="text-align: right;">10.245542</td>
+<td style="text-align: right;">4.707514</td>
+<td style="text-align: right;">16.46669</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000005</td>
-<td style="text-align: right;">10.837149</td>
-<td style="text-align: right;">4.776873</td>
-<td style="text-align: right;">16.48633</td>
+<td style="text-align: right;">10.612288</td>
+<td style="text-align: right;">4.583237</td>
+<td style="text-align: right;">15.85740</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000006</td>
-<td style="text-align: right;">9.868897</td>
-<td style="text-align: right;">4.972395</td>
-<td style="text-align: right;">14.96148</td>
+<td style="text-align: right;">10.103046</td>
+<td style="text-align: right;">4.498977</td>
+<td style="text-align: right;">15.27939</td>
 </tr>
 </tbody>
 </table>
@@ -1118,6 +1157,8 @@ Generating estimates for all domains in X.domain.</code></pre>
 </div>
 <p>We can now compare the FH estimates before and after spatial information to see whether adding adjacency changes the estimates or uncertainty enough to matter.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>commute_comparison <span class="ot">&lt;-</span> commute_comparison <span class="sc">|&gt;</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(spatial_fh_est_commute, <span class="at">by =</span> <span class="st">"domain_id"</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1136,6 +1177,7 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"Blues"</span>, <span class="at">direction =</span> <span class="dv">1</span>, <span class="at">na.value =</span> <span class="st">"grey85"</span>) <span class="sc">+</span></span>
 <span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mean commute distance by MSOA"</span>, <span class="at">fill =</span> <span class="st">"Miles"</span>) <span class="sc">+</span></span>
 <span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="bayesian-area-sae_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1147,6 +1189,8 @@ Generating estimates for all domains in X.domain.</code></pre>
 <p>In practice, we usually do not have a true area-level value to validate SAE estimates against; if we did, there would be no need to use SAE! However, for this tutorial, UK Census 2021 provides an external benchmark for commute distance, so we can use it to check how close the FH estimates get to an independent area-level measure.</p>
 <p>That said, census data is binned into categories and in kilometres. Therefore, we first use category midpoints to approximate the benchmark mean commute distance for each MSOA, then convert kilometres to miles to match the FH estimates.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>benchmark_commute_distance <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(census_path, <span class="st">"census2021-ts058-msoa.csv"</span>),</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
@@ -1176,9 +1220,12 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>          <span class="st">`</span><span class="at">Distance travelled to work: 60km and over</span><span class="st">`</span></span>
 <span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">*</span> <span class="fl">0.621371</span></span>
 <span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Then we will plot the direct and (spatial) FH estimates against the benchmark.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>validation_commute <span class="ot">&lt;-</span> commute_comparison <span class="sc">|&gt;</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(benchmark_commute_distance, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(benchmark_commute_distance, direct, spatial_fh_mean) <span class="sc">|&gt;</span></span>
@@ -1205,6 +1252,7 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Estimated mean commute distance (miles)"</span></span>
 <span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="bayesian-area-sae_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1216,6 +1264,8 @@ Generating estimates for all domains in X.domain.</code></pre>
 <li>There may be omitted covariates that capture more than spatial proximity.</li>
 </ul>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>validation_map <span class="ot">&lt;-</span> msoa_boundaries <span class="sc">|&gt;</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(commute_comparison, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(benchmark_commute_distance, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
@@ -1235,6 +1285,7 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Miles"</span></span>
 <span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="bayesian-area-sae_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1242,6 +1293,8 @@ Generating estimates for all domains in X.domain.</code></pre>
 <p>This suggests that the current FH model does not fully capture the urban-rural structure of commute distance. Candidate covariates could include rural-urban classification, employment accessibility, local job density, or distance to major employment centres. Covariate selection therefore needs to happen as a separate parallel workflow before fitting the final FH model. This process is iterative and should also reflect domain knowledge about the outcome and the geography.</p>
 <p>That said, when visualised together on a graph, the benchmark values seem to fall within the 95% FH credible intervals for many areas, lending confidence in the fitted model’s uncertainty intervals.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>validation_ranked <span class="ot">&lt;-</span> commute_comparison <span class="sc">|&gt;</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(benchmark_commute_distance, <span class="at">by =</span> <span class="st">"domain_id"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(benchmark_commute_distance), <span class="sc">!</span><span class="fu">is.na</span>(spatial_fh_mean)) <span class="sc">|&gt;</span></span>
@@ -1267,6 +1320,7 @@ Generating estimates for all domains in X.domain.</code></pre>
 <span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="cn">NULL</span></span>
 <span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <p><img src="bayesian-area-sae_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>

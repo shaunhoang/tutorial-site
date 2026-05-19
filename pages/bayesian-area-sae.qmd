@@ -96,8 +96,9 @@ In practice, the Bayesian approach is preferred since reporting uncertainty as p
 
 ## Practical tutorial
 
-In this workbook, we fit Bayesian area-level FH models for the **mean commute distance among commuters by MSOA** estimand using the indicator `commute_distance`. We first recreate the direct estimates and their sampling variances, then pass those area-level inputs into `SUMMER::smoothArea()` with MSOA-level covariates.
+In this workbook, we fit Bayesian area-level FH models for the **mean commute distance among commuters by MSOA** estimand using the indicator `commute_distance`. 
 
+We first recreate the direct estimates and their sampling variances, then pass those area-level inputs into `SUMMER::smoothArea()` with MSOA-level covariates.
 
 ```{r}
 library(dplyr)

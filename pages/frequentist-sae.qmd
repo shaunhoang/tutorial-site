@@ -142,7 +142,7 @@ freq_fh_estimates <- fh_input |>
   )
 ```
 
-Compare the direct estimate, frequentist FH EBLUP, and Bayesian spatial FH estimate. MSOAs are ranked by the direct estimate.
+Compare the direct estimate, frequentist FH EBLUP, and Bayesian FH estimate. MSOAs are ranked by the direct estimate.
 
 ```{r}
 commute_compare <- bayesian_area_estimates |>
@@ -151,29 +151,29 @@ commute_compare <- bayesian_area_estimates |>
     direct_estimate,
     direct_ci_lower,
     direct_ci_upper,
-    spatial_fh_estimate,
-    spatial_fh_ci_lower,
-    spatial_fh_ci_upper
+    fh_estimate,
+    fh_ci_lower,
+    fh_ci_upper
   ) |>
   left_join(freq_fh_estimates, by = "domain_id")
 
 ranked_commute <- commute_compare |>
   filter(!is.na(direct_estimate)) |>
-  arrange(direct_estimate, domain_id) |>
+  arrange(freq_fh_estimate, domain_id) |>
   mutate(direct_rank = row_number())
 
 ggplot(ranked_commute, aes(x = direct_rank)) +
   geom_ribbon(aes(ymin = freq_fh_ci_lower, ymax = freq_fh_ci_upper), fill = "red", alpha = 0.12) +
-  geom_ribbon(aes(ymin = spatial_fh_ci_lower, ymax = spatial_fh_ci_upper), fill = "blue", alpha = 0.12) +
+  geom_ribbon(aes(ymin = fh_ci_lower, ymax = fh_ci_upper), fill = "blue", alpha = 0.12) +
   geom_line(aes(y = freq_fh_estimate, colour = "Frequentist FH"), linewidth = 0.45, na.rm = TRUE) +
-  geom_line(aes(y = spatial_fh_estimate, colour = "Bayesian FH (+Spatial)"), linewidth = 0.45, na.rm = TRUE) +
+  geom_line(aes(y = fh_estimate, colour = "Bayesian FH"), linewidth = 0.45, na.rm = TRUE) +
   scale_colour_manual(values = c(
     "Frequentist FH" = "red",
-    "Bayesian FH (+Spatial)" = "blue"
+    "Bayesian FH" = "blue"
   )) +
   labs(
-    title = "Direct, frequentist FH, and Bayesian FH estimates",
-    x = "MSOAs (ranked by direct estimate)",
+    title = "Frequentist FH, and Bayesian FH estimates",
+    x = "MSOAs (ranked by FH estimate)",
     y = "Mean commute distance (miles)",
     colour = NULL
   ) +
@@ -185,13 +185,13 @@ Map the same three estimates to compare their spatial patterns.
 ```{r}
 commute_compare_map <- msoa_boundaries |>
   left_join(commute_compare, by = "domain_id") |>
-  dplyr::select(freq_fh_estimate, spatial_fh_estimate, geometry) |>
+  dplyr::select(freq_fh_estimate, fh_estimate, geometry) |>
   rename(
     `Frequentist FH` = freq_fh_estimate,
-    `Bayesian FH (+Spatial)` = spatial_fh_estimate
+    `Bayesian FH` = fh_estimate
   ) |>
   pivot_longer(
-    cols = c(`Frequentist FH`, `Bayesian FH (+Spatial)`),
+    cols = c(`Frequentist FH`, `Bayesian FH`),
     names_to = "method",
     values_to = "estimate"
   )

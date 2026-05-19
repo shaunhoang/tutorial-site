@@ -315,7 +315,7 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#unit-level-vs-area-level-sae" id="toc-unit-level-vs-area-level-sae" class="nav-link active" data-scroll-target="#unit-level-vs-area-level-sae"><span class="header-section-number">1</span> Unit-Level vs Area-Level SAE</a></li>
-  <li><a href="#ways-to-do-unit-level-estimation" id="toc-ways-to-do-unit-level-estimation" class="nav-link" data-scroll-target="#ways-to-do-unit-level-estimation"><span class="header-section-number">2</span> Ways to Do Unit-Level Estimation</a></li>
+  <li><a href="#two-ways-to-aggregate-unit-level-predictions" id="toc-two-ways-to-aggregate-unit-level-predictions" class="nav-link" data-scroll-target="#two-ways-to-aggregate-unit-level-predictions"><span class="header-section-number">2</span> Two Ways to Aggregate Unit-Level Predictions</a></li>
   <li><a href="#full-population-prediction" id="toc-full-population-prediction" class="nav-link" data-scroll-target="#full-population-prediction"><span class="header-section-number">3</span> Full Population Prediction</a></li>
   <li><a href="#mrp" id="toc-mrp" class="nav-link" data-scroll-target="#mrp"><span class="header-section-number">4</span> MRP</a></li>
   <li><a href="#when-unit-level-sae-helps" id="toc-when-unit-level-sae-helps" class="nav-link" data-scroll-target="#when-unit-level-sae-helps"><span class="header-section-number">5</span> When Unit-Level SAE Helps</a></li>
@@ -352,7 +352,7 @@ ul.task-list li input[type="checkbox"] {
 <p>The survey records might contain each respondent’s bus dissatisfaction status, age group, disability status, employment status, car access, and location. A unit-level model can use those respondent-level predictors directly.</p>
 <section id="unit-level-vs-area-level-sae" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="unit-level-vs-area-level-sae"><span class="header-section-number">1</span> Unit-Level vs Area-Level SAE</h2>
-<p>Area-level and unit-level SAE are not competing labels for the same method. They are different ways to organise the data before modelling.</p>
+<p>Area-level and unit-level SAE are different ways to organise the data before modelling.</p>
 <table class="table">
 <colgroup>
 <col style="width: 25%">
@@ -383,8 +383,8 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p>In an area-level model, the bus dissatisfaction survey data would first be collapsed into one direct estimate for each MSOA. The model would then use MSOA-level covariates, such as car ownership, population density, deprivation, or public transport access.</p>
-<p>In a unit-level model, the survey stays at respondent level. The model can learn, for example, whether dissatisfaction differs by age group, disability status, employment status, or car access. Those predictions are then combined with population data to estimate each MSOA.</p>
+<p>In an <strong>area-level model</strong>, the bus dissatisfaction survey data would first be collapsed into one direct estimate for each MSOA. The model would then use MSOA-level covariates, such as car ownership, population density, deprivation, or public transport access.</p>
+<p>In a <strong>unit-level model</strong>, the survey stays at respondent level. The model can learn, for example, whether dissatisfaction differs by age group, disability status, employment status, or car access. Those predictions are then combined with population data to estimate each MSOA.</p>
 <p>The basic unit-level structure is:</p>
 <p><span class="math display">\[
 y_{di} =
@@ -399,9 +399,9 @@ x_{di}^{\top}\beta + u_d + e_{di},
 \]</span></p>
 <p>This is why unit-level SAE is often described as a bottom-up approach: model people or households first, then aggregate to places.</p>
 </section>
-<section id="ways-to-do-unit-level-estimation" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="ways-to-do-unit-level-estimation"><span class="header-section-number">2</span> Ways to Do Unit-Level Estimation</h2>
-<p>There are several ways to turn unit-level predictions into small-area estimates. The difference is mainly the form of the population data used after fitting the model.</p>
+<section id="two-ways-to-aggregate-unit-level-predictions" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="two-ways-to-aggregate-unit-level-predictions"><span class="header-section-number">2</span> Two Ways to Aggregate Unit-Level Predictions</h2>
+<p>Once a unit-level model has been fitted to the survey records, the next question is how to apply the model to the target population. There are two common routes:</p>
 <table class="table">
 <colgroup>
 <col style="width: 33%">
@@ -410,7 +410,7 @@ x_{di}^{\top}\beta + u_d + e_{di},
 </colgroup>
 <thead>
 <tr class="header">
-<th>Method</th>
+<th>Route</th>
 <th>Population data needed</th>
 <th>Basic idea</th>
 </tr>
@@ -418,7 +418,7 @@ x_{di}^{\top}\beta + u_d + e_{di},
 <tbody>
 <tr class="odd">
 <td>Full population prediction</td>
-<td>A population microdata file or synthetic population</td>
+<td>Population microdata or a synthetic population</td>
 <td>Predict for every population unit, then average within each area</td>
 </tr>
 <tr class="even">
@@ -426,18 +426,13 @@ x_{di}^{\top}\beta + u_d + e_{di},
 <td>Counts for population cells</td>
 <td>Predict for each cell, then weight by cell counts</td>
 </tr>
-<tr class="odd">
-<td>Unit-level mixed model with area effects</td>
-<td>Survey microdata plus population covariates</td>
-<td>Use individual predictors and area random effects to stabilise area estimates</td>
-</tr>
 </tbody>
 </table>
-<p>These are not entirely separate families. MRP is one way to operationalise unit-level SAE when the population is available as grouped cell counts rather than as individual records.</p>
+<p>The model itself can still include individual predictors, household predictors, area predictors, and area random effects. The distinction here is not the model structure; it is the format of the population data used to turn predictions into area estimates.</p>
 </section>
 <section id="full-population-prediction" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="full-population-prediction"><span class="header-section-number">3</span> Full Population Prediction</h2>
-<p>The most direct unit-level workflow is to predict for every person or household in the target population.</p>
+<p>The most direct route is to predict for every person or household in the target population.</p>
 <p>For the bus dissatisfaction example, this would require a population or synthetic population file where each row is a person or household, with the same variables used in the survey model: age group, disability status, employment status, car access, and MSOA.</p>
 <p>The workflow is:</p>
 <ol type="1">
@@ -449,7 +444,7 @@ x_{di}^{\top}\beta + u_d + e_{di},
 </section>
 <section id="mrp" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="mrp"><span class="header-section-number">4</span> MRP</h2>
-<p>MRP stands for <strong>Multilevel Regression and Poststratification</strong>. It is a unit-level SAE approach that uses population cell counts instead of full population microdata.</p>
+<p>MRP stands for <strong>Multilevel Regression and Poststratification</strong>. It uses population cell counts instead of full population microdata.</p>
 <p>The regression part models the survey outcome using individual predictors and, often, area effects. The poststratification part applies those predictions to the known population composition of each area.</p>
 <p>For example, a population cell might be:</p>
 <blockquote class="blockquote">
@@ -462,7 +457,7 @@ x_{di}^{\top}\beta + u_d + e_{di},
 \sum_{j \in J_d} N_{dj}\hat{y}_{dj},
 \]</span></p>
 <p>where <span class="math inline">\(j\)</span> indexes population cells, <span class="math inline">\(N_{dj}\)</span> is the number of people in cell <span class="math inline">\(j\)</span> in area <span class="math inline">\(d\)</span>, and <span class="math inline">\(\hat{y}_{dj}\)</span> is the model prediction for that cell.</p>
-<p>MRP is useful when individual-level predictors matter, but the population data are available as cross-tabulated counts rather than a row-by-row population file.</p>
+<p>MRP is useful when individual-level predictors matter, but the population data are available as cross-tabulated counts rather than a row-by-row population file. It is best understood as a practical implementation of unit-level SAE under a different population-data format.</p>
 </section>
 <section id="when-unit-level-sae-helps" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="when-unit-level-sae-helps"><span class="header-section-number">5</span> When Unit-Level SAE Helps</h2>

@@ -51,7 +51,7 @@ The next stage involves preparing the indicator variables and aligning them with
 
 With this information we can proceed to process the raw survey dataset to produce inputs necessary for the estimation pipeline.
 
-## Practical: Code Implementation
+## Practical Tutorial
 
 ```{r}
 library(dplyr)
@@ -90,7 +90,7 @@ head(survey_spatial_ids)
 
 ### Construct Indicators
 
-Next, we can start constructing the indicators from the variables based on the coding rules set out above.
+We can start constructing the indicators `commute_distance`, `bus_nosat`, and `freq_walker` from the survey variables based on the coding rules set out previously.
 
 ```{r}
 # Construct the three indicators
@@ -115,9 +115,13 @@ head(survey_indicators)
 
 ### Select weight variables
 
-Next, filter for the relevant weight variables from the survey relevant to our estimands.
+Next, we filter for the relevant weight variables from the survey relevant to our estimands:
+
+- `SampleAdultWeight` is the analysis weight to the main survey questionnaire, to reflect proportions seen among the adult population.
+- `SampleTravelWeight` is the analysis weight for the subsampled active-travel module, from which `freq_walker` was derived. This weight variable was designed to represent the general population of Wales. To estimate the number of freq_walker per 1,000 residents, these analysis weights should be scaled to grossing weights (i.e., `WalesTravelWeight`) using population totals per MSOA available in the UK Census 2021 data as domain sizes.
 
 ```{r}
+# Filter out the relevant weight variables
 survey_weights <- nsw_raw |>
   transmute(
     unit_id,
@@ -125,11 +129,7 @@ survey_weights <- nsw_raw |>
     SampleAdultWeight,
     SampleTravelWeight
   )
-```
 
-`SampleTravelWeight` is the analysis weight for the subsampled active-travel module, from which `freq_walker` was derived. This weight variable was designed to represent the general population of Wales. To estimate the number of freq_walker per 1,000 residents, these analysis weights should be scaled to grossing weights (i.e., `WalesTravelWeight`) using population totals per MSOA available in the UK Census 2021 data as domain sizes.
-
-```{r}
 # Load the Welsh MSOA population totals as the domain sizes
 domain_sizes_population_msoa <- read_csv(
   file.path(census_path, "census2021-ts007-msoa.csv"),
@@ -141,8 +141,6 @@ domain_sizes_population_msoa <- read_csv(
     domain_name = geography,
     domain_size = `Age: Total; measures: Value`
   )
-  
-head(domain_sizes_population_msoa)
 
 # Scaling analysis weight into grossing weight (see formula in the previous chapter)
 survey_weights <- survey_weights |>
@@ -167,59 +165,35 @@ head(survey_weights)
 
 ### Check missingness
 
-For each indicator, check for missingness overall (number of null values) and whether there are areas with no respondents.
+For each indicator, check for missingness overall (number of null values) and whether there are areas with no respondents. This summary highlights areas with no data (`areas_n_0`) and areas with fewer than two usable observations (`areas_n_lt2`). For two indicators, `bus_nosat` and `commute_distance`, the number of very-low-sample areas is below 10, which is not a major concern at this stage. In comparison, `freq_walker` has many more low-sample areas.
 
 ```{r}
-# Join the spatial identifiers, coded indicators and calculated weights together
+# Combine all indicators and weights
 survey_inputs <- survey_spatial_ids |>
   left_join(survey_indicators, by = "unit_id") |>
   left_join(survey_weights, by = "unit_id")
 
-# Calculate non-nulls and coverage for each indicator at estimation geography
-indicator_observations <- bind_rows(
-  survey_inputs |>
-    transmute(
-      indicator = "commute_distance",
-      domain_id = msoa_code,
-      value = commute_distance,
-      weight = SampleAdultWeight
-    ),
-  survey_inputs |>
-    transmute(
-      indicator = "bus_nosat",
-      domain_id = msoa_code,
-      value = bus_nosat,
-      weight = SampleAdultWeight
-    ),
-  survey_inputs |>
-    transmute(
-      indicator = "freq_walker",
-      domain_id = msoa_code,
-      value = freq_walker,
-      weight = WalesTravelWeight
-    )
+# Plot counts of areas by usable observations (non-missing)
+commute_counts <- survey_inputs |>
+  filter(!is.na(commute_distance), !is.na(SampleAdultWeight)) |>
+  count(domain_id = msoa_code, name = "non_missing") |>
+  mutate(indicator = "commute_distance")
+
+bus_counts <- survey_inputs |>
+  filter(!is.na(bus_nosat), !is.na(SampleAdultWeight)) |>
+  count(domain_id = msoa_code, name = "non_missing") |>
+  mutate(indicator = "bus_nosat")
+
+walker_counts <- survey_inputs |>
+  filter(!is.na(freq_walker), !is.na(WalesTravelWeight)) |>
+  count(domain_id = msoa_code, name = "non_missing") |>
+  mutate(indicator = "freq_walker")
+
+indicator_area_counts <- bind_rows(
+  commute_counts,
+  bus_counts,
+  walker_counts
 )
-
-indicator_area_summary <- indicator_observations |>
-  filter(!is.na(value), !is.na(weight)) |>
-  count(indicator, domain_id, name = "non_missing") |>
-  group_by(indicator) |>
-  summarise(
-    geography = "MSOA",
-    areas_total = nrow(domain_sizes_population_msoa),
-    areas_n_0 = areas_total - n_distinct(domain_id),
-    areas_n_lt2 = areas_n_0 + sum(non_missing < 2),
-    .groups = "drop"
-  )
-
-indicator_area_summary
-```
-This summary highlights areas with no data (`areas_n_0`) and areas with fewer than two usable observations (`areas_n_lt2`). For two indicators, `bus_nosat` and `commute_distance`, the number of very-low-sample areas is below 10, which is not a major concern at this stage. `freq_walker` has many more very-low-sample areas.
-
-```{r}
-indicator_area_counts <- indicator_observations |>
-  filter(!is.na(value), !is.na(weight)) |>
-  count(indicator, domain_id, name = "non_missing")
 
 ggplot(indicator_area_counts, aes(x = non_missing)) +
   geom_histogram(binwidth = 5, boundary = 0, fill = "#4C78A8", colour = "white") +
@@ -230,35 +204,22 @@ ggplot(indicator_area_counts, aes(x = non_missing)) +
   ) +
   theme_minimal()
 ```
+This is consistent with the fact that the active-travel questions used to construct `freq_walker` were only asked to a subsample. It also means this estimand will probably benefit the most from model-based estimation later.
 
-This is consistent with the fact that the active-travel questions used to construct `freq_walker` were only asked to a subsample. It will probably benefit the most from model-based estimation later, although the final decision is best made after looking at the direct estimates and their uncertainty in the next step.
+### Export guidelines
 
-### Export
-
-The next workbooks do not depend on local exports from this workbook. However, if preferred, export into your `data/clean/` folder the following components:
-
-Indicator microdata with weight and survey strata
-
-- `ind_weight_commute_distance.csv`, with analysis adult weight;
-- `ind_weight_bus_nosat.csv`, with analysis adult weight;
-- `ind_weight_freq_walker.csv`, with `WalesTravelWeight`, an MSOA-level grossing weight for the active-travel module.
-
-Each indicator microdata file contains the same key columns:
+FInally, we aggregate them into individual indicator microdata, ready as input for the estimation workflow. Each indicator microdata table,  should contain these key columns:
 
 | Column | Meaning |
 |---|---|
 | `unit_id` | Survey respondent identifier. |
-| `domain_id` | Estimation area ID. |
-| `strata` | Survey stratification variable. For NSW, this is the Local Authority, `la_code`. |
+| `domain_id` | Estimation area ID. In this case, it is the MSOA code. |
+| `strata` | Survey stratification variable. For NSW, this is the Local Authority, i.e., `la_code`. |
 | `indicator` | Coded outcome variable. |
 | `weight` | Survey weight matched to the estimand. |
 
 ```{r}
-#| echo: false
-output_dir <- file.path("..", "data")
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
-
-ind_weight_commute_distance <- survey_inputs |>
+survey_indicator_commute <- survey_inputs |>
   transmute(
     unit_id,
     domain_id = msoa_code,
@@ -267,7 +228,7 @@ ind_weight_commute_distance <- survey_inputs |>
     weight = SampleAdultWeight
   )
 
-ind_weight_bus_nosat <- survey_inputs |>
+survey_indicator_bus <- survey_inputs |>
   transmute(
     unit_id,
     domain_id = msoa_code,
@@ -276,7 +237,7 @@ ind_weight_bus_nosat <- survey_inputs |>
     weight = SampleAdultWeight
   )
 
-ind_weight_freq_walker <- survey_inputs |>
+survey_indicator_walk <- survey_inputs |>
   transmute(
     unit_id,
     domain_id = msoa_code,
@@ -285,38 +246,50 @@ ind_weight_freq_walker <- survey_inputs |>
     weight = WalesTravelWeight
   )
 
+head(survey_indicator_commute)
+```
+
+
+:::{.callout-note}
+The next workbooks do not depend on exports from this workbook.
+:::
+```{r}
+#| echo: false
+#  Export locally the indicator microdata for three indicators
+
+output_dir <- file.path("..", "data")
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+
 write_csv(
-  ind_weight_commute_distance,
+  survey_indicator_commute,
   file.path(output_dir, "ind_weight_commute_distance.csv")
 )
 
 write_csv(
-  ind_weight_bus_nosat,
+  survey_indicator_bus,
   file.path(output_dir, "ind_weight_bus_nosat.csv")
 )
 
 write_csv(
-  ind_weight_freq_walker,
+  survey_indicator_walk,
   file.path(output_dir, "ind_weight_freq_walker.csv")
 )
 
-# Create data/tutorial-clean-data.zip
-data_dir <- file.path("..", "data")
-old_wd <- setwd(data_dir)
-
-tryCatch(
-  {
-    if (file.exists("tutorial-clean-data.zip")) {
-      file.remove("tutorial-clean-data.zip")
-    }
-
-    utils::zip(
-      zipfile = "tutorial-clean-data.zip",
-      files = list.files(pattern = "\\.csv$", full.names = TRUE)
-    )
-  },
-  finally = setwd(old_wd)
+clean_data_files <- file.path(
+  output_dir,
+  c(
+    "ind_weight_commute_distance.csv",
+    "ind_weight_bus_nosat.csv",
+    "ind_weight_freq_walker.csv"
+  )
 )
 
+zip(
+  zipfile = file.path(output_dir, "tutorial-clean-data.zip"),
+  files = clean_data_files,
+  flags = "-j"
+)
+
+file.remove(clean_data_files)
 ```
 

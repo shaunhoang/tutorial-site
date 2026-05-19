@@ -82,6 +82,7 @@ format:
     toc-depth: 3
     number-sections: true
     code-copy: true
+    code-fold: true
     code-overflow: wrap
     link-external-newwindow: true
     fig-cap-location: bottom
