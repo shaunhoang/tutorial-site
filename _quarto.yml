@@ -67,7 +67,9 @@ website:
           - section: "III. Extended Topics"
             contents:
               - pages/frequentist-sae.qmd
+              - pages/covariates.qmd
               - pages/unit-level-sae.qmd
+
       - section: "Resources"
         contents:
           - pages/sae-toolkit.qmd
