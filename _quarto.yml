@@ -34,7 +34,9 @@ website:
           - text: "III. Extended Topics"
           - text: "1. Frequentist approaches to SAE"
             href: pages/frequentist-sae.qmd
-          - text: "2. Unit-level estimation and MRP"
+          - text: "3. Unit-level estimation and MRP"
+            href: pages/unit-level-sae.qmd
+          - text: "3. Unit-level estimation and MRP"
             href: pages/unit-level-sae.qmd
       - text: "Resources"
         menu:

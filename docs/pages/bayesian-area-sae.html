@@ -307,6 +307,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../pages/covariates.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">[WIP] Covariate calibration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../pages/unit-level-sae.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">[WIP] Unit-Level Estimation and MRP</span></a>
   </div>
@@ -489,7 +495,8 @@ Warning
 </section>
 <section id="practical-tutorial" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="practical-tutorial"><span class="header-section-number">5</span> Practical tutorial</h2>
-<p>In this workbook, we fit Bayesian area-level FH models for the <strong>mean commute distance among commuters by MSOA</strong> estimand using the indicator <code>commute_distance</code>. We first recreate the direct estimates and their sampling variances, then pass those area-level inputs into <code>SUMMER::smoothArea()</code> with MSOA-level covariates.</p>
+<p>In this workbook, we fit Bayesian area-level FH models for the <strong>mean commute distance among commuters by MSOA</strong> estimand using the indicator <code>commute_distance</code>.</p>
+<p>We first recreate the direct estimates and their sampling variances, then pass those area-level inputs into <code>SUMMER::smoothArea()</code> with MSOA-level covariates.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -894,45 +901,45 @@ Generating estimates for all domains in X.domain.</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">W02000001</td>
-<td style="text-align: right;">9.839279</td>
-<td style="text-align: right;">6.516020</td>
-<td style="text-align: right;">13.44616</td>
-<td style="text-align: right;">6.930137</td>
+<td style="text-align: right;">9.832889</td>
+<td style="text-align: right;">6.430111</td>
+<td style="text-align: right;">13.42165</td>
+<td style="text-align: right;">6.991537</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000002</td>
-<td style="text-align: right;">10.934607</td>
-<td style="text-align: right;">8.724935</td>
-<td style="text-align: right;">13.00324</td>
-<td style="text-align: right;">4.278306</td>
+<td style="text-align: right;">10.906135</td>
+<td style="text-align: right;">8.935802</td>
+<td style="text-align: right;">13.28050</td>
+<td style="text-align: right;">4.344696</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000003</td>
-<td style="text-align: right;">9.859043</td>
-<td style="text-align: right;">6.171122</td>
-<td style="text-align: right;">14.01888</td>
-<td style="text-align: right;">7.847760</td>
+<td style="text-align: right;">10.152540</td>
+<td style="text-align: right;">6.313980</td>
+<td style="text-align: right;">13.97683</td>
+<td style="text-align: right;">7.662846</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000004</td>
-<td style="text-align: right;">9.701078</td>
-<td style="text-align: right;">3.198599</td>
-<td style="text-align: right;">15.76512</td>
-<td style="text-align: right;">12.566522</td>
+<td style="text-align: right;">9.832581</td>
+<td style="text-align: right;">4.353101</td>
+<td style="text-align: right;">15.64732</td>
+<td style="text-align: right;">11.294218</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000005</td>
-<td style="text-align: right;">10.022082</td>
-<td style="text-align: right;">5.449707</td>
-<td style="text-align: right;">16.29283</td>
-<td style="text-align: right;">10.843127</td>
+<td style="text-align: right;">10.559612</td>
+<td style="text-align: right;">4.898801</td>
+<td style="text-align: right;">16.94147</td>
+<td style="text-align: right;">12.042671</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000006</td>
-<td style="text-align: right;">9.995434</td>
-<td style="text-align: right;">4.207757</td>
-<td style="text-align: right;">16.09866</td>
-<td style="text-align: right;">11.890901</td>
+<td style="text-align: right;">9.931267</td>
+<td style="text-align: right;">4.661871</td>
+<td style="text-align: right;">15.09556</td>
+<td style="text-align: right;">10.433694</td>
 </tr>
 </tbody>
 </table>
@@ -1034,10 +1041,10 @@ Generating estimates for all domains in X.domain.</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">W02000004</td>
-<td style="text-align: right;">9.701078</td>
-<td style="text-align: right;">3.198599</td>
-<td style="text-align: right;">15.76512</td>
-<td style="text-align: right;">12.56652</td>
+<td style="text-align: right;">9.832581</td>
+<td style="text-align: right;">4.353101</td>
+<td style="text-align: right;">15.64732</td>
+<td style="text-align: right;">11.29422</td>
 </tr>
 </tbody>
 </table>
@@ -1116,39 +1123,39 @@ Generating estimates for all domains in X.domain.</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">W02000001</td>
-<td style="text-align: right;">9.901177</td>
-<td style="text-align: right;">6.326313</td>
-<td style="text-align: right;">13.90447</td>
+<td style="text-align: right;">9.81271</td>
+<td style="text-align: right;">5.969847</td>
+<td style="text-align: right;">13.66277</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000002</td>
-<td style="text-align: right;">10.885139</td>
-<td style="text-align: right;">8.371127</td>
-<td style="text-align: right;">13.63092</td>
+<td style="text-align: right;">11.00420</td>
+<td style="text-align: right;">8.742957</td>
+<td style="text-align: right;">13.23591</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000003</td>
-<td style="text-align: right;">10.055790</td>
-<td style="text-align: right;">6.018214</td>
-<td style="text-align: right;">14.04548</td>
+<td style="text-align: right;">10.16516</td>
+<td style="text-align: right;">6.494975</td>
+<td style="text-align: right;">14.35813</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000004</td>
-<td style="text-align: right;">10.245542</td>
-<td style="text-align: right;">4.707514</td>
-<td style="text-align: right;">16.46669</td>
+<td style="text-align: right;">10.24511</td>
+<td style="text-align: right;">4.098721</td>
+<td style="text-align: right;">16.64044</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">W02000005</td>
-<td style="text-align: right;">10.612288</td>
-<td style="text-align: right;">4.583237</td>
-<td style="text-align: right;">15.85740</td>
+<td style="text-align: right;">10.67594</td>
+<td style="text-align: right;">4.767669</td>
+<td style="text-align: right;">16.43372</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">W02000006</td>
-<td style="text-align: right;">10.103046</td>
-<td style="text-align: right;">4.498977</td>
-<td style="text-align: right;">15.27939</td>
+<td style="text-align: right;">10.20046</td>
+<td style="text-align: right;">4.105372</td>
+<td style="text-align: right;">15.19966</td>
 </tr>
 </tbody>
 </table>
